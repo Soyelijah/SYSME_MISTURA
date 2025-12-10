@@ -1,0 +1,1618 @@
+SYSME TPV#SYSME POS
+ Gestión del Catálogo# Catalog Management
+CATEGORIAS#CATEGORIES
+PRODUCTOS#PRODUCTS
+TARIFAS ESPECIALES#SPECIAL RATES
+PROMOCIONES ESPECIALES#SPECIAL PROMOS
+ Gestión de Stock# Stock Management
+ALMACENES#STORES
+TRASPASO DE MERCANCIAS#PRODUCT TRANSFER
+ENTRADA DE PRODUCTOS#PRODUCT FROM SUPPLIER
+INFORME DE EXISTENCIAS#STOCK REPORT
+GESTIÓN DE INVENTARIO#INVENTORY MANAGEMENT
+PROVEEDORES#SUPPLIERS
+ Modulo de Hostelería# Hospitality Module
+MESAS#TABLES
+SALONES#HALLS
+OPCIONES DE COCINA#COOK OPTIONS
+RESERVAS#BOOKINGS
+PANEL COCINA#KITCHEN PANEL
+ Gestión de Ventas# Sales Management
+TERMINAL DE VENTAS#POINT OF SALE
+TICKETS#TICKETS
+FACTURAS#INVOICES
+CLIENTES#CUSTOMERS
+ADMINISTRAR PUNTO DE VENTA#POS ADMIN
+MOVIMIENTOS DE CAJA#CASH MOVEMENTS
+ Configuración del Sistema# System Settings
+CONFIGURACION#SETTINGS
+DATOS DE EMPRESA#COMPANY INFO
+PUNTOS DE VENTA#POINTS OF SALE
+FORMAS DE PAGO#PAYMENTS
+EMPLEADOS#EMPLOYEES
+ Menú Principal# Main Menu
+VENTAS#SALES
+MODULO DE HOSTELERÍA#HOSPITALITY MODULE
+CATALOGO#CATALOG
+SISTEMA#SYSTEM
+STOCK#STOCK
+INFORMES#REPORTS
+ENTRADAS / SALIDAS DE CAJA#CASH MOVEMENTS
+MOVIMIENTOS CAJA#CASH MOVEMENTS
+OPEN / CLOSE POINT OF SALE#OPEN / CLOSE POINT OF SALE
+HALL SETTINGS#HALL SETTINGS
+COLORES#COLORS
+TALLAS#SIZES
+PROPOSALS#PROPOSALS
+USERS#USERS
+USER GROUPS#USER GROUPS
+PRODUCT MANUFACTURE#PRODUCT MANUFACTURE
+ORDERS TO SUPPLIERS#ORDERS TO SUPPLIERS
+Gestión del Punto de venta#Point of Sale Management
+SALIR#CLOSE
+AYUDA ONLINE#ONLINE HELP
+SYSME SOFTWARE#SYSME SOFTWARE
+ACTIVACION ELITE#LICENSE KEY
+Configuración#Settings
+Guardar Cambios#Save Changes
+Salir#Close
+Opciones#Options
+% de impuesto por defecto en entrada de albaranes:#% default tax in product from supplier:
+% de impuesto por defecto en alta de productos:#% default tax in products:
+Serie de facturación:#Invoices prefix:
+Definición del Impuesto:#Name of tax:
+Mostrar advertencias de stock mínimo#Show stock alerts
+Ordenar categorías y productos por nombre en terminal de ventas#Categories and productos ordered by name
+Copia de Seguridad de Base de Datos#Backup
+Restaurar Copia de Seguridad#Restore Backup
+Borrar Base de Datos (excepto productos)#Delete database (except products)
+Cambiar idioma#Language
+Pestaña por defecto en terminal de ventas#Default tab in POS terminal
+Solicitar contraseña de empleado al finalizar una venta#Request employee password on finish sale
+Solicitar contraseña de empleado al iniciar una venta#Request employee password on new sale
+Solicitar contraseña de empleado al iniciar el programa#Request employee password on application start
+Seleccione Idioma / Select Language#Seleccione Idioma / Select Language
+Configuración de Red#Network Settings
+Servidor:#Server:
+Nombre o IP del equipo#Windows Name or IP of Server
+ Cajon Portamonedas # Cash Drawer 
+Impresora :#Printer :
+Puerto :#Port :
+Secuencia:#Token:
+Cadena Corte Papel:#Cadena Corte Papel:
+Imprimir Tiquet en Puerto#Imprimir Tiquet en Puerto
+Utilizo una Impresora Fiscal#Utilizo una Impresora Fiscal
+Cortar Papel al Finalizar Tiquet#Cortar Papel al Finalizar Tiquet
+Probar Corte Papel#Probar Corte Papel
+Impresoras#Printers
+Probar Apertura Cajon#Test
+Visor del Cliente#Customer Display
+Nº Caracteres Linea 1:#Line 1 char count:
+Texto Prueba:#Test Text:
+Mensajes de Bienvenida#Welcome Messages
+Mensajes de Venta#Sales Messages
+Nº Caracteres Linea 2:#Line 2 char count:
+Linea 1:#Line 1:
+Linea 2:#Line 2:
+Gracias por su compra 1:#Thanks for your buy 1:
+Gracias por su compra 2:#Tanks for your buy 2:
+A Devolver:#To Return:
+Total a Pagar:#Total to pay:
+Habilitar Visor#Enable Display
+Probar Visor#Test Display
+Borrar Visor#Clean Display
+Ventas#Sales
+Empleado:#Employee:
+Label11#Label11
+Label19#Label19
+Almacén:#Store:
+Venta:#Sale:
+Fecha:#Date:
+Tarifa:#Rate:
+Label9#Label9
+Label6#Label6
+Label5#Label5
+Tpv:#Pos:
+Mesa:#Table:
+Ticket:#Ticket:
+Label4#Label4
+Label15#Label15
+Label17#Label17
+Labelpre#Labelpre
+LabelDNIAlbaran#LabelDNIAlbaran
+Cliente:#Customer:
+none#none
+Total Venta:#Total Sale:
+Id#Id
+Producto#Product
+Precio#Price
+Dto %#Disc. %
+Cant#Qty.
+Total#Total
+Opc#Opt
+Notas#Note
++ Nota#+ Note
++ Op Cocina#+ Cook Opt
+Precio Manual#Manual Price
++ Descuento#+ Discount
+Vista Ampliada#Vista Ampliada
+Pasar Cargos a Habitación#Send to Room
+Hacer Factura#Hacer Factura
+Eliminar#Delete
+-#-
+1#1
+2#2
+3#3
+4#4
+5#5
+6#6
+7#7
+8#8
+9#9
+0#0
+,#,
+C#C
+Finalizar Venta#Finish Sale
+Cancelar Venta#Cancel Sale
+Finalizar con Factura#Finish with Invoice
+Dejar Pendiente#Leave Pending
+Asignar a Cliente#Asign to Customer
+Asignar a Mesa#Asign to Table
+Aplicar Descuento#Apply Discount
+Enviar orden a Cocina#send order to Kitchen
+Insertar Cupón Promocional#Add Promo Code
+Imprimir sin Finalizar#Print Without Finish
+Más Opciones#More Options
+Imprimir el último Ticket Generado#Print Last Ticket
+Dividir en 2 Ventas#Divide in 2 sales
+Eliminar Impuestos#Delete Taxes
+Pasar Cargos a Huesped#Send to Hotel Room
+Añadir Observaciones#Add Coments
+Configuración de Tickets#Ticket Settings
+Un Producto por Linea (incremento de cantidad)#Quantity Increment
+Configuración de Orden de Cocina#Kitchen Order Settings
+Configuración de Cargo a Huesped#Room Ticket Settings
+Configurar Albaran#Configurar Albaran
+Imprimir como Varios#Imprimir como Varios
+Ver Teclado#Touch Keyboard
+Guardar PreVenta#Guardar PreVenta
+Imprimir Albaran#Print Delivery Note
+   Configurar Vales#   Configurar Vales
+Invitación#Invitación
+Imprimir Entradas y Finalizar Venta#Imprimir Entradas y Finalizar Venta
+Mostrar Pre-Impresión antes de Imprimir Ticket#Show print optiones before print
+Venta Rápida - No solicitar forma de pago al finalizar venta#Quick Sale, don't request payment options
+Cambiar Tarifa#Switch Rate
+Impresora Habilitada#Printer Enabled
+Cambiar Empleado#Switch Employee
+Ventas Pendientes#Pending Sales
+Mapa del Salón#Hall Map
+Abrir Caja de Dinero#Open Cash Drawer
+Terminal Táctil#Touch Tab
+Codigo de Barras / Manual#Barcode Tab
+Código de Barras:#Barcode:
+Buscador Manual:#Search:
+Busqueda de Producto#Product Search
+Categoria:#Category:
+Cantidad:#Quantity:
+Close#Close
+Añadir Nota al Producto:#Add note to product:
+Guardar Nota#Save Note
+Teclado Táctil#Touch Keyboard
+Aplicar Descuento al Producto:#Apply discount to product:
+Descuento:#Discount:
+Tipo de Descuento#Discount Option
+ Vista Ampliada de datos # Vista Ampliada de datos 
+Volver a vista simple#Volver a vista simple
+De:#De:
+Leido#Leido
+Camareros#Employees
+MESA 00 = BARRA#MESA 00 = BARRA
+AVISO#AVISO
+Borrar Venta#Delete Sale
+Elegir Trabajador#Select Employee
+idioma#idioma
+Maestro de Tiquets#Tickets
+Buscador#Search
+Fecha Desde:#Date From:
+Fecha Hasta:#Date To:
+N Tiquet/s Filtrado/s#Results
+Hora Hasta:#Time From:
+Hora Desde:#Time To:
+Buscar#Search
+Imprimir#Print
+Total:#Total:
+labeltotal#labeltotal
+Fecha#Date
+Nombre#Name
+Apellidos#Last Name
+Obs#Obs
+Ticket#Ticket
+Id:#Id:
+Obs:#Obs:
+Factura:#Invoice:
+Generar Factura#To Invoice
+Anular Ticket#Void Ticket
+Borrar Tiquet#Delete Tiquet
+Imprimir Ticket#Print Ticket
+Categoría#Category
+Cantidad#Quantity
+Cambio de Tarifa#Switch Rate
+TARIFA NORMAL#DEFAULT RATE
+Detalle de la Venta:#Sale Detail:
+Ventas Pendientes:#Pending Sales:
+Recuperar#Select
+Volver#Back
+Impresión de documentos#Print Options
+Enviar una copia a otra impresora:#Send copy to other printer:
+Num. Copias:#Copy Number:
+Archivo de formato:#Format File:
+Impresora:#Printer:
+Mostrar#Show
+Modificar#Modify
+Añadir#Add
+Imprimir en:#Print on:
+Guardar#Save
+Abrir#Open
+Leyenda#Info
+Mesa Libre#Free Table
+Mesa Ocupada#Busy Table
+Mesa Pretiquet#Mesa Pretiquet
+Salón:#Hall:
+SALON: #HALL: 
+Salón Siguiente#Next Hall
+Salón Anterior#Prior Hall
+Informes#Reports
+Exportar a CSV#CSV Export
+Filtro de Fechas#Dates
+Desde#From
+Hasta#To
+Filtro de Horas#Times
+Exportar a HTML#HTML Export
+Total Ventas#Sales Total
+Por Categorias#By Categories
+Categoria#Category
+Por Productos#By Products
+Por Empleado#By Employee
+Empleado#Employee
+Por Impuesto#By Taxes
+SubTotal#SubTotal
+Impuesto#Tax
+Impuestos#Tax Amount
+Por Mesa#By Table
+IdMesa#Id
+Mesa#Table
+Default tab in POS terminal#Default tab in POS terminal
+Discount Option#Discount Option
+dar cambio#dar cambio
+Categorias#Categories
+Imagen:#Image:
+Color:#Color:
+Descripcion:#Description:
+Borrar Imagen#Delete Image
+ Categoria Visible en . . . # Categoria Visible en . . . 
+Cambiar Color#Change Color
+Description#Description
+Productos#Products
+Categoría:#Category:
+Producto:#Product:
+Cod.Barras:#Barcode:
+Precio:#Price:
+% Impuesto:#% Tax:
+LabelResultado#LabelResultado
+Id Adicional:#Aditional Id:
+PVP:#Price (tax inc.):
+Códigos de Barras#Barcodes
+Añadir a la lista de impresión de códigos de barras#Add to Barcode Print List
+Añadir Todos Los Resultados#Add all results
+Añadir Producto Seleccionado#Add Selected Item
+Id Adicional#Aditional Id
+Pvp#Sale Price
+Cod.Barras#Barcode
+Nuevo Producto#New Product
+Editar Producto#Edit Product
+Borrar Producto#Delete Product
+Ficha de Producto#Product Details
+Copiar Producto#Copy Product
+Composición del Producto#Product Composition
+Opciones de Combinación#Combine Options
+Sincronizar en Web#Sincronizar en Web
+Descripción:#Descriptions:
+Unidad de Medida:#Measure Unit:
+Nombre:#Name:
+16#16
+Precio Final:#Sale Price:
+Precio de Coste:#Cost Price:
+Este dato debe ser una estimación.#Must be estimated.
+Precio Ultima Compra:#Last buy price:
+Stock en Almacenes:#Stock Report:
+Contabilizar en Stock#Account in stock
+Visible en Entrada de Mercancías#Show in product from suppliers
+Visible en Ordenes a Cocína (solo en modulo de hostelería)#Show in orders to kitchen
+Visible en Terminal de Ventas#Show in POS terminal
+Sujeto a Rec Equiv#Sujeto a Rec Equiv
+Sujeto a Retenciones#Sujeto a Retenciones
+Eliminar Imagen#Delete Image
+Autogenerar#Auto
+Agregar a Favoritos#Add to favorites
+Impuesto Incluido?#Tax included?
+Historico de Precios de Coste#Historical cost price
+ Precios de Compra # Precios de Compra 
+Precios de Última Compra Visible solo para Administradores#Precios de Última Compra Visible solo para Administradores
+ Presencia en Almacenes # Stock Report 
+ Rotación # Rotación 
+ Rotación Almacén: # Rotación Almacén: 
+Almacen#Store
+Id Categoria#Category Id
+Cod Producto#Product Id
+Stock Mínimo#Minimum Stock
+Precio Ponderado#Average Price
+ Rotación Ventas y Compras: # Rotación Ventas y Compras: 
+Nº Ventas#Nº Ventas
+Precio Medio Venta#Precio Medio Venta
+Precio Ultima Venta#Precio Ultima Venta
+Precio Medio Compra#Precio Medio Compra
+Precio Ultima Compra#Precio Ultima Compra
+Fecha Primera Venta#Fecha Primera Venta
+Fecha Ultima Venta#Fecha Ultima Venta
+Fecha Primera Compra#Fecha Primera Compra
+Fecha Ultima Compra#Fecha Ultima Compra
+ Operaciones # Operaciones 
+  Cambiar Precio a Todos los Productos de la Categoria ...  #  Cambiar Precio a Todos los Productos de la Categoria ...  
+%#%
+Aplicar#Apply
+ Marcar . . . # Marcar . . . 
+ Venta # Venta 
+ Compra # Compra 
+ Inventario # Inventario 
+ Introducir en Stock . . . # Introducir en Stock . . . 
+ Introducir . . . # Introducir . . . 
+ Eliminar del Stock . . . # Eliminar del Stock . . . 
+ Eliminar . . . # Eliminar . . . 
+GENERANDO CAMBIOS . . .  ESPERE POR FAVOR#GENERANDO CAMBIOS . . .  ESPERE POR FAVOR
+ Importación Albaranes y Productos desde Excel # Importación Albaranes y Productos desde Excel 
+Abrir Plantilla#Abrir Plantilla
+Importar Productos desde Excel#Importar Productos desde Excel
+Impresión de Códigos de Barras#Barcode Print List
+Eliminar Todos#Delete All
+Código de Barras#Barcode
+Cantidad a Imprimir#Quantity to Print
+ Colores y Tallas # Colores y Tallas 
+ Colores # Colores 
+Colores disponibles:#Colores disponibles:
+Paso 1 - Seleccionar los colores del Producto#Paso 1 - Seleccionar los colores del Producto
+Colores del Producto:#Colores del Producto:
+Duplicar Color#Duplicar Color
+Buscar Color#Buscar Color
+Refrescar#Refrescar
+Color#Color
+Color y tallas dependientes creadas, seleccione ahora el nuevo color y guarde los cambios#Color y tallas dependientes creadas, seleccione ahora el nuevo color y guarde los cambios
+ Tallas # Tallas 
+Tallas disponibles:#Tallas disponibles:
+Precio Venta:#Precio Venta:
+Tallas disponibles del Producto:#Tallas disponibles del Producto:
+Paso 2 - Seleccionar las tallas de cada color del Producto#Paso 2 - Seleccionar las tallas de cada color del Producto
+Precio con iva incluido#Precio con iva incluido
+Talla#Size
+Tarifas#Rates
+Lista#List
+Tarifa#Rate
+Hora Comienzo:#Hora Comienzo:
+Formato: HH:MM#Formato: HH:MM
+Label2#Label2
+Siguiente Código de Tarifa: #Next Rate Id: 
+Lista de Precios#Price List
+€#€
+Creando tarifa ... espere.#...wait
+Promociones Especiales#Special Promos
+Codigo#Id
+Descuento#Discount
+Fecha Inicio#Date Start
+Fecha Fin#Date End
+Código:#Id:
+Fecha Inicio Desde:#Start Date From:
+Fecha Fin Desde:#End Date From:
+Fecha Inicio Hasta:#Start Date To:
+Fecha Fin Hasta:#End Date To:
+Records#Records
+Promoción#Promotion
+Fecha de Inicio:#Start Date:
+Fecha de Fin:#End Date:
+Auto#Auto
+Usada:    #Used:    
+Opciones de la Promoción#Promotion Options
+Puntos de Venta#Points
+Descripcion#Description
+Datos#Data
+Siguiente Código de Caja: #Next Id: 
+Caja de Trabajo Actual:#Current POS:
+Vincular a este Equipo#Link to this computer
+Datos de Empresa#Company Data
+Documento#Document
+Nombre (o razón social)#Company Name
+Dirección#Address
+Teléfono#Tf
+Tipo Documento#Document type
+Fax#Fax
+E-Mail#E-Mail
+LogoTipo (visible en tickets y Facturas)#Image / Logo
+Observaciones#Description
+JPG o BMP#JPG or BMP
+Código Postal#Zip Code
+Provincia o Estado#State
+Población / Ciudad#City
+ Ubicación # Ubicación 
+Cod. Postal#Zip Code
+Provincia#State
+Población#City
+Cambiar#Change
+Borrar Logo#Delete Image
+Formas de Pago#Payments
+Listado#List
+Forma de Pago#Payment
+traducir#traducir
+ Salir # Close 
+Empleados#Employees
+ Lista # List 
+Id Empleado#Employee Id
+Activo#Active
+Código :#Id :
+Foto#Image
+Nombre :#Name :
+Contraseña:#Password:
+Activo:               #Active:               
+Privilegios de Acceso#Access Privileges
+Privilegios en Terminal de Ventas#POS Privileges
+Permitir Abrir Cajon#Allow Open Cash Drawer
+Permitir Precios Manuales#Allow Manual Prices
+Permitir Borrar Lineas de Tiquet#Allow Delete Sale Lines
+Permitir Cancelar Tiquet#Allow Cancel Sales
+Permitir Modificar Tiquet que haya sido enviado a Cocina#Allow alter sale after sent to kitchen
+Permitir Descuentos#Allow Discounts
+Administrador de Cajas#Point of Sale Admin
+Punto de venta actual:#Current Point of Sale:
+LabelCajaTrabajo#LabelCajaTrabajo
+Imprimir Informe de Cierre#Print Report
+Imprimir Totales de Caja (Resumido)#Imprimir Totales de Caja (Resumido)
+No Imprimir Nada#Don't Print
+ Seleccione El Tipo de Operacion # Seleccione El Tipo de Operacion 
+Abrir Punto de Venta#Open POS
+Saldo Actual:#Balance:
+LabelSaldo#LabelSaldo
+Cerrar Punto de Venta#Close POS
+Ver Totales de Caja#View Report
+Atención, la caja se cerrara con el siguiente importe:#Pos will be close with this ammount:
+labelcambiofinal#labelcambiofinal
+¿Es correcto? ¿Desea continuar, extraer dinero o Cancelar?#Continue or withdraw money?
+Continuar#Continue
+Extraer Dinero#Withdraw Money
+Cancelar#Cancel
+Seleccione el punto de venta con el cual quiere operar:#Select Point of Sale:
+Estado:#Status:
+LabelEstado#LabelEstado
+Registro de Facturas#Invoices
+Busqueda#Search
+Hasta:#To:
+Desde:#From:
+ Ver solo Facturas de Cafeteria / Tienda# Ver solo Facturas de Cafeteria / Tienda
+Mostrar PreImpresión#Mostrar PreImpresión
+Imprimir Listado#Print Report
+Show#Show
+Guardar Cada Factura en 1 Fichero .PDF#Guardar Cada Factura en 1 Fichero .PDF
+Serie#Prefix
+Factura#Invoice
+Cliente Doc#Customer Doc
+Cliente Nombre#Customer Name
+Cliente Apellidos#Customer Last Name
+Pagada#Paid
+Totales#Totals
+Sub-Total:#Sub-Total:
+Impuestos:#Taxes:
+Origen:#Origen:
+Esta factura es de Tienda#Esta factura es de Tienda
+Serie:#Prefix:
+Facturar#Facturar
+Anular Factura#Void Invoice
+Marcar como Pagada#Set as Paid
+Marcar como Pendiente#Set as Pending
+Imprimir Factura#Print Invoice
+obs#obs
+Dto#Disc.
+Borrar#Delete
+Anular#Void
+Maestro de Clientes#Customers
+ Busqueda # Search 
+Documento:#Document:
+Población:#City:
+Apellidos:#Last Name:
+Empleado Asignado:#Employee Assigned:
+Telefono:#Tf:
+Cumpleaños:#Birth Date:
+/#/
+Cliente Seleccionado#Selected Customer
+Documento (*):#Document (*):
+Tipo Doc (*) :#Document type (*) :
+Tipo Cliente (*) :#Customer type (*) :
+Nombre (*) :#Name (*) :
+Dirección:#Address:
+País :#Country :
+Provincia:#State:
+C. Postal:#Zip Code:
+Teléfono 2:#Tf 2:
+Teléfono 1:#Tf 1:
+E-Mail 1:#E-Mail 1:
+E-Mail 2:#E-Mail 2:
+Observaciones:#Obs:
+(*) : Indica que estos campos son Requeridos#(*) : Required fields
+Fecha Nacimiento:#Birth date:
+Asignar Cliente a Factura#Assign to current Invoice
+Asignar Cliente a Presupuesto#Asignar Cliente a Presupuesto
+Asignar Cliente a Salida de Almacen#Asignar Cliente a Salida de Almacen
+Asignar Cliente a Reserva#Assign to current Booking
+Asignar Cliente a Venta#Assign to current Sale
+Como Llegar - Google Maps#Google Maps
+ Facturas # Invoices 
+Facturas de :  #Invoices :  
+ Tiquets # Tickets 
+Detalle de las lineas del tiquet seleccionado#Ticket Details
+Tiquets de :  #Tickets :  
+Movimientos de Caja#Cash Movements
+Punto de Venta:#Point of Sale:
+Apertura desde:#Opening from:
+Apertura hasta:#Opening to:
+Aperturas#Openings
+Movimientos#Movements
+Imprimir Informe#Print Report
+Caja#POS
+Apertura#Opening
+Hora#Time
+Importe Inicial#Opening balance
+Cierre#Closing
+Importe Final#Close balance
+Abierta?#Opened?
+Añadir Movimiento#Add Movement
+Operaciones de Caja#Cash Movements
+Movimiento:#Movement:
+Importe:#Amount:
+Modo de Pago:#Payment:
+Hora:#Time:
+Contabilizado:#Contabilizado:
+Fecha Conta:#Fecha Conta:
+Cta Contable:#Cta Contable:
+Tipo de movimiento#Movement Type
+Ingreso#Income
+Pago#WithDraw
+Maestro de Almacenes#Stores
+Id Almacen#Id
+ Datos # Data 
+Ubicación :#Ubicación :
+Almacén de Trabajo:#Linked Store:
+Stock Real    #Real Stock    
+Integrando Productos con Nuevo Almacen, espere . . .#Updating database . . .
+Vincular este Equipo a este Almacén#Link to this computer
+Maestro de Proveedores#Suppliers
+NIF:#Document:
+Resultado: (Doble Click para ir a ese Proveedor)#Results
+Razon Social:#Legal Name:
+Proveedor:#Supplier
+Id Proveedor:#Id:
+Nif:#Document:
+Poblacion:#City:
+E-Mail:#E-Mail:
+Pers. Contacto:#Contact Name:
+Web:#Web:
+FAX:#FAX:
+Movil:#Mobile:
+Teléfono:#Tf:
+Asignar Proveedor a Salida de Almacen#Assign to current product exit
+Entrada de Albaranes#Procut entry from Suppliers
+Fecha Hasta#Date From
+Fecha Desde#Date to
+Id Albaran#Id
+(Doble Click Para ir al Albaran)#Double click to go
+Fecha Albaran#Date
+Eliminar Albarán#Delete entry
+Nuevo Albarán#New Entry
+Modificar Albarán#Edit Entry
+Albarán#Delivery Note
+Base Imponible#Sub Total
+%DTO#%DTO
+%DTO PP#%DTO PP
+%Iva#%Tax
+Iva#Tax
+%Rec. Equiv#%Rec. Equiv
+Modificar Totales#Modificar Totales
+cantidad#quantity
+Almacen Destino#Destination Store
+Almacenado (S/N)#Executed
+Id. Albaran#Delivery note Id
+Insertar (Ins)#Insert
+Almacén Vinculado:#Store Linked:
+Finalizar Albarán #Execute Entry 
+Insertar Nuevo Producto#Insert new Product
+Eliminar Producto Seleccionado#Delete Product
+ Datos Albaran # Delivery Note 
+Buscar Proveedor#Search Supplier
+Insertar Producto en Albaran#Insert Product
+Filtrado X productos#Product filter
+Cod. Barras:#Barcode:
+Id Interno:#Aditional Id:
+Unidad#Unit
+Insertar#Insert
+ Detalles de la Linea:# Detalles de la Linea:
+% IVA#% IVA
+% DTO#% DTO
+Aceptar#Accept
+Importar Excel#Importar Excel
+ PEDIDOS PENDIENTES # PENDING SALES
+Actualizar#Update
+ Lista de Pedidos: # Lista de Pedidos: 
+ Lineas de Pedidos: # Lineas de Pedidos: 
+Importar Una#Importar Una
+Importar Todas#Importar Todas
+Maestro de Inventarios#Inventory
+Id Inventario:#Inventory Id:
+Fecha Inventario Desde: #Date From: 
+Almacén#Store
+Fecha Inventario Hasta: #Date to: 
+Registros Filtrados#Records
+Id Inventario#Inventory Id
+Fecha Inventario#Date
+Eliminar Inventario#Delete Inventory
+Nuevo Inventario#New Inventory
+Modificar Inventario#Edit Inventory
+ Datos de Inventario # Inventory Data 
+Id Interno#Aditional Id
+Cod Categoria#Category Id
+Fecha: #Date: 
+observaciones#Obs
+Imprimir Inventario#Print
+Consolidación Parcial#Partially Consolidate
+Consolidación Total#Consolidate All (alert)
+Comparar con Existencias#Compare with real stock
+ Insertar Producto a Inventario # Insert Producto 
+Doble Click o INTRO Para Insertar#Enter key to Insert
+Tipo Complemento:#Category:
+Cod Barras#Barcode
+Inserta Detalles de la Linea:#Line Details:
+Mantener este buscador abierto#keep this window opened
+Opciones al insertar nuevo producto #Options 
+ Insertar Cabecera Nuevo Inventario # Insert headline
+Traspaso Entre Almacenes#Product Transfers
+Buscador #Search 
+Id Traspaso#Transfer Id
+Almacén Proveedor#Origin Store
+Almacén Destino#Destination Store
+0 Registros Filtrados#
+Doble click para ver los Datos#
+Quitar Filtro#Remove Filter
+Datos del Traspaso#Transfer Data
+Seleccione el Almacén Proveedor#Select origin Store
+Seleccione el Almacén Destino#Select destination Store
+Productos a Traspasar#Products to transfer
+Tramitar Traspaso#Execute Transfer
+Imprimir Traspaso#Print Transfer
+Nuevo Traspaso#New Transfer
+ Insertar Cabecera Nuevo Traspaso # Insertar Headline 
+ Insertar Producto a Traspasar # Insert Product 
+Doble Click Para Insertar#
+Registro de Stock#Stock Report
+Informe de Existencias#Stock Report
+Almacen:#Wharehouse:
+Id Producto:#Product Id:
+Cod Barras:#Barcode:
+ Ordenar Por . . . # Order by . . . 
+Valoración económica del Stock (solo los registros filtrados)   #Economic values   
+Según Precio Medio de Compra:#by average sale price:
+Según Precio de Venta:#by sale price:
+Stock#Stock
+Precio Medio de Compra#Buy price average
+Precio Compra#Buy Price
+Precio Venta#Sale Price
+ACTUALIZANDO CARACTERISTICAS DEL STOCK A LA VERSION V2.51 O SUPERIORES#Updating Database
+ Productos en Stock Mínimo # Minimun Stock 
+Atención, si el stock minimo es 0. El producto no se tendra en cuenta en esta lista.#If minimum stock is 0 product will not be considered.
+ Stock en Tiempo Real  # Stock en Tiempo Real  
+Proceso Detenido#Proceso Detenido
+Iniciar#Iniciar
+Detener#Detener
+Comparativa de Inventario#Comparativa de Inventario
+ COMPARATIVA DE INVENTARIO # COMPARATIVA DE INVENTARIO 
+ Valoración de Inventario: # Valoración de Inventario: 
+Valoración en Precio Última Compra:#Valoración en Precio Última Compra:
+Valoración en Precio sin IVA:#Valoración en Precio sin IVA:
+Valoración en Precio Venta:#Valoración en Precio Venta:
+Label7#Label7
+Procesando . . . Espere, por favor#Updating...
+salones#salones
+Default Hall in this Point of Sale:#Default Hall in this Point of Sale:
+SET AS DEFAULT HALL IN THIS POS#SET AS DEFAULT HALL IN THIS POS
+Configurar Mapa de Mesas#Configure Hall Map
+Configuración de Comedor#Configure Hall Map
+Nueva Mesa#New Table
+Salon Siguiente#Next
+Salon Anterior#Prior
+Mesas#Tables
+Nº Mesa#Table Id
+Salon#Hall
+Número Mesa:#Table:
+Salon:#Hall:
+Imágen#Image
+Imágen Ocupada#Imágen Ocupada
+Esta Mesa es Barra        #This table is the default table        
+Tarifa Por Defecto#Default Rate
+Cocina#Kitchen
+Pedidos Pendientes:#Pending Sales:
+Detalle:#Detail:
+Marcar como Servido y Notificar al Emisor#Set as done and notify to POS
+Reservas#Bookings
+Planing#Planning
+Fecha Planing:#Planning Date:
+Configurar Horarios#Timetable Settings
+Nueva Reserva#New Booking
+Desde la Hora:#From Time:
+Hasta la Hora#To Time
+Salir y Guardar#Close and Save
+ Buscador # Search 
+Id Presupuesto#Id Presupuesto
+Observaciones de la reserva seleccionado#Observaciones de la reserva seleccionado
+Resultado Busqueda:#Resultado Busqueda:
+Id Reserva:#Id:
+Fecha inicio:#Start Date:
+Fecha fin:#End Date:
+Hora inicio:#Start Time:
+Hora fin:#End Time:
+Modificar Reserva#Edit Booking
+Eliminar Reserva#Delete Booking
+ Datos de la Reserva # Booking Data 
+Personas:#Customers:
+Fecha Reserva::#Date:
+   Cliente Titular de la Reserva#   Customer
+Seleccione desde la lista de clientes:#Select from customer database:
+O bien indique nombre y/o apellidos:#Or write customer name:
+Ir a la Ficha de Cliente#Go to customer data
+No Existe disponibilidad para la mesa seleccionada, pero puede elegir una de la siguiente lista#Table not avaiable, select from list
+Seleccionar y Guardar#Select and Save
+Opciones de Cocina#Cook options
+ Desplazamiento: # Desplazamiento: 
+Id Nota#Id Note
+Nota#Note
+Opción#Option
+Id Nota:#Id Note:
+Nota:#Note:
+ Tipo de nota # Note type
+Print on:#Print on:
+Insertar Nota de cocina#Add cook option
+Teclado#Keyboard
+TOTAL#TOTAL
+ENTREGADO#DELIVERED
+A DEVOLVER#TO RETURN
+NUEVO PRECIO#NEW PRICE
+CONTRASEÑA EMPLEADO#EMPLOYEE PASSWORD
+IMPORTE#AMOUNT
+NUM. HABITACION#ROOM NUMBER
+ACEPTAR#OK
+CANCELAR#CANCEL
+LabelModoPago#LabelModoPago
+MODO DE PAGO#PAYMENT
+Activación de licencia#License Key
+Introduzca a continuación la CLAVE de licencia que le ha sido proporcionada por su proveedor al comprar el producto.#Enter License Key
+Clave:#Key:
+Id. Instalacion:#Install Id:
+Label8#Label8
+Activar#Active
+Continuar Evaluación#Continue Evaluation
+Proveedor#Supplier
+Options #Options 
+Product#Product
+Price#Price
+Disc. %#Disc. %
+Qty.#Qty.
+Opt#Opt
+Note#Note
+PVP#Price
+Aplicar descuento:#Apply Discount:
+Código#Id
+Subtotal#Subtotal
+%IVA#%Tax
+IVA#Tax
+Camarero#Employee
+Venta#Sale
+Fecha Venta#Date
+Cerrada#Closed
+Tpv#Pos
+Aditional Id#Aditional Id
+Category#Category
+Sale Price#Sale Price
+Barcode#Barcode
+Aviso de Stock Mínimo#Minimum Stock
+Store#Store
+Category Id#Category Id
+Product Id#Product Id
+Quantity#Quantity
+Minimum Stock#Minimum Stock
+Average Price#Average Price
+Quantity to Print#Quantity to Print
+Name#Name
+Discount#Discount
+Date Start#Date Start
+Date End#Date End
+POS#POS
+Opening#Opening
+Time#Time
+Opening balance#Opening balance
+Closing#Closing
+Close balance#Close balance
+Opened?#Opened?
+Tipo#Type
+Descripción#Description
+Importe#Amount
+Saldo#Balance
+Modo#Payment
+Order#Order
+Direccion#Address
+Poblacion#City
+CP#ZC
+Id Factura#Invoice Id
+Fecha Factura#Invoice Date
+Cuota Impuestos#Taxes
+Linea#Line
+IVA (%)#Tax (%)
+Id Tiquet#Ticket Id
+Prefix#Prefix
+Invoice#Invoice
+Date#Date
+Customer Doc#Customer Doc
+Customer Name#Customer Name
+Customer Last Name#Customer Last Name
+Paid#Paid
+Disc.#Disc.
+Tax#Tax
+Document#Document
+Tf#Tf
+Sales#Sales
+Employee#Employee
+Tax Amount#Tax Amount
+Table#Table
+Table Id#Table Id
+Hall#Hall
+Rate#Rate
+Id Reserva#Id
+Fecha inicio#Start Date
+Fecha fin#End Date
+Hora inicio#Start Time
+Hora fin#End Time
+Personas#Pax
+Cliente#Customer
+Id Note#Id Note
+Opcion#Option
+ Order by . . . # Order by . . . 
+Buy price average#Buy price average
+Buy Price#Buy Price
+Stock Minimo#Minimum stock
+Employee Id#Employee Id
+Active#Active
+Last Name#Last Name
+18#18
+Inventory Id#Inventory Id
+Supplier#Supplier
+quantity#quantity
+Destination Store#Destination Store
+Executed#Executed
+Unit#Unit
+Id Pedido#Id Pedido
+Id Proveedor#Id Proveedor
+Fecha Pedido#Fecha Pedido
+Importado#Importado
+Id Producto#Id Producto
+12#12
+()#()
+20#20
+Selección de Imágen#Selección de Imágen
+ Original: # Original: 
+ Resultado: # Resultado: 
+0x0#0x0
+62x74#62x74
+100%#100%
+LabelAux#LabelAux
+exportar imagenes#exportar imagenes
+Gestion de Errores#Error Messages
+ Error # Error 
+Se ha producido un error en la aplicacion con la siguiente descripcion:#Se ha producido un error en la aplicacion con la siguiente descripcion:
+Enviar#Send
+Mostrar el Mapa del Salón al Iniciar una Nueva Venta#Show Hall Map When Start New Sale
+Cambiar Tamaño y Fuente de Letra#Change Font Name and Size
+Prefijo:#Prefix:
+Obs :#Obs :
+Add#Add
+LabelDni#LabelDni
+LabelNombre#LabelNombre
+LabelApellidos#LabelApellidos
+Buscar Cliente#Search Customer
+Detalle#Detail
+Pendientes#Pending
+Añadidos#Added
+Qty#Qty
+Vista Previa#Preview
+Finalizar#Finish
+Seleccionar Ticket#Select Ticket
+Ticket Id:#Ticket Id:
+Esta factura es de Hotel#Esta factura es de Hotel
+Combinar Con ...#Combinar Con ...
+LabelProducto#LabelProducto
+No Combinar#No Combinar
+19#19
+SubTotal:#SubTotal:
+% Impuesto#% Impuesto
+Añadir Seleccionado#Add Selected
+ Detalles de:# Detail:
+Almacén de destino:#Destination Store:
+sysme#sysme
+Del#Del
+Dto%#Dto%
+Más Opc.#Más Opc.
+Finalizar como Invitación#Finish as Invitation
+Finalizar como Rotura#Finish as Break
+Finalizar como Auto Consumo#Finish as Self Consumption
+Finalizar como Otros Conceptos#Finish as Other
+Preguntar cantidad (defecto 1)#Ask for Quantity (default 1)
+Avisos#Avisos
+Productos:#Products:
+%Imp.#%Tax.
+Precio Coste#Cost Price
+Editar#Edit
+Delete#Delete
+Imprimir Cod.Barras#Imprimir Cod.Barras
+Se actualizará con las compras a proveedores.# .
+Cargar Imagen#Load Image
+Save#Save
+Según Precio de Compra:#Según Precio de Compra:
+Informe de#Informe de
+Coste#Cost
+Por Días#By Days
+Símbolo de Moneda:#Símbolo de Moneda:
+Sin Mesa Asignada:#Sin Mesa Asignada:
+COPIAS DE SEGURIDAD#BACKUPS
+Todas#All
+Pagadas#Paid
+Pendientes#Pending
+Sales Total#Sales Total
+Uso Ilimitado#Unlimited usage
+Uso Unico#Unique usage
+Usada#Used
+Loading.#Loading.
+Roturas#Broken products
+Invitaciones#Invitations
+Auto Consumo#Self consumtions
+Otros Conceptos#Other concepts
+Por Pagos#By Payments
+WithDraw#WithDraw
+Papel (impresora)#Papel (impresora)
+Fichero PDF#PDF File
+Terminal Táctil / Touch Tab#Terminal Táctil / Touch Tab
+Código de Barras / Barcode Tab#Código de Barras / Barcode Tab
+Español#Español
+English#English
+Dutch#Dutch
+TIPOS DE CLIENTE#CUSTOMER CATEGORIES
+TIPOS DE DOCUMENTO#DOCUMENT CATEGORIES
+PEDIDOS A PROVEEDORES#PEDIDOS A PROVEEDORES
+FACTURAS DE PROVEEDORES#INVOICES FROM SUPPLIERS
+ACTIVACION DE LICENCIA#LICENSE KEY
+Balanza#Scale
+Mostrar Pre-Impresión antes de Imprimir orden de Cocina#Show print options before send order to kitchen
+Orden de Creación#Creation Order
+Orden Alfabetico (A-Z)#(A-Z) Order
+Campo de Orden#Order Field Value
+Orden de categorías en terminal táctil: #Categories sort order: 
+Orden de productos en terminal táctil: #Products sort order: 
+Ajustar imágenes a sus botones#Stretch Images to Buttons
+Orden de cocina#Kitchen Order
+Doble Click para Seleccionar#Doble Click para Seleccionar
+Seleccione Empleado#Select Employee
+Orden de aparición:#Sort order:
+Categoría padre:#Parent category:
+Todos los programas#Todos los programas
+Solo en .Bar#Solo en .Bar
+Solo en .Shop#Solo en .Shop
+En ninguno #En ninguno 
+Desvincular#Unlink
+Asignar a producto#Asignar a producto
+Puerto:#Port:
+Puerto de comunicaciones con la base de datos.#Network Port.
+Usuario:#User:
+Usuario y contraseña de acceso a la base de datos.#Database user and password.
+Passwd:#Passwd:
+Probar Conexión#Test connection
+Habilitar módulo de hostelería#Enable hospitality module
+
+Solicitar número de comensales al iniciar una nueva venta (solo con mapa de salón activo) #Request guests number on new sale (only with hall map enabled) 
+Configuración Regional#Currency and Taxes
+Antes del valor: $100.50#Before value: $100.50
+Después del valor: 100.50$#After value: 100.50$
+Posición del símbolo de moneda#Currency simbol position
+Configuración del cajón portamonedas#Cash drawer settings
+Configure en este apartado los parámetros para la apertura automática del cajón portamonedas#Configure here the params to open the cash drawer
+Sysme Tpv puede realizar esta operación de 2 formas, cuya selección y rendimiento dependerá del modelo de su impresora:#Use mode 1 for LPT and Serial printers, use mode 2 for USB printers:
+1 - Comunicación a través del puerto de comunicaciones#1 - Direct comunication with printer port
+Sysme Tpv enviará la secuencia de apertura al puerto de comunicaciones al cual esté conectada la impresora de tickets.#Sysme Pos will send the open command directly to the printer port.
+2 - Comunicacion directa con la impresora de Tickets#2 - Direct comunication with printer driver
+Sysme Tpv enviara la secuencia de apertura de forma directa a la impresora, de forma independiente al puerto al que esté conectada.#Sysme Pos will send the open comand to printer driver.
+Ejemplo:#Sample:
+Activar el modo 1 de apertura#Enable mode 1
+Activar el modo 2 de apertura#Enable mode 2
+2ª Pantalla o Monitor (frente al cliente)#Second screen
+Sysme Tpv le permite mostrar a sus clientes la información del ticket en curso en un segundo monitor.#Sysme pos allows show current sale details to your customers on a second screen.
+Habilitar segundo monitor (solo en terminal de ventas)#Enable second screen
+Balanzas#Scales
+Datos recibidos de la balanza:#Data received from the scale:
+Balanza automática conectada al equipo#Automatic scale
+De los datos recibidos por la balanza, indique la posición en la que se encuentra el valor del peso.#From the scale received data, set the position of the integer value.
+Posición de incio de peso (enteros):#Start position (integer):
+Posición de fin de peso (enteros):#End position (integer):
+Posición de incio de peso (decimales):#Start position (decimals):
+Posición de fin de peso (decimales):#End position (decimals):
+Balanza con Impresora#Scale with printer
+Son balanzas en las cuales se preconfiguran los productos e imprimen un ticket con código de barras que incluye el código del producto y el peso, el código de cada producto en la balanza debe coincidir con el código del producto en Sysme Tpv# 
+Posición de inicio del código de producto:#Product Id start position:
+Habilitar Balanza Automática#Enagble automatic scale
+Probar Balanza#Test Scale
+Modo Comando#Command mode
+Lector de Proximidad#Proximity Reader
+Sysme Tpv puede identificar al empleado mediante lectores de proximidad, configure en este apartado los parámetros de conexión al dispositivo#Sysme Pos can identify the employee by proximity readers, configure in this section the connection parameters to the device
+Datos recibidos del lector:#Received data:
+Una vez habilitado el lector, deberá asignar cada transponder a cada empleado en el menú de empleados#Once enabled the reader, you must assign each transponder to each employee in the Employees menu
+Habilitar Lector#Enable Reader
+Probar Lector#Test Reader
+Configuración del servidor de correo saliente (SMTP)#Mail server settings (SMTP)
+Dirección del servidor SMTP#SMTP server address
+Puerto de comunicaciones, normalmente el 25.#Network port, usually 25.
+Usuario y contraseña de acceso.#User and Password.
+Probar el servicio de email#Test email service
+Puede probar la configuración del servidor enviando un mensaje de prueba:#You can test the server settings sending a test message:
+Enviar mensaje de prueba a:#Send test message to:
+Email:#Email:
+Sysme Tpv enviará los mensajes desde esta dirección.#Sysme Pos will send messages from this email.
+Envío de facturas por email#Send invoices by email
+Con Sysme Tpv puede enviar las facturas a los clientes por email, configure en este apartado los campos de "asunto" y "cuerpo" del mensaje.#With Sysme Pos you can send invoices to customers by email, set in this section the values for "subject" and "body" of the message.
+Asunto:#Subject:
+Mensaje:#Message:
+Permitir Cancelar Ticket#Allow ticket cancel
+Permitir Modificar Ticket que haya sido enviado a Cocina#Allow modify sale once is sent to kitchen
+Permitir modificar un Ticket tras haber sido pre-impreso#Allow modify sale once pre-ticket is printed
+Permitir finalizar una venta como Rotura#Allow finish a sale as broken products
+Permitir finalizar una venta como Invitación#Allow finish a sale as invitation
+Permitir finalizar una venta como Auto-Consumo#Allow finish a sale as self consumption
+Permitir finalizar una venta como Otros Conceptos#Allow finish a sale as other concepts
+Permitir dividir una venta en 2 Tickets#Allow divide sales
+Permitir eliminar impuestos de un Ticket#Allow remove taxes from a sale
+Permitir dejar pendiente Tickets#Allow leave pending sales
+Permitir el cambio de Tarifa#Allow change rates
+Permitir recuperar ventas pendientes#Allow recover pending sales
+Permitir anular Tickets#Allow cancel sales
+Permitir anular Facturas#Allow cancel invoices
+Acceso a la pestaña de Confirguración#Allow acces to settings tab
+Imprimir Planning#Print Planning
+Copia de Seguridad#Backup
+labelruta#labelruta
+Guardar copias en el siguiente directorio:#Save backup files on this folder:
+Comenzar Copia de Seguridad#Start backup
+Localización#Location
+Restaurar#Restore
+Open#Open
+Nueva Copia de Seguridad#New backup
+Cambiar directorio de copias#Change backup folder
+Tipos de Cliente#Customer categories
+Type#Type
+Tipos de Documento#Document categories
+Document type#Document type
+Email#Email
+Email2#Email2
+Telefono2#Telefono2
+Address#Address
+City#City
+Zip Code#Zip Code
+Enviar Emails#Mailing
+Actualizando . . . #Actualizando . . . 
+Asunto#Subject
+Configuración del servidor de correo#Mail server settings
+Mensaje#Message
+Servidor SMTP:#SMTP server:
+Envío de Correo electrónico#Mailing
+Sin archivo adjunto#No atachment
+Texto Enriquecico (HTML)#Rich HTML text
+ Enviar# Send
+Adjuntar Archivo#Atach file
+Borrar adjunto#Delete file
+Asignar Cliente a Ticket#Asign customer
+frmcancelarventa#frmcancelarventa
+¿Cancelar Venta?#¿Cancel Sale?
+SI#YES
+NO#NO
+15/03/2013 - 9:47:37#15/03/2013 - 9:47:37
+Mostrar Movimientos#Show movements
+Ahora puede cerrar el punto de venta manteniendo el saldo para la siguiente apertura o bien extraer el saldo.#Ahora puede cerrar el punto de venta manteniendo el saldo para la siguiente apertura o bien extraer el saldo.
+Extraer Saldo#Extraer Saldo
+Pos#Pos
+Balance#Balance
+T#T
+Amount#Amount
+Payment#Payment
+Buscador de Movimientos#Movement Search
+Exportar a Exel#Exportar a Exel
+Exportar a Excel#Excel Export
+Identificador#Id
+Modo de Pago#Payment
+Tickets#Tickets
+Todos#All
+Positivos#>0
+Negativos#<0
+Forma Pago#Payment
+Factura Asociada:#Linked Invoice:
+Ver o Cambiar Cliente#Show
+% Desc.#% Desc.
+% Imp.#% Tax.
+Line#Line
+Exportar Imágenes#Image export
+Número de etiquetas por cada producto:#Number of labels for each product:
+Generar Etiquetas#Make Labels
+Imprimir Etiquetas#Print Labels
+Reiniciar la Lista de Etiquetas#Restart labels
+Impresora de cocina#Kitchen Printer
+Visible en Ordenes a Cocína#Visible in kitchen orders
+Total ventas:#Total sales:
+Tickets relacionados:#Related Tickets:
+Facturas#Invoices
+facturas relacionadas:#Linked Invoices:
+Existencias#Stock
+Albaranes#Delivery Notes
+Cant.#Qty.
+Sub#Sub
+Imp.#Imp.
+Proveedores#Suppliers
+Disponibles:#Available:
+Asignados:#Asigned:
+Asignar#Asign
+En este apartado puede definir en que otras categorías (a parte de la principal) se mostrará el producto en el terminal de ventas táctil#Add more categories
+Categorías disponibles:#Available categories:
+Categorías seleccionadas:#Selected categories:
+Seleccionar#Select
+Añadir automáticamente una unidad por cada comensal (solo con mapa de salón)#Auto add one unit for each customer on table
+Permitir cambios de precio manual en el Terminal de Ventas#Allow price changes on sale
+Solicitar opciones de cocina al añadir en una venta#Request kitchen options on sale
+Selecccionar#Select
+Ventas Canceladas#Cancelled Sales
+Punto de Venta#Point of Sale
+Importe Total#Total
+Grupo#Group
+Por Años#Por Year
+Por Meses#By Month
+Totals#Totals
+Agrupación:#Group:
+Tipo de descuento#Discount
+Id Albaran:#Id:
+Que contenga el producto:#Include product:
+Indiferente#I don't care
+Si#Yes
+No#No
+Con factura relacionada#With Linked Invoice
+Sub Total#Sub Total
+Id. Albaran:#Id.:
+Añadir productos:#Add Products:
+Registro de Productos#Product Database
+Vincular a Factura#Link to Invoice
+ Detalle de:# Detail:
+Inventarios#Inventory
+Anterior#Prior
+Transfer Id#Transfer Id
+Origin Store#Origin Store
+Id Traspaso:#Id:
+Almacén Proveedor:#Origin Store:
+Almacén Destino:#Destination Store:
+Eliminar Traspaso#Delete Transfer
+Stock en Origen#Origin Stock
+Stock en Destino#Destination Stock
+Cantidad a Traspasar:#Quantity:
+eliminar producto#delete product
+tramitar#tramitar
+Kitchen Order#Kitchen Order
+NUM.COMENSALES#NUM.COMENSALES
+ORDEN DE COCINA#ORDEN DE COCINA
+Añadir otro Ticket#Añadir otro Ticket
+Prior#Prior
+Filtros de búsqueda:#Filtros de búsqueda:
+Cancelled Sales#Cancelled Sales
+Informe Z#Z Report
+Group#Group
+Por Year#By Year
+By Month#By Month
+Group:#Group:
+Informe Z:#Z Report:
+Incluir facturas?#Include Invoices?
+Desde el último informe Z#From last Z report
+Con los filtros seleccionados#With search results
+Tipo de informe#Report options
+Impresión correcta?#Correct print?
+Asign#Asign
+Opciones Hostelería#Hospitality Options
+Facturas de Proveedores#Invoices from Suppliers
+Resultados:#Results:
+Exportar Ficheros Originales#Export original files
+Con Albarán#With delivery note
+Retenciones#Retention
+Recargo#Surcharge
+Fecha Pago#Payment date
+Fichero#File
+Retenciones:#Retention:
+Recargos:#Surcharge:
+Fecha de Pago:#Payment date:
+Ir a Proveedores#View Suppliers
+Albaranes Relacionados:#Related delivery notes:
+Cargar Imagen Personalizada#Load Image
+Borrar Imagen Personlizada#Delete Image
+Origin Stock#Origin Stock
+Destination Stock#Destination Stock
+29/04/2013 - 15:22:46#29/04/2013 - 15:22:46
+29/04/2013 - 15:32:39#29/04/2013 - 15:32:39
+29/04/2013 - 16:18:56#29/04/2013 - 16:18:56
+All#All
+>0#>0
+<0#<0
+% Tax.#% Tax.
+30/04/2013 - 22:58:54#30/04/2013 - 22:58:54
+Asignar a Albarán#Asignar a Albarán
+With Linked Invoice#With Linked Invoice
+03/05/2013 - 11:04:18#03/05/2013 - 11:04:18
+Filtros:#Search:
+Report options#Report options
+Broken products#Broken products
+Invitations#Invitations
+Self consumtions#Self consumtions
+Other concepts#Other concepts
+By Days#By Days
+Cost#Cost
+03/05/2013 - 12:36:01#03/05/2013 - 12:36:01
+cliente#customer
+Rec#Rec
+Sale#Sale
+Solicitar contraseña al cambiar de empleado en el terminal de ventas#Request employee password on change employee in sales screen.
+27;112;0;100;250;#27;112;0;100;250;
+027\112\000\100\250\#027\112\000\100\250\
+Categories sort order: #Categories sort order: 
+Products sort order: #Products sort order: 
+Exportar Facturas a ficheros PDF#Export to PDF files
+Enviar Facturas al Email de los Clientes#Send to customer's emails
+Cliente.Doc#Customer.Doc
+         #         
+base1#base1
+tipo1#tipo1
+impuesto1#impuesto1
+base2#base2
+tipo2#tipo2
+impuesto2#impuesto2
+base3#base3
+tipo3#tipo3
+impuesto3#impuesto3
+ Ver solo de Cafeteria# Ver solo de Cafeteria
+guardar en pdf#save pdf file
+enviar por email#send by email
+Ver Cliente#Show data
+Enviar Factura al Email del Cliente#Send to customer email
+Customer.Doc#Customer.Doc
+Customer#Customer
+Cost Price#Cost Price
+Composición de producto#Product composition
+LabelTipo#LabelTipo
+LabelTipoID#LabelTipoID
+LabelProductoID#LabelProductoID
+Buscar:#Search:
+Codigo de Barras#Barcode
+Resultado#Result
+Cantidad a Añadir#Quantity to add
+Limitar una sola combinación por producto en la misma venta#Limit to one combination on same sale
+1 - Uno a Uno#1 - One to One
+2 - Multiple sin recargo de precio#2 - Multiple with 0 price
+3 - Multiple con recargo de precio#3 - Multiple with extra price
+Tipo de combinación#Combination type
+Combinar con:#Combine with:
+Precio del Combinado#Price
+Cantidades#Quantity
+Visible en ordenes a Cocina#Show in kitchen orders
+Edit#Edit
+Minimum stock#Minimum stock
+customer#customer
+Libre:#Free:
+Ocupada:#Busy:
+Impreso:#Printed:
+Siguiente#Next
+Marcar Todo como Servido#Set as served
+Comida#Food
+Bebida#Drinks
+Location#Location
+Restore#Restore
+With delivery note#With delivery note
+Payment date#Payment date
+File#File
+Retention#Retention
+Surcharge#Surcharge
+Terminado / Salir#Terminado / Salir
+CANTIDAD#CANTIDAD
+Tipo:#Type:
+Cobro#Income
+MOBILE#MOBILE
+BITCOIN#BITCOIN
+Bitcoin#Bitcoin
+Configuración del Servicio Bitcoin#Bitcoin Service Settings
+Moneda:#Currency:
+Servidor BTC:#BTC Server:
+La moneda en la cual están definidos los precios de tus productos#Currency used in your product prices database
+Dirección Ip del equipo que ejecuta tu monedero Bitcoin en modo Servidor#Ip address of the computer running your Bitcoin wallet in Server Mode
+Puerto de comunicaciones#Network Port
+Habilitar Bitcoin#Enable Bitcoin
+Cobro Bitcoin#Bitcoin Charge
+Recibido:#Receibed:
+Confirmaciones:#Confirmations:
+Comprobar Pago#Check payment
+Importar desde CSV#CSV Import
++ Opc.#+ Opc.
+Conf.#Conf.
+CSV#CSV
+Vincular campos#Fields assign
+Abrir otro Fichero#Open new file
+Importar#Import
+Importar productos desde fichero .csv#Import products from .csv file
+Fichero:#File:
+Valores separados por:#Field separator:
+Primera linea contiene nombres de campos:#First line contains field names:
+Valores de texto entrecomillados: "valor"#Quoted text values: "value"
+Abrir Fichero#Open File
+Registros actualizados:#Updated records:
+Errores:#Errors:
+Importando datos#Importing
+Log:#Log:
+Ok#Ok
+FABRICANTES#MANUFACTURERS
+OPENCART#OPENCART
+URL Amigable:#Friendly URL:
+Descripción HTML:#HTML Description:
+Alias:#Alias:
+Fabricante#Manufacturer
+Margen#Prof.Avg
+Beneficio#Profit
+Datos Basicos#Basic Data
+Margen:#Prof.Avg:
+Beneficio:#Profit:
+Talla:#Size:
+Fabricante:#Manufacturer:
+Sincronizar con Web Opencart#Upload to Opencart Online Shop
+Opencart#Opencart
+Imagenes#Images
+Añadir Imagen#Add Image
+Hostelería#Hospitality
+Facturas relacionadas:#Related Invoices:
+Tallas#Sizes
+Colores#Colors
+Fabricantes#Manufacturers
+Configuración de conexión con Opencart#Opencart connection settings
+Servidor FTP:#FTP Server:
+Usuario FTP:#FTP User:
+Contraseña FTP:#FTP Password:
+Ruta Opencart:#Opencart Path:
+Puerto FTP:#FTP Port:
+Clave Privada:#Private Key:
+Url Tienda:#Shop Url:
+http://#http://
+Habilitar Opencart#Enable Opencart
+Instalar Modulo#Install Module
+Prof.Avg#%Prof.
+Profit#Profit
+%Tax.#%Tax.
+Acciones#Actions
+Acciones en Bloque #Bulk Actions
+Acciones a realizar para todos los resultados de la búsqueda#Actions for all search results
+Modificar Precios#Modify Prices
+Incremento o decremento de precios, en importe o en porcentaje#Price Increase or decrease in amount or percentage
+Sobre precio antes de impuestos#From price before taxes
+Sobre precio impuestos incluidos#From price taxes included
+Campo clave:#Key field:
+Añadir productos cuando no se encuentre el campo clave:#Add products when key field is not found:
+(*) Campos Requeridos#(*) Required fields
+Desvincular de Tarifa#Unlink
+Precio con impuestos incluidos#Price tax included
+Telefono2:#Phone 2:
+Modo Pago:#Payment
+Filtros: #Filter: 
+Facturar todas#Invoice All
+From price before taxes#From price before taxes
+From price taxes included#From price taxes included
+Vincular#Link
+Log#Log
+producto#Product
+Pagos:#Payments:
+Por Clientes#By Customers
+Origen#Origin
+SubTotal Coste#SubTotal Cost
+Pantalla completa#Full Screen
+Tipo: #type: 
+Los valores de este informe podrían no coincidir con otros puesto que aquí se muestran importes en relación fechas y horas de pago, no de venta.#The values ??in this report may not match with other amounts as shown here dates and times of payment relationship, not sales.
+Este informe solo contempla los filtros de fecha y hora, el resto serán omitidos.#This report only provides the date and time filters, the rest will be omitted.
+Por Lugares#By Places
+Por País#By Country
+Por Provincia#By State
+Por Población#By City
+Por Fabricantes#By Manufacturer
+total#total
+Manufacturer#Manufacturer
+Visible en Ventas#Visible in Sales
+Contable en Stock#Posted in Stock
+Imprimir Lista#Print List
+Imprimir 1 a 1#Print 1 to 1
+Añadir Pago Parcial#Add Payment
+Pagar Total Pendiente#Pay Total Pending
+labelimporte#labelimporte
+Entregado#Paid
+Pendiente#Pending
+Añadir Pago#Add Payment
+type: #type: 
+SubTotal Cost#SubTotal Cost
+By Country#By Country
+By State#By State
+By City#By City
+Nuevo Informe#New Report
+Cerrar#Close
+Guardar y cerrar informe?#Save and Close Report?
+Una vez guardado y cerrado no se podrá modificar.#Once saved you can not modify it.
+Alias#Alias
+Type:#Type:
+Esperando pago en CashTPV#Esperando pago en CashTPV
+Cancelar Cobro#Cancel Payment
+Sí#Yes
+Visible in Sales#Visible in Sales
+Posted in Stock#Posted in Stock
+Panel de cocina#Kitchen Panel
+% Imp2#% Imp2
+Categorías#Categories
+Mostrar:#Show:
+Días#Days
+Pagos#Payments
+Clientes#Customers
+Lugares#Origin
+Cupones#Coupons
+Cupón#Cupón
+Modo Pago#Modo Pago
+importe#importe
+Cobros#Cobros
+ETIQUETADO#ETIQUETADO
+MANTENIMIENTO#MANTENIMIENTO
+0000000000#0000000000
+----#----
+F9#F9
+F1#F1
+F2#F2
+$#$
+F3#F3
+Pending#Pending
+Informe Z Numerado#Informe Z Numerado
+Comensales#Comensales
+Rotación#Rotación
+Precio medio venta#Precio medio venta
+Compras#Compras
+Precio medio compra#Precio medio compra
+Suppliers#Suppliers
+Número de etiquetas = cantidad en stock#Número de etiquetas = cantidad en stock
+Visible en Opencart#Visible en Opencart
+Visible en Cocina#Visible en Cocina
+Unidad Medida:#Unidad Medida:
+Peso:#Peso:
+Precio Recom.:#Precio Recom.:
+% Impuesto 2:#% Impuesto 2:
+...#...
+Tarifas Especiales#Tarifas Especiales
+Precio Final#Precio Final
+Impuestos incluidos?#Impuestos incluidos?
+Colores y Tallas#Colores y Tallas
+Cód.Barras#Cód.Barras
+Size#Size
+Añadir registro#Añadir registro
+Lotes y Fechas#Lotes y Fechas
+Lote#Lote
+Fecha Caducidad#Fecha Caducidad
+Num. Lote:#Num. Lote:
+Nuevo Registro:#Nuevo Registro:
+Fec. Caducidad:#Fec. Caducidad:
+Sincronizar HTML#Sincronizar HTML
+Opciones de cocina: (por defecto se muestran todas)#Opciones de cocina: (por defecto se muestran todas)
+Enviar copia a:#Enviar copia a:
+Orden de cocina:#Orden de cocina:
+Option#Option
+Variación#Variación
+% de impuesto 2 por defecto:#% de impuesto 2 por defecto:
+Definición del Impuesto 2:#Definición del Impuesto 2:
+Precio - Coste#Precio - Coste
+PVP - Coste#PVP - Coste
+Calculo de beneficios y margen#Calculo de beneficios y margen
+Antes de introducir el importe#Antes de introducir el importe
+Después de introducir el importe#Después de introducir el importe
+Abrir el cajón: #Abrir el cajón: 
+Automática#Automática
+Autonoma#Autonoma
+Longitud del código:#Longitud del código:
+Hydra#Hydra
+Balanza basada en software Hydra#Balanza basada en software Hydra
+Son balanzas autonomas que son capaces de almacenar ventas y generar tickets, disponen de un software llamado Hydra el cual, instalado en el equipo, puede obtener el contenido de una venta. Configure a continuación los datos de acceso al fichero de datos del programa Hydra, de forma que Sysme Tpv pueda obtener el contenido de la venta mediante la lectura del código de barras generado en el ticket de la balanza.#Son balanzas autonomas que son capaces de almacenar ventas y generar tickets, disponen de un software llamado Hydra el cual, instalado en el equipo, puede obtener el contenido de una venta. Configure a continuación los datos de acceso al fichero de datos del programa Hydra, de forma que Sysme Tpv pueda obtener el contenido de la venta mediante la lectura del código de barras generado en el ticket de la balanza.
+Fichero de datos:#Fichero de datos:
+Seleccionar Fichero#Seleccionar Fichero
+Comprobar Fichero#Comprobar Fichero
+Habilitar Balanza Hydra#Habilitar Balanza Hydra
+Lector de Códigos#Lector de Códigos
+Lector de códigos de barras#Lector de códigos de barras
+La gran mayoría de lectores de códigos de barras actuales no precisan de esta configuración puesto que incorporan sistemas de emulación de teclado, utilice este apartado únicamente si su lector no dispone de esta opción.#La gran mayoría de lectores de códigos de barras actuales no precisan de esta configuración puesto que incorporan sistemas de emulación de teclado, utilice este apartado únicamente si su lector no dispone de esta opción.
+IMPRESORAS DE COCINA#IMPRESORAS DE COCINA
+F12#F12
+Color de Tabla de Productos#Color de Tabla de Productos
+Forma de pago:#Forma de pago:
+Editar Notas#Editar Notas
+Exportar Imagen#Exportar Imagen
+Refresco automático#Refresco automático
+Dividir Venta#Dividir Venta
+Yes#Yes
+Con cliente asignado#Con cliente asignado
+% Impuesto 2#% Impuesto 2
+Solo productos vinculados al proveedor#Solo productos vinculados al proveedor
+Precio de venta:#Precio de venta:
+Guarda nuevos precios de compra y venta en el producto#Guarda nuevos precios de compra y venta en el producto
+Aplicar Impuesto 2#Aplicar Impuesto 2
+Precio sin impuestos#Precio sin impuestos
+Precio con impuestos#Precio con impuestos
+Que valor quieres almacenar en el precio de compra?#Que valor quieres almacenar en el precio de compra?
+02/08/2017 - 11:53:03#02/08/2017 - 11:53:03
+02/08/2017 - 11:54:12#02/08/2017 - 11:54:12
+Tipo Cliente:#Tipo Cliente:
+Nacimiento (Mes/Día):#Nacimiento (Mes/Día):
+Aplicar filtro de nacimiento#Aplicar filtro de nacimiento
+Sujeto a Impuesto 2#Sujeto a Impuesto 2
+Mostrar/Ocultar Teclado Táctil#Mostrar/Ocultar Teclado Táctil
+Obtener datos de lector Gesvi#Obtener datos de lector Gesvi
+DNI#DNI
+Pasaporte#Passport
+Tipo de documento#Kind of doc
+%Dto#%Dt
+%Impuesto#%Tax
+%Impuesto2#%Tax2
+PVP STD#PVP STD
+PVP TRF#PVP TRF
+Edtar#Edtar
+Mostrar solo los productos con precio modificado#Only show items with price modified
+Restaurar precio de venta:#Restore sale price:
+Texto Opción Color y Talla:#Option text for colors and sizes:
+Tarifa para Ofertas:#Rate for specials:
+Tiendas#Stores
+1.5.x#1.5.x
+2.0.x#2.0.x
+Versión de Opencart#Opencart version
+Sincronizar tallas#Sincronize sizes
+Variacion#Variation
+0.00#0.00
+Impuesto incluido:#Tax Included:
+Valorar#Rate
+Mostrar #Show 
+Fechas de Caducidad#Dates of Expiry
+Caducados#Expired
+No Caducados#Not expired
+Vincular a este equipo#Link to this computer
+Reiniciar turno cada:#Restart number each:
+Número#Number
+Fecha/Hora#Date/Time
+Ordenar Por: #Order by: 
+Este panel#This panel
+Mostrar: #Show: 
+Activa#Active
+Predeterminada#Default
+Mostrar empleados inactivos#Show inactive employees
+Permitir eliminar lineas de Venta#Allow delete items from sales
+Permitir finalizar ventas#Allow finish sales
+Permitir imprimir ticket sin finalizar#Allow print a pre-sale ticket
+Permitir recuperar ventas de otros empleados#Allow recover sales from other employee
+Otros Privilegios#Other privileges
+Ver precios de compra en ficha y lista de productos#Can view cost prices in product files
+Ver y/o imprimir el informe de cierre de caja#Can view or print pos report

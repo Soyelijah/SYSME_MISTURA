@@ -1,0 +1,4 @@
+sysmeserver/data/*.err
+sysmeserver/data/*.log
+*.err
+*.log

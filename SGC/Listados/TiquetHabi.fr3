@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.0.11" DotMatrixReport="False" EngineOptions.MaxMemSize="10000000" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="2047" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="37989,8660770833" ReportOptions.Description.Text="" ReportOptions.LastChange="41330,5520252778" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end." PropData="044C65667403820203546F70025D08446174617365747301010C2C00000020446174615365743D22446574616C6C6531782220446174615365744E616D653D22446574616C6C6531782200010C2C00000020446174615365743D22446574616C6C6532782220446174615365744E616D653D22446574616C6C6532782200010C2C00000020446174615365743D224D61657374726F31782220446174615365744E616D653D224D61657374726F31782200010C2C00000020446174615365743D224D61657374726F32782220446174615365744E616D653D224D61657374726F3278220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="79,9" PaperHeight="296,9" PaperSize="258" LeftMargin="5" RightMargin="0" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxMasterData Name="MasterData1" Height="166,29932" Left="0" Top="18,89765" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Maestro1x" DataSetName="Maestro1x" RowCount="0">
+      <TfrxMemoView Name="Memo1" Left="83,14966" Top="60,47248" Width="79,37013" Height="18,89765" DataField="id_venta" DataSet="Maestro1x" DataSetName="Maestro1x" Text="[Maestro1x.&#34;id_venta&#34;]"/>
+      <TfrxMemoView Name="Memo2" Left="7,55906" Top="60,47248" Width="52,91342" Height="18,89765" Text="Venta:"/>
+      <TfrxMemoView Name="Memo3" Left="83,14966" Top="83,14966" Width="79,37013" Height="18,89765" DataField="fecha_venta" DataSet="Maestro1x" DataSetName="Maestro1x" Text="[Maestro1x.&#34;fecha_venta&#34;]"/>
+      <TfrxMemoView Name="Memo4" Left="7,55906" Top="83,14966" Width="52,91342" Height="18,89765" Text="Fecha :"/>
+      <TfrxMemoView Name="Memo6" Left="0" Top="143,62214" Width="60,47248" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="Producto"/>
+      <TfrxMemoView Name="Memo8" Left="169,07885" Top="143,62214" Width="37,7953" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="Cant."/>
+      <TfrxMemoView Name="Memo9" Left="234,33086" Top="143,62214" Width="41,57483" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="Total"/>
+      <TfrxMemoView Name="Memo13" Left="0" Top="7,55906" Width="275,90569" Height="18,89765" DataField="razon_social" DataSet="Maestro2x" DataSetName="Maestro2x" HAlign="haCenter" Text="[Maestro2x.&#34;razon_social&#34;]"/>
+      <TfrxMemoView Name="Memo14" Left="0" Top="30,23624" Width="275,905511811024" Height="18,89765" DataField="nif" DataSet="Maestro2x" DataSetName="Maestro2x" HAlign="haCenter" Text="[Maestro2x.&#34;nif&#34;]"/>
+      <TfrxLineView Name="Line1" Left="3,77953" Top="166,29932" Width="260,90551181" Height="0" Frame.Typ="4"/>
+      <TfrxMemoView Name="Memo10" Left="170,07885" Top="83,14966" Width="79,37013" Height="18,89765" DataField="hora" DataSet="Maestro1x" DataSetName="Maestro1x" Text="[Maestro1x.&#34;hora&#34;]"/>
+      <TfrxMemoView Name="Memo15" Left="83,14966" Top="105,82684" Width="79,37013" Height="18,89765" DataField="id_habitacion" DataSet="Detalle2x" DataSetName="Detalle2x" Text="[Detalle2x.&#34;id_habitacion&#34;]"/>
+      <TfrxMemoView Name="Memo16" Left="7,55906" Top="105,82684" Width="71,81107" Height="18,89765" DisplayFormat.DecimalSeparator="," Text="Habitación:"/>
+    </TfrxMasterData>
+    <TfrxDetailData Name="DetailData1" Height="18,89765" Left="0" Top="207,87415" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Detalle1x" DataSetName="Detalle1x" RowCount="0">
+      <TfrxMemoView Name="Memo5" Left="0" Top="0" Width="166,29932" Height="18,89765" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle1x.&#34;complementog&#34;]"/>
+      <TfrxMemoView Name="Memo11" Left="168,189085" Top="0" Width="34,01577" Height="18,89765" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle1x.&#34;cantidad&#34;]"/>
+      <TfrxMemoView Name="Memo12" Left="234,33086" Top="0" Width="45,35436" Height="18,89765" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2f" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle1x.&#34;totlinea&#34;]"/>
+    </TfrxDetailData>
+    <TfrxFooter Name="Footer1" Height="245,66945" Left="0" Top="249,44898" Width="283,086797">
+      <TfrxMemoView Name="Memo20" Left="136,06308" Top="15,11812" Width="52,91342" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Total :"/>
+      <TfrxLineView Name="Line2" Left="3,77953" Top="3,77952999999994" Width="260,90551181" Height="0" Frame.Typ="4"/>
+      <TfrxMemoView Name="Memo26" Left="188,9765" Top="15,11812" Width="71,81107" Height="18,89765" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2m" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" Frame.Typ="8" HAlign="haRight" ParentFont="False" Text="[SUM(&#60;Detalle1x.&#34;totlinea&#34;&#62;)]"/>
+      <TfrxMemoView Name="Memo7" Left="94,48825" Top="56,69295" Width="105,82684" Height="18,89765" Text="Firma Cliente"/>
+    </TfrxFooter>
+  </TfrxReportPage>
+</TfrxReport>

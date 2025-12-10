@@ -1,0 +1,14 @@
+# compresion css y js
+<Files *.css>
+SetOutputFilter DEFLATE
+</Files>
+<Files *.js>
+SetOutputFilter DEFLATE
+</Files>
+# compresion php
+php_flag zlib.output_compression On 
+php_value zlib.output_compression_level 2
+# cache 12 horas
+<filesMatch ".(css|js|png|jpg)$">
+Header set Cache-Control "max-age=604800, proxy-revalidate"
+</filesMatch>

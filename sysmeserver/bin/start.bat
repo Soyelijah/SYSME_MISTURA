@@ -1,0 +1,1 @@
+mysqld-nt --defaults-file=..\my.ini

@@ -1,0 +1,98 @@
+body
+	{
+	font-size: .8em;
+	text-align: left;
+	}
+
+#app
+	{
+	width:98%;
+	padding: 1%;
+	margin: 0 auto;
+	text-align: left;
+	}
+.ui-widget-content
+	{
+	font-weight: normal;
+	}
+#normal-dialog
+	{
+	text-align: left;
+	}
+#modal-dialog
+	{
+	text-align: left;
+	}
+#header
+	{
+	width:100%;
+	}
+#header h1
+	{
+	margin:0;
+	font-size: 3em;
+	font-style: italic;
+	}
+#header2
+	{
+
+	margin-bottom:10px;	
+	}
+.footer
+	{
+	margin-top:10px;
+	text-align:right;
+	}
+	
+#left
+	{
+	width:20%; 
+	float:left; 
+	}
+#right
+	{
+	width:77%; 
+	float:right; 
+	}
+	
+.aplypadding
+	{
+	padding: 10px;
+	}
+	
+.aplymargin-top
+	{
+	margin-top: 10px;
+	}
+
+.noborder
+	{
+	border: 0px;
+	}
+	
+.nobackground
+	{
+	background: transparent;
+	}
+
+ul
+	{
+	list-style:none;
+	margin-top: 5px;
+	margin-left: 0px;
+	padding-left: 5px;
+	}
+li
+	{
+	margin-left: 0px;
+	padding-left: 0px;
+	margin-bottom: 2px;
+	}
+
+label
+	{
+	font-weight: bold;
+	}
+
+
+

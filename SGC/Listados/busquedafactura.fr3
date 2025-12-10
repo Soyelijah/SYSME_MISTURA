@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.0.11" DotMatrixReport="False" EngineOptions.MaxMemSize="10000000" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="2047" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="37989,8660770833" ReportOptions.Description.Text="" ReportOptions.LastChange="43529,4811150463" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end." PropData="044C65667403820203546F70025D08446174617365747301010C2C00000020446174615365743D22446574616C6C6531782220446174615365744E616D653D22446574616C6C6531782200010C2C00000020446174615365743D22446574616C6C6532782220446174615365744E616D653D22446574616C6C6532782200010C2C00000020446174615365743D22446574616C6C6534782220446174615365744E616D653D22446574616C6C6534782200010C2C00000020446174615365743D224D61657374726F32782220446174615365744E616D653D224D61657374726F3278220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="79,9" PaperHeight="296,9" PaperSize="258" LeftMargin="5" RightMargin="0" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxMasterData Name="MasterData1" Height="34,01577" Left="0" Top="18,89765" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Maestro2x" DataSetName="Maestro2x" RowCount="0">
+      <TfrxMemoView Name="Memo13" Left="0" Top="7,55906" Width="275,90569" Height="18,89765" DataField="razon_social" DataSet="Maestro2x" DataSetName="Maestro2x" HAlign="haCenter" Text="[Maestro2x.&#34;razon_social&#34;]"/>
+    </TfrxMasterData>
+    <TfrxDetailData Name="DetailData1" Height="22,67718" Left="0" Top="204,09462" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Detalle2x" DataSetName="Detalle2x" PrintChildIfInvisible="True" PrintIfDetailEmpty="True" RowCount="0">
+      <TfrxMemoView Name="Memo2" Left="7,55906" Top="3,77953" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle2x.&#34;avgiva&#34;]%"/>
+      <TfrxMemoView Name="Memo4" Left="102,04731" Top="3,77953" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2m" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle2x.&#34;iva&#34;]"/>
+    </TfrxDetailData>
+    <TfrxMasterData Name="MasterData2" Height="60,47248" Left="0" Top="75,5906" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Detalle1x" DataSetName="Detalle1x" PrintChildIfInvisible="True" PrintIfDetailEmpty="True" RowCount="0">
+      <TfrxMemoView Name="Memo1" Left="7,55906" Top="15,11812" Width="86,92919" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="[Detalle1x.&#34;serie&#34;][Detalle1x.&#34;id_factura&#34;]"/>
+      <TfrxMemoView Name="Memo3" Left="102,04731" Top="15,11812" Width="98,26778" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle1x.&#34;fecha_factura&#34;]"/>
+      <TfrxMemoView Name="Memo11" Left="207,87415" Top="15,11812" Width="56,69295" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2m" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="[Detalle1x.&#34;tf&#34;]"/>
+      <TfrxLineView Name="Line3" Left="7,55906" Top="11,33859" Width="264,5671" Height="0" Frame.Typ="4"/>
+      <TfrxMemoView Name="Memo7" Left="7,55906" Top="37,7953" Width="268,34663" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[&#60;Detalle1x.&#34;dni&#34;&#62;] [&#60;Detalle1x.&#34;nomcliente&#34;&#62;] [&#60;Detalle1x.&#34;apecliente&#34;&#62;]"/>
+    </TfrxMasterData>
+    <TfrxHeader Name="Header1" Height="22,67718" Left="0" Top="158,74026" Width="283,086797">
+      <TfrxMemoView Name="Memo12" Left="7,55906" Top="3,77953" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Impuestos:"/>
+    </TfrxHeader>
+    <TfrxHeader Name="Header3" Height="22,67718" Left="0" Top="249,44898" Width="283,086797">
+      <TfrxMemoView Name="Memo5" Left="7,55906" Top="3,77953" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Pagos:"/>
+    </TfrxHeader>
+    <TfrxDetailData Name="DetailData3" Height="22,67718" Left="0" Top="294,80334" Width="283,086797" ColumnWidth="0" ColumnGap="0" DataSet="Detalle4x" DataSetName="Detalle4x" RowCount="0">
+      <TfrxMemoView Name="Memo6" Left="7,55906" Top="3,77953" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2m" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle4x.&#34;importe&#34;]"/>
+      <TfrxMemoView Name="Memo8" Left="113,3859" Top="3,77953" Width="105,82684" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Detalle4x.&#34;modo_pago&#34;]"/>
+    </TfrxDetailData>
+  </TfrxReportPage>
+</TfrxReport>

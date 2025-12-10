@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.0.11" DotMatrixReport="False" EngineOptions.MaxMemSize="10000000" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="2047" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="37989,8660770833" ReportOptions.Description.Text="" ReportOptions.LastChange="44236,4252453704" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end." PropData="044C65667403820203546F70025D08446174617365747301010C2C00000020446174615365743D22446574616C6C6531782220446174615365744E616D653D22446574616C6C6531782200010C2C00000020446174615365743D224D61657374726F31782220446174615365744E616D653D224D61657374726F3178220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="90" PaperHeight="500" PaperSize="256" LeftMargin="0" RightMargin="0" TopMargin="0" BottomMargin="0" ColumnWidth="79,9" ColumnPositions.Text="0" HGuides.Text="" VGuides.Text="">
+    <TfrxMasterData Name="MasterData1" Height="147,40118181" Left="0" Top="18,89765" Width="340,1577" ColumnWidth="0" ColumnGap="0" DataSet="Detalle1x" DataSetName="Detalle1x" RowCount="0">
+      <TfrxMemoView Name="Memo2" Left="3,77953" Top="105,82684" Width="332,59864" Height="11,33859" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[Detalle1x.&#34;campo3&#34;]"/>
+      <TfrxMemoView Name="Memo1" Left="75,5906" Top="117,16543" Width="185,19697" Height="15,11812" DataSet="Detalle1x" DataSetName="Detalle1x" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2m" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[Detalle1x.&#34;real1&#34;]"/>
+      <TfrxBarCodeView Name="BarCode1" Left="54,3859" Top="3,77953" Width="236" Height="83,64564" BarType="bcCode93Extended" Expression="&#60;Detalle1x.&#34;campo1&#34;&#62;" HAlign="haCenter" Rotation="0" Text="123456789" WideBarRatio="2" Zoom="2"/>
+    </TfrxMasterData>
+  </TfrxReportPage>
+</TfrxReport>

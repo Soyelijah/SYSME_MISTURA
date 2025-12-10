@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TfrxReport Version="4.0.11" DotMatrixReport="False" EngineOptions.MaxMemSize="10000000" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="2047" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="37989,8660770833" ReportOptions.Description.Text="" ReportOptions.LastChange="41425,4347623032" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end." PropData="044C65667403820203546F70025D08446174617365747301010C2C00000020446174615365743D224D61657374726F31782220446174615365744E616D653D224D61657374726F3178220000095661726961626C65730100055374796C650100">
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="80" PaperHeight="130" PaperSize="256" LeftMargin="0" RightMargin="0" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxMasterData Name="MasterData1" Height="393,07112" Left="0" Top="75,5906" Width="302,3624" ColumnWidth="0" ColumnGap="0" DataSet="Maestro1x" DataSetName="Maestro1x" RowCount="0">
+      <TfrxMemoView Name="Memo1" Left="7,55906" Top="257,00804" Width="211,65368" Height="41,57483" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Maestro1x.&#34;address&#34;]"/>
+      <TfrxPictureView Name="Picture1" Left="11,33859" Top="11,33859" Width="207,87415" Height="207,87415" DataField="qr" DataSet="Maestro1x" DataSetName="Maestro1x"/>
+      <TfrxMemoView Name="Memo2" Left="7,55906" Top="317,48052" Width="211,65368" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Maestro1x.&#34;amount&#34;] BTC"/>
+      <TfrxMemoView Name="Memo3" Left="7,55906" Top="355,27582" Width="211,65368" Height="18,89765" DataSet="Maestro1x" DataSetName="Maestro1x" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[Maestro1x.&#34;label&#34;]"/>
+      <TfrxMemoView Name="Memo4" Left="7,55906" Top="238,11039" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Address:"/>
+      <TfrxMemoView Name="Memo5" Left="7,55906" Top="298,58287" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Amount:"/>
+      <TfrxMemoView Name="Memo6" Left="7,55906" Top="336,37817" Width="94,48825" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Id:"/>
+    </TfrxMasterData>
+    <TfrxHeader Name="Header3" Height="34,01577" Left="0" Top="18,89765" Width="302,3624">
+      <TfrxMemoView Name="Memo24" Left="11,33859" Top="7,55906" Width="196,53556" Height="18,89765" DisplayFormat.DecimalSeparator="," Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" ParentFont="False" Text="Bitcoin"/>
+      <TfrxLineView Name="Line5" Left="7,55906" Top="3,77953" Width="272,12601354" Height="0" Frame.Typ="4"/>
+      <TfrxLineView Name="Line7" Left="7,55906" Top="30,23624" Width="272,12601354" Height="0" Frame.Typ="4"/>
+    </TfrxHeader>
+  </TfrxReportPage>
+</TfrxReport>
