@@ -1,7 +1,14 @@
 <?php
-session_start();
-// ini
-$array_ini = parse_ini_file("../../sysmetpv.ini");
+require_once './lib/session.php';
+start_secure_session();
+require_once './lib/config.php';
+try {
+	$array_ini = application_config(dirname(dirname(__DIR__)));
+} catch (RuntimeException $exception) {
+	http_response_code(503);
+	error_log('Configuration error: ' . $exception->getMessage());
+	exit('El TPV no está configurado. Contacta con el administrador.');
+}
 $_SESSION['dbhost'] = $array_ini['dbhost'];
 $_SESSION['dbport'] = $array_ini['dbport'];
 $_SESSION['dbuser'] = $array_ini['dbuser'];
@@ -42,19 +49,19 @@ include "./".$_SESSION['idioma'].".php";
 		<link rel="stylesheet" href="./css/estilo.css?<?php echo time(); ?>" />
 		<script src="./js/jquery.js"></script>
 		<script src="./js/cargomedia.js"></script>
-		
-		
+
+
 		<script>
 		var contador = 0;
 		</script>
     </head>
     <body>
-	
+
 
 
         <div id="pagina">
 		</div>
-		
+
 			<div id="operaciones1" class="oculto"></div>
 			<div id="operaciones2" class="oculto"></div>
 			<div id="operaciones3" class="oculto"></div>
@@ -65,11 +72,11 @@ include "./".$_SESSION['idioma'].".php";
 			<div id="operaciones8" class="oculto"></div>
 			<div id="operaciones9" class="oculto"></div>
 			<div id="operaciones10" class="oculto"></div>
-			
+
 <div id="img-pro-container" class="popup">
 
 </div>
-		
+
 <script>
 
 
@@ -87,10 +94,10 @@ include "./".$_SESSION['idioma'].".php";
 			ancho: anchodisponible,
 			alto: altodisponible
 			}
-			);		
+			);
 		}
-		
-		
+
+
 	function cargaventa(id)
 		{
 		$('#pagina').load
@@ -99,9 +106,9 @@ include "./".$_SESSION['idioma'].".php";
 			{
 			id_venta:id
 			}
-			);		
+			);
 		}
-		
+
 	function sumar(id)
 		{
 		var valor=parseInt($('input[name='+id+']').val());
@@ -117,8 +124,8 @@ include "./".$_SESSION['idioma'].".php";
 			valor = valor - 1;
 		//	}
 		$('input[name='+id+']').val(valor);
-		}	
-		
+		}
+
 	function escribirprecio(id,texto)
 		{
 		var valor=$('input[name='+id+']').val();
@@ -127,7 +134,7 @@ include "./".$_SESSION['idioma'].".php";
 		valor = valor + texto;
 		$('input[name='+id+']').val(valor);
 		}
-		
+
 	function borrarprecio(id)
 		{
 		valor = '0';
@@ -144,14 +151,14 @@ include "./".$_SESSION['idioma'].".php";
 				else
 					$("#"+id).prop("checked", false);
 		}
-		
+
 	function marca2(id)
 		{
 				//alert(id);
 				$("#"+id).prop("checked", true);
-		}	
+		}
 
-	function createimage(tipo,padre,id) 
+	function createimage(tipo,padre,id)
 	{
 		var x = document.createElement("IMG");
 		//alert(tipo);
@@ -177,7 +184,7 @@ include "./".$_SESSION['idioma'].".php";
 		x.setAttribute("width", "100%");
 		x.setAttribute("height", "100%");
 		$("#"+padre).append(x);
-	}		
+	}
 
 function opentab(evt, tabName) {
     // Declare all variables
@@ -199,15 +206,14 @@ function opentab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 }
-		
+
 	// carga inicial
 	carga('./mobile.php','pagina');
-	
-	
-	
+
+
+
 </script>
 
-		
+
     </body>
 </html>
-

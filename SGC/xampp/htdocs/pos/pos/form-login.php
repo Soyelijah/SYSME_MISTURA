@@ -1,29 +1,21 @@
 <?php
 session_start();
 include "./".$_SESSION['idioma'].".php";
-if ($_SESSION['login'] == "S")
-	{
-	$password = "";	
-	}
-else
-	{
-	include "./conn.php";
-	$result = mysql_query("select clavecamarero from camareros where id_camarero = '".$_POST['id_camarero']."'",$conexion);	
-	$row = mysql_fetch_array($result);
-	$password = $row['clavecamarero'];	
-	}
+$employeeId = filter_input(INPUT_POST, 'id_camarero', FILTER_VALIDATE_INT);
+if (!$employeeId) { exit('Empleado no válido.'); }
 ?>
 								<form id="accessform" action="#" method="POST">
-	  
-								<?php echo $txtemployeepasswd; ?>
-								<br/>
-								<input type="password" id="passwd" name="passwd" value="<?php echo $password; ?>" placeholder="<?php echo $txtemployeepasswd; ?>" size="20" value=""  />
-			
+
+									<?php echo $txtemployeepasswd; ?>
+									<br/>
+									<input type="hidden" id="id_camarero" name="id_camarero" value="<?php echo (int) $employeeId; ?>" />
+									<input type="password" id="passwd" name="passwd" placeholder="<?php echo htmlspecialchars($txtemployeepasswd, ENT_QUOTES, 'UTF-8'); ?>" size="20" autocomplete="current-password" />
+
 								<br/><br/>
 								<a class="btn" href="javascript:void(null);" onclick="login();"><?php echo $txtaccept; ?></a>
-								
+
 								</form>
-								
+
 <?php
 
 if ($_SESSION['login'] == "S")

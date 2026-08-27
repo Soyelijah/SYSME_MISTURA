@@ -2,3 +2,6 @@ sysmeserver/data/*.err
 sysmeserver/data/*.log
 *.err
 *.log
+SGC/xampp/htdocs/sysmetpv.local.ini
+SGC/xampp/tmp/sess_*
+SGC/xampp/htdocs/dbpass.local.txt
