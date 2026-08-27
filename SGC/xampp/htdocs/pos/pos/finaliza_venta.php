@@ -17,7 +17,7 @@ include "./conn.php";
 					else
 						{
 						?>
-						El punto de venta vinculado esta cerrado, no se pueden finalizar ventas<br/>
+						El punto de venta vinculado está cerrado; no se pueden finalizar ventas.<br/>
 						<a href="javascript:void(null);" onclick="cargaventa(<?php echo $_POST['id_venta']; ?>);" class="btn">Volver</a>
 						<?php 
 						exit();
