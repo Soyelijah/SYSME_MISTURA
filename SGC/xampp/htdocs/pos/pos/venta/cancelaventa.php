@@ -1,38 +1,70 @@
-<?php 
+<?php
 session_start();
-if (!isset($_SESSION['id_camarero']))
-	{
-	exit(); 
+
+require_once '../lib/http.php';
+require_once '../lib/security.php';
+require_once '../lib/database.php';
+require_once '../lib/stock.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+	api_error(405, 'method_not_allowed', 'Esta operación requiere una solicitud POST.');
+}
+require_employee_permission('cancelartiquet');
+require_valid_csrf();
+
+$saleId = filter_input(INPUT_POST, 'id_venta', FILTER_VALIDATE_INT);
+if (!$saleId) {
+	api_error(422, 'invalid_request', 'La venta debe ser válida.');
+}
+
+$database = application_database();
+try {
+	$database->beginTransaction();
+	$saleStatement = $database->prepare(
+		"select id_venta, imppretiquet from ventadirecta where id_venta = ? and cerrada = 'N' for update"
+	);
+	$saleStatement->execute(array($saleId));
+	$sale = $saleStatement->fetch();
+	if (!$sale) {
+		throw new DomainException('sale_not_open');
 	}
-include "../conn.php";
-include "../stock/funciones.php";
+	if ($sale['imppretiquet'] === 'S' && !permission_value_is_allowed(isset($_SESSION['modtraspreticket']) ? $_SESSION['modtraspreticket'] : '')) {
+		throw new DomainException('printed_sale_forbidden');
+	}
 
-	// comprueba si tiene permiso
-	if ($_SESSION['modtraspreticket'] == "N")
-		{
-		// consulta si se ha impreso preticket
-		$result2 = mysql_query("select imppretiquet from ventadirecta where id_venta = ".$_POST['id_venta'],$conexion);
-		$row2 = mysql_fetch_array($result2);
-		$imppretiquet = $row2["imppretiquet"];
-		if ($imppretiquet == "S")
-			{
-			// si no tiene permiso y se ha impreso preticket cancela
-			exit();
-			}
-		}
+	$lines = $database->prepare(
+		'select id_complementog, cantidad from ventadir_comg where id_venta = ? for update'
+	);
+	$lines->execute(array($saleId));
+	while ($line = $lines->fetch()) {
+		apply_stock_delta($database, $_SESSION['id_almacen'], $line['id_complementog'], $line['cantidad']);
+	}
 
-	// restaura stock
-	$result = mysql_query("select * from ventadir_comg where id_venta = ".$_POST['id_venta'],$conexion);
-	while ($row = mysql_fetch_array($result))
-		{
-		restaurastock($row['id_complementog'],$row['cantidad']);
-		}
-	// MARCA LA CANCELACION
-	$result = mysql_query("update ventadirecta set cerrada = 'C' where id_venta = ".$_POST['id_venta'],$conexion);
-	$result = mysql_query("delete from venta_cocina where id_venta = ".$_POST['id_venta'],$conexion);
-	$result = mysql_query("delete from venta_preticket where id_venta = ".$_POST['id_venta'],$conexion);
-	// actualiza empleado
-	$result = mysql_query("update ventadirecta set id_camarero = ".$_SESSION['id_camarero']." where id_venta = ".$_POST['id_venta'],$conexion);
-	
-
-?>
+	$cancel = $database->prepare(
+		"update ventadirecta set cerrada = 'C', id_camarero = ? where id_venta = ? and cerrada = 'N'"
+	);
+	$cancel->execute(array((int) $_SESSION['id_camarero'], $saleId));
+	if ($cancel->rowCount() !== 1) {
+		throw new RuntimeException('The sale changed concurrently.');
+	}
+	foreach (array('venta_cocina', 'venta_preticket') as $table) {
+		$cleanup = $database->prepare('delete from ' . $table . ' where id_venta = ?');
+		$cleanup->execute(array($saleId));
+	}
+	$database->commit();
+	api_success(array('sale_id' => $saleId, 'status' => 'cancelled'));
+} catch (DomainException $exception) {
+	if ($database->inTransaction()) {
+		$database->rollBack();
+	}
+	$message = $exception->getMessage() === 'printed_sale_forbidden'
+		? 'No tienes permiso para cancelar una venta con preticket impreso.'
+		: 'La venta ya no está abierta.';
+	api_error(409, $exception->getMessage(), $message);
+} catch (Exception $exception) {
+	if ($database->inTransaction()) {
+		$database->rollBack();
+	}
+	error_log('Cancel sale failed: ' . $exception->getMessage());
+	api_error(500, 'cancel_sale_failed', 'No se pudo cancelar la venta; no se aplicó ningún cambio.');
+}

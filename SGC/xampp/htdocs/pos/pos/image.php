@@ -1,20 +1,29 @@
 <?php
 session_start();
-include "./conn.php";
-$result = mysql_query("select imagen from complementogimg where id_complementog = '".$_GET['id']."'",$conexion);
-$row = mysql_fetch_array($result);
-header('Content-type: image/jpeg');
-if (!isset($row['imagen']))
-	{
-	$row['imagen'] = imagecreatefromjpeg('./images/no-image.jpg');
-	imagejpeg($row['imagen']);
-	imagedestroy($row['imagen']);
+require_once './lib/database.php';
+
+$productId = isset($_GET['id']) && is_string($_GET['id']) && preg_match('/^[A-Za-z0-9_.-]{1,64}$/', $_GET['id'])
+	? $_GET['id'] : null;
+if (!$productId || empty($_SESSION['id_camarero'])) {
+	http_response_code(empty($_SESSION['id_camarero']) ? 401 : 400);
+	exit();
+}
+
+try {
+	$statement = application_database()->prepare(
+		'select imagen from complementogimg where id_complementog = ? limit 1'
+	);
+	$statement->execute(array($productId));
+	$image = $statement->fetchColumn();
+	header('Content-Type: image/jpeg');
+	header('Cache-Control: private, max-age=300');
+	if ($image !== false && $image !== null) {
+		echo $image;
+		exit();
 	}
-else
-	{
-	//$row['imagen'] = imagecreatefromjpeg('./images/no-image.jpg');
-	//imagejpeg($row['imagen']);
-	//imagedestroy($row['imagen']);
-	echo $row['imagen'];
-	}
-?>
+} catch (Exception $exception) {
+	error_log('Product image failed: ' . $exception->getMessage());
+}
+
+header('Content-Type: image/jpeg');
+readfile('./images/no-image.jpg');

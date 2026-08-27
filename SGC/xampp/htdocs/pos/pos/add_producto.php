@@ -1,10 +1,11 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['id_camarero']))
 	{
-	exit(); 
+	exit();
 	}
 include "./conn.php";
+include_once "./lib/security.php";
 include "./".$_SESSION['idioma'].".php";
 // datos del producto
 $result = mysql_query("select complementog,precio,descripcion,cocina,tipo_combinado,bloque_cocina from complementog where id_complementog = '".$_POST['producto']."'",$conexion);
@@ -15,16 +16,16 @@ $combinado = 'N';
 $tipocombinado = $row['tipo_combinado'];
 ?>
 
-					
+
 							<h3>
 							<?php echo $row['complementog']; ?>
                             </h3>
 							<p>
 							<?php echo $row['descripcion']; ?>
                             </p>
-							
 
-					
+
+
 					<form>
 
 					<?php echo $txtcantidad; ?>:
@@ -55,8 +56,8 @@ $tipocombinado = $row['tipo_combinado'];
 					}
 					?>
 
-					<?php 
-					// Opciones de combinación
+					<?php
+					// Opciones de combinaciÃ³n
 					$result2 = mysql_query("select c.pack_generado as pack_generado,c.id_complementog1 as id_complementog1,p.complementog as complementog from combinados c,complementog p where c.id_complementog = '".$_POST['producto']."' and c.id_complementog1 = p.id_complementog",$conexion);
 					if (mysql_num_rows($result2) > 0)
 						{
@@ -66,7 +67,7 @@ $tipocombinado = $row['tipo_combinado'];
 							?>
 
 							<?php echo $txtcombinewith; ?>:<br/>
-							<?php 
+							<?php
 
 							echo "<div class='botonprocombi'>";
 							echo "<input type='radio' name='combinado' id='combinadono' value='no' checked />";
@@ -75,7 +76,7 @@ $tipocombinado = $row['tipo_combinado'];
 							echo '<img src="./images/trans.png" width="100%" height="100%" />';
 							echo "</a>";
 							echo "</div>";
-							
+
 							while ($row2 = mysql_fetch_array($result2))
 								{
 								echo "<div class='botonprocombi'>";
@@ -84,14 +85,14 @@ $tipocombinado = $row['tipo_combinado'];
 								echo "<a class='btncat' href='javascript: void(null);' onclick='marca2(".$cadena.");'>".substr($row2['complementog'],0,15);
 								echo '<img src="./image.php?id='.$row2['id_complementog1'].'" width="100%" height="100%" />';
 								echo "</a>";
-								echo "</div>";									
-									
-									
+								echo "</div>";
+
+
 								//echo "<option value='".$row2['pack_generado']."'>".$row2['complementog']."</option>";
 								}
 							?>
 
-							<?php 
+							<?php
 							}
 						else
 							{
@@ -111,16 +112,16 @@ $tipocombinado = $row['tipo_combinado'];
 							}
 						echo "<div style='clear:both;'><br/><br/></div>";
 						}
-					
+
 					?>
-					
-					<?php 
+
+					<?php
 					//if ($row['cocina'] == 'Y')
 					//{
 						// BLOQUES DE COCINA
 
 						echo $txtkitchenorder.":<br/>";
-						
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque1' value='1'";
 						if ($_SESSION['bloque_cocina'] == 1) { echo " checked "; }
@@ -130,7 +131,7 @@ $tipocombinado = $row['tipo_combinado'];
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-						
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque2' value='2'";
 						if ($_SESSION['bloque_cocina'] == 2) { echo " checked "; }
@@ -140,7 +141,7 @@ $tipocombinado = $row['tipo_combinado'];
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-					
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque3' value='3'";
 						if ($_SESSION['bloque_cocina'] == 3) { echo " checked "; }
@@ -150,7 +151,7 @@ $tipocombinado = $row['tipo_combinado'];
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-						
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque4' value='4'";
 						if ($_SESSION['bloque_cocina'] == 4) { echo " checked "; }
@@ -160,9 +161,9 @@ $tipocombinado = $row['tipo_combinado'];
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-						
 
-						
+
+
 						echo "<div style='clear:both;'><br/><br/></div>";
 
 						// OPCIONES DE COCINA
@@ -170,13 +171,13 @@ $tipocombinado = $row['tipo_combinado'];
 						echo $txtkitchenoptions.":<br/>";
 						// obten opciones de cocina
 						//$result = mysql_query("select * from notacocina",$conexion);
-						
+
 						$result = mysql_query("select * from notacocina where id_nota in (select id_nota from pnotacocina where id_complementog = '".$_POST['producto']."')",$conexion);
 						if (mysql_num_rows($result) == 0)
 						  {
-						  $result = mysql_query("select * from notacocina",$conexion);	
+						  $result = mysql_query("select * from notacocina",$conexion);
 						  }
-						
+
 						while ($row = mysql_fetch_array($result))
 							{
 							echo "<div class='botonprocombi'>";
@@ -200,9 +201,9 @@ $tipocombinado = $row['tipo_combinado'];
 					<div style='clear:both;'><br/><br/></div>
 
 					</form>
-					
 
-				
+
+
                <div class="footerpopup">
 
                             <a href="javascript:void(null);" onclick="$('#ficha_producto').empty(); $('#ficha_producto').hide();" class="btn">
@@ -213,39 +214,40 @@ $tipocombinado = $row['tipo_combinado'];
                                 <?php echo $txtaccept; ?>
                             </a>
 							<br/><br/>
-							
+
                 </div>
-			
+
 <script>
 
 
 	function add(id)
 		{
 		// comprueba si el campo de precio existe
-		if ( $("#precio") ) 
+		if ( $("#precio") )
 			{
-			nuevoprecio = $('#precio').attr('value');
+				nuevoprecio = $('#precio').val();
 			}
 		else
 			{
 			nuevoprecio = 0;
 			}
-			
-		$('#operaciones1').load
-			(
-			'./venta/insertalinea.php',
-			{
+
+			$.ajax({
+				url: './venta/insertalinea.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
 			add_producto: id,
-			cantidad: $('#cantidad').attr('value'),
+				cantidad: $('#cantidad').val(),
 			precio: nuevoprecio,
-			<?php 
+			<?php
 			if ($combinado == 'Y')
 				{
 				if ($tipocombinado == '1')
 					{
 					?>
 					combinado: $('input:radio[name=combinado]:checked').val(),
-					<?php 
+					<?php
 					}
 				else
 					{
@@ -260,7 +262,7 @@ $tipocombinado = $row['tipo_combinado'];
 				{
 				?>
 				bloque_cocina: $("input[name='bloque_cocina']:checked").val(),
-				<?php 
+				<?php
 				$result3 = mysql_query("select * from notacocina",$conexion);
 				while ($row3 = mysql_fetch_array($result3))
 					{
@@ -268,21 +270,15 @@ $tipocombinado = $row['tipo_combinado'];
 					}
 				}
 			?>
-			observaciones: $('#observaciones').attr('value'),
-			id_venta:<?php echo $_POST['id_venta']; ?>
-			},
-			function() 
-				{
-				for (i=0;i<$('#cantidad').attr('value');i++)
-					{
-					//$('#link'+id).prepend('<img src="./images/ok.png"/>');
-					lineas_venta();
+				observaciones: $('#observaciones').val(),
+				id_venta: <?php echo (int) $_POST['id_venta']; ?>,
+				csrf_token: <?php echo json_encode(csrf_token()); ?>
 					}
-				$("#ficha_producto").empty();
-				$('#ficha_producto').hide();
-				}
-			);			
+			}).done(function () {
+					lineas_venta();
+					$("#ficha_producto").empty();
+					$('#ficha_producto').hide();
+			}).fail(showOperationError);
 		}
-		
-</script>			
 
+</script>

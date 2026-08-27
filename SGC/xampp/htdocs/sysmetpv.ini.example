@@ -1,0 +1,19 @@
+; Copia este archivo como sysmetpv.local.ini y completa los valores localmente.
+; También puedes usar SYSME_DB_HOST, SYSME_DB_PORT, SYSME_DB_USER,
+; SYSME_DB_PASSWORD y SYSME_DB_NAME. Nunca confirmes secretos reales en Git.
+dbhost =
+dbport = 4306
+dbuser = sysme_app
+dbpass =
+dbname = sysme
+idioma = es
+almacen = Local
+tpv = TPV1
+hosteleria = S
+checkincremento = S
+ordercat = 0
+orderpro = 0
+SerieFactura = F
+login = S
+anchotpv = 1936
+altotpv = 956
