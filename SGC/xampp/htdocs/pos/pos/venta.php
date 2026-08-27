@@ -7,6 +7,7 @@ if (!isset($_SESSION['id_camarero']))
 include "./conn.php";
 include "./stock/funciones.php";
 include "./".$_SESSION['idioma'].".php";
+include "./lib/security.php";
 
 
 if (isset($_POST['cambio_mesa']))
@@ -287,7 +288,7 @@ if (!isset($_SESSION['bloque_cocina'])) {$_SESSION['bloque_cocina'] = 1;}
 
 	function aparcarventa()
 		{	
-		$('.imgcategoria').appendTo('#img-pro-container'); 
+		$('.imgcategoria').appendTo('#img-pro-container');
 		$('.imgproducto').appendTo('#img-pro-container');	
 		$('#operaciones1').load
 				(
@@ -398,20 +399,21 @@ if (!isset($_SESSION['bloque_cocina'])) {$_SESSION['bloque_cocina'] = 1;}
 		}
 		
 	function borralinea(id)
-		{
-		$('#poplinea').load
-			(
-			'./venta/borralinea.php',
 			{
-			id_venta:<?php echo $_POST['id_venta']; ?>,
-			borrar_producto:id
-			},
-			function()
-				{
-				lineas_venta();	
+			$.ajax({
+				url: './venta/borralinea.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					id_venta: <?php echo (int) $_POST['id_venta']; ?>,
+					borrar_producto: id,
+					csrf_token: <?php echo json_encode(csrf_token()); ?>
 				}
-			);		
-		}
+			}).done(function () {
+				$('#poplinea').empty().hide();
+				lineas_venta();
+			}).fail(showOperationError);
+			}
 		
 	function showcatalogo()
 		{
@@ -425,22 +427,36 @@ if (!isset($_SESSION['bloque_cocina'])) {$_SESSION['bloque_cocina'] = 1;}
 		}
 		
 	function cancelaventa()
-		{
-		$('.imgcategoria').appendTo('#img-pro-container'); 
-		$('.imgproducto').appendTo('#img-pro-container');
-		$('#operaciones1').load
-			(
-			'./venta/cancelaventa.php',
 			{
-			id_venta:<?php echo $_POST['id_venta']; ?>
+			$('.imgcategoria').appendTo('#img-pro-container');
+			$('.imgproducto').appendTo('#img-pro-container');
+			$.ajax({
+				url: './venta/cancelaventa.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					id_venta: <?php echo (int) $_POST['id_venta']; ?>,
+					csrf_token: <?php echo json_encode(csrf_token()); ?>
+				}
+			}).done(function () {
+				$('#pagina').load('./abiertas.php');
+			}).fail(showOperationError);
 			}
-			);
-		$('#pagina').load('./abiertas.php');
-		}
+
+	function showOperationError(xhr)
+			{
+			var response = xhr.responseJSON;
+			var message = response && response.error ? response.error.message : 'No se pudo completar la operación.';
+			var status = $('#operation-status');
+			if (!status.length) {
+				status = $('<div id="operation-status" role="alert" class="operation-error"></div>').appendTo('#pagina');
+			}
+			status.text(message);
+			}
 		
 	function finalizaventa()
 		{
-		$('.imgcategoria').appendTo('#img-pro-container'); 
+		$('.imgcategoria').appendTo('#img-pro-container');
 		$('.imgproducto').appendTo('#img-pro-container');
 		$('#pagina').load
 			(
@@ -542,27 +558,22 @@ if (!isset($_SESSION['bloque_cocina'])) {$_SESSION['bloque_cocina'] = 1;}
 		
 		
 	function plusone(id)
-		{
-		contador = contador + 1;
-		if (contador == 11) {contador = 1;}
-		//alert($("input[name='bloquec']:checked").val());
-		
-		$('#operaciones'+contador).load
-			(
-			'./venta/insertalinea.php',
 			{
-			add_producto: id,
-			cantidad: 1,
-			bloque_cocina: $("input[name='bloquec']:checked").val(),
-			id_venta:<?php echo $_POST['id_venta']; ?>
-			},
-			function() 
-				{
-				//$('#link'+id).prepend('<img src="./images/ok.png"/>');
-				lineas_venta();
+			$.ajax({
+				url: './venta/insertalinea.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					add_producto: id,
+					cantidad: 1,
+					bloque_cocina: $("input[name='bloquec']:checked").val(),
+					id_venta: <?php echo (int) $_POST['id_venta']; ?>,
+					csrf_token: <?php echo json_encode(csrf_token()); ?>
 				}
-			);			
-		}
+			}).done(function () {
+				lineas_venta();
+			}).fail(showOperationError);
+			}
 		
 	function ficha_producto(id)
 		{

@@ -1,11 +1,12 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['id_camarero']))
 	{
-	exit(); 
+	exit();
 	}
 include "./conn.php";
 include "./".$_SESSION['idioma'].".php";
+include_once "./lib/security.php";
 // datos de la linea
 $result = mysql_query("select *,round(precio * (1 + (avgiva / 100)),2) as pvp from ventadir_comg where id_linea = ".$_POST['id_linea']." and id_venta = ".$_POST['id_venta'],$conexion);
 $row = mysql_fetch_array($result);
@@ -17,19 +18,19 @@ $row2 = mysql_fetch_array($result2);
 
 							<h3>
                                 <?php echo $row['complementog']; ?>
-                            </h3>	
+                            </h3>
 
-			
+
 
 
                 <form>
-				
+
 					<?php echo $txtcantidad; ?>:<br/>
 					<input type="text" name="cantidad" id="cantidad" value="<?php echo $row['cantidad']; ?>" readonly /><br/><br/>
 					<a class="btn" href="#" onclick="restar('cantidad')"><?php echo $txtrestar; ?></a>
 					<a class="btn" href="#" onclick="sumar('cantidad')"><?php echo $txtsumar; ?> </a>
 					<br/><br/>
-					
+
 					<?php
 					if ($_SESSION['preciomanual'] == 'Y' && $row2['permitircambioprecio'] == 'S')
 					{
@@ -51,15 +52,15 @@ $row2 = mysql_fetch_array($result2);
 					} else {
 					?>
 					<input type="hidden" name="precio" id="precio" value="<?php echo $row['pvp']; ?>" />
-					
+
 					<?php
 					}
 					?>
-					
-					
-					
-					
-					<?php 
+
+
+
+
+					<?php
 					// Opciones de combinación
 					$escombinado = 'N';
 					$result2 = mysql_query("select c.pack_generado as pack_generado,c.id_complementog1 as id_complementog1,p.complementog as complementog from combinados c,complementog p where c.id_complementog = '".$row['id_complementog']."' and c.id_complementog1 = p.id_complementog and c.id_complementog in (select id_complementog from complementog where id_complementog = '".$row['id_complementog']."' and (tipo_combinado = '2' or tipo_combinado = '3'))",$conexion);
@@ -80,25 +81,25 @@ $row2 = mysql_fetch_array($result2);
 								echo "</div>";
 								}
 
-						
+
 						echo "<div style='clear:both;'><br/><br/></div>";
 						}
-					
+
 					?>
-					
-					
-					
-					<?php 
+
+
+
+					<?php
 					$result2 = mysql_query("select cocina from complementog where id_complementog= '".$row['id_complementog']."'",$conexion);
 					$row2 = mysql_fetch_array($result2);
 					if ($row2['cocina'] == 'Y')
 					{
-					
+
 						// BLOQUES DE COCINA
-						
+
 						echo $txtkitchenorder.":<br/>";
-						
-						
+
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque1' value='1'";
 						if ($row['bloque_cocina'] == 1) { echo " checked "; }
@@ -108,7 +109,7 @@ $row2 = mysql_fetch_array($result2);
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-						
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque2' value='2'";
 						if ($row['bloque_cocina'] == 2) { echo " checked "; }
@@ -118,7 +119,7 @@ $row2 = mysql_fetch_array($result2);
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-					
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque3' value='3'";
 						if ($row['bloque_cocina'] == 3) { echo " checked "; }
@@ -128,7 +129,7 @@ $row2 = mysql_fetch_array($result2);
 						echo '<img src="./images/trans.png" width="100%" height="100%" />';
 						echo "</a>";
 						echo "</div>";
-						
+
 						echo "<div class='botonprocombi'>";
 						echo "<input type='radio' name='bloque_cocina' id='bloque4' value='4'";
 						if ($row['bloque_cocina'] == 4) { echo " checked "; }
@@ -139,15 +140,15 @@ $row2 = mysql_fetch_array($result2);
 						echo "</a>";
 						echo "</div>";
 
-						
+
 						echo "<div style='clear:both;'><br/><br/></div>";
-					
+
 						echo $txtkitchenoptions.":<br/>";
 						// obten opciones de cocina
 						$result3 = mysql_query("select * from notacocina where id_nota in (select id_nota from pnotacocina where id_complementog = '".$row['id_complementog']."')",$conexion);
 						if (mysql_num_rows($result3) == 0)
 						  {
-						  $result3 = mysql_query("select * from notacocina",$conexion);	
+						  $result3 = mysql_query("select * from notacocina",$conexion);
 						  }
 						while ($row3 = mysql_fetch_array($result3))
 							{
@@ -162,16 +163,16 @@ $row2 = mysql_fetch_array($result2);
 							echo "</a>";
 							echo "</div>";
 							}
-					echo "<div style='clear:both;'><br/><br/></div>";		
+					echo "<div style='clear:both;'><br/><br/></div>";
 					}
 					?>
-					
+
 					<?php echo $txtobservations; ?>:<br/>
 					<!--<input type="text" name="observaciones" id="observaciones" placeholder="<?php echo $txtobservations; ?>" value="<?php echo $row['observaciones']; ?>" />-->
 					<textarea id="observaciones" name="observaciones" rows="4" cols="40"><?php echo $row['observaciones']; ?></textarea>
 					<div style='clear:both;'><br/><br/></div>
-					
-					
+
+
                 </form>
 
                <div class="footerpopup">
@@ -184,24 +185,25 @@ $row2 = mysql_fetch_array($result2);
                                 <?php echo $txtaccept; ?>
                             </a>
 							<br/><br/>
-                </div>		
+                </div>
 
 
-<script>	
+<script>
 
 
-		
+
 	function updatelinea()
 		{
-		$('#operaciones1').load
-			(
-			'./venta/updatelinea.php',
-			{
-			id_venta:'<?php echo $_POST['id_venta']; ?>',
-			update_linea:'<?php echo $_POST['id_linea']; ?>',
-			cantidad: $('#cantidad').attr('value'),
-			precio: $('#precio').attr('value'),
-			<?php 
+			$.ajax({
+				url: './venta/updatelinea.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+				id_venta: <?php echo (int) $_POST['id_venta']; ?>,
+				update_linea: <?php echo (int) $_POST['id_linea']; ?>,
+				cantidad: $('#cantidad').val(),
+				precio: $('#precio').val(),
+			<?php
 			if ($escombinado == 'Y')
 			//if ($bandera == 'Y')
 				{
@@ -215,7 +217,7 @@ $row2 = mysql_fetch_array($result2);
 			{
 			?>
 			bloque_cocina: $("input[name='bloque_cocina']:checked").val(),
-			<?php 
+			<?php
 			$result3 = mysql_query("select * from notacocina",$conexion);
 			while ($row3 = mysql_fetch_array($result3))
 				{
@@ -223,14 +225,13 @@ $row2 = mysql_fetch_array($result2);
 				}
 			}
 			?>
-			observaciones: $('#observaciones').attr('value')
-			},
-			function() 
-				{
-				lineas_venta();
-				$("#poplinea").empty();
-				$('#poplinea').hide();
-				}
-			);		
+				observaciones: $('#observaciones').val(),
+				csrf_token: <?php echo json_encode(csrf_token()); ?>
+					}
+			}).done(function () {
+					lineas_venta();
+					$("#poplinea").empty();
+					$('#poplinea').hide();
+			}).fail(showOperationError);
 		}
 </script>

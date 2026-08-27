@@ -11,7 +11,7 @@ representa permisos concedidos con `Y`, mientras que la primera implementación
 del comprobador solo aceptaba `S`.
 
 El sistema completo **todavía no debe considerarse apto para exposición a una
-red no confiable**. Permanecen 27 scripts propios que utilizan la API eliminada
+red no confiable**. Permanecen 23 scripts propios que utilizan la API eliminada
 `mysql_*`; varios endpoints mutables concatenan datos de la petición y no tienen
 protección CSRF ni transacciones. Esta deuda es anterior a la modernización y no
 queda ocultada por el resultado positivo de las pruebas de los endpoints
@@ -22,6 +22,7 @@ críticos migrados.
 - Lint de los 45 archivos PHP propios del TPV.
 - Validación sintáctica de los dos archivos JavaScript propios.
 - Pruebas de paginación y recorrido sin duplicados.
+- Pruebas de inventario recursivo, restauración, detección de ciclos y rollback.
 - Pruebas de tokens CSRF, permisos `Y/N` y `S/N`, configuración por entorno,
   rechazo de usuario administrativo y estructura segura del cobro.
 - Búsqueda de credenciales en el árbol Git actual.
@@ -29,19 +30,21 @@ críticos migrados.
 
 ## Riesgos residuales priorizados
 
+Los endpoints `insertalinea.php`, `updatelinea.php`, `borralinea.php` y
+`cancelaventa.php` ya usan PDO, validación, CSRF, autorización y transacciones.
+El stock de productos y componentes de packs se modifica dentro de la misma
+transacción que la venta.
+
 ### Crítico
 
-1. Migrar a PDO y consultas preparadas los endpoints de líneas de venta:
-   `insertalinea.php`, `updatelinea.php`, `borralinea.php` y
-   `cancelaventa.php`.
-2. Añadir CSRF, autorización por operación y transacciones a todos los
+1. Añadir CSRF, autorización por operación y transacciones a todos los
    endpoints mutables.
-3. Rotar las credenciales históricas y sanear el historial antes de publicar el
+2. Rotar las credenciales históricas y sanear el historial antes de publicar el
    repositorio. Quitarlas del árbol actual no invalida copias anteriores.
 
 ### Alto
 
-1. Migrar los 27 scripts que todavía dependen de `mysql_*`.
+1. Migrar los 23 scripts que todavía dependen de `mysql_*`.
 2. Dejar de guardar credenciales de base de datos en la sesión cuando finalice
    la migración de los scripts heredados.
 3. Ejecutar pruebas de integración concurrentes contra una copia del esquema

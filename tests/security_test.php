@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/lib/security.php';
 require_once dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/lib/config.php';
+require_once dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/lib/validation.php';
 
 $failures = 0;
 function security_assert($condition, $message)
@@ -31,6 +32,12 @@ security_assert(permission_value_is_allowed('Y'), 'The Y/N permission convention
 security_assert(permission_value_is_allowed('S'), 'Historical S/N affirmative permissions remain compatible.');
 security_assert(!permission_value_is_allowed('N'), 'A denied permission is rejected.');
 security_assert(!permission_value_is_allowed(''), 'A missing permission is rejected.');
+security_assert(request_positive_number('1.5') === 1.5, 'Positive decimal quantities are accepted.');
+security_assert(request_positive_number('0') === null, 'Zero quantities are rejected.');
+security_assert(request_positive_number('-1') === null, 'Negative quantities are rejected.');
+security_assert(request_nonnegative_number('0') === 0.0, 'A permitted manual price can be zero.');
+security_assert(request_identifier('PRODUCT-01') === 'PRODUCT-01', 'Safe product identifiers are accepted.');
+security_assert(request_identifier("x' or 1=1") === null, 'SQL-like product identifiers are rejected.');
 
 $checkout = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/venta/finalizaventa.php');
 security_assert(strpos($checkout, '$_POST[\'total\']') === false, 'Checkout never trusts a client-provided total.');
@@ -42,9 +49,36 @@ security_assert(strpos($checkout, "require_employee_permission('finalizarventas'
 $saleScreen = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/venta.php');
 security_assert(strpos($saleScreen, "\$_SESSION['finalizarventas'] == 'Y'") !== false, 'The regression fixture confirms that checkout permission is stored as Y/N.');
 
-foreach (array('login.php', 'image.php', 'imagecat.php', 'venta/finalizaventa.php') as $endpoint) {
+foreach (array(
+	'login.php', 'image.php', 'imagecat.php', 'venta/finalizaventa.php',
+	'venta/insertalinea.php', 'venta/updatelinea.php', 'venta/borralinea.php', 'venta/cancelaventa.php',
+) as $endpoint) {
 	$source = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/' . $endpoint);
 	security_assert(strpos($source, 'mysql_query') === false, $endpoint . ' does not use the legacy query API.');
+	if (strpos($endpoint, 'venta/') === 0) {
+		security_assert(strpos($source, 'require_valid_csrf()') !== false, $endpoint . ' enforces CSRF protection.');
+		security_assert(strpos($source, 'beginTransaction()') !== false, $endpoint . ' starts a transaction.');
+		security_assert(strpos($source, 'rollBack()') !== false, $endpoint . ' rolls back failures.');
+	}
+}
+
+foreach (array('venta.php', 'add_producto.php', 'opciones_linea.php') as $screen) {
+	$source = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/' . $screen);
+	security_assert(strpos($source, 'csrf_token:') !== false, $screen . ' sends a CSRF token.');
+}
+
+$endpointPermissions = array(
+	'venta/updatelinea.php' => 'modtiquet',
+	'venta/borralinea.php' => 'borrarlinea',
+	'venta/cancelaventa.php' => 'cancelartiquet',
+	'venta/finalizaventa.php' => 'finalizarventas',
+);
+foreach ($endpointPermissions as $endpoint => $permission) {
+	$source = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/pos/pos/' . $endpoint);
+	security_assert(
+		strpos($source, "require_employee_permission('" . $permission . "')") !== false,
+		$endpoint . ' enforces the ' . $permission . ' permission.'
+	);
 }
 
 $exampleConfig = file_get_contents(dirname(__FILE__) . '/../SGC/xampp/htdocs/sysmetpv.ini.example');

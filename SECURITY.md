@@ -18,6 +18,8 @@ comprometida y rotarse antes de desplegar esta versión.
 - El ticket, movimiento, cierre e impresión se confirman en una transacción.
 - El cobro exige autenticación, permiso de finalización y token CSRF.
 - Login, imágenes y cobro utilizan consultas preparadas mediante PDO.
+- Añadir, modificar y borrar líneas, cancelar ventas y ajustar stock se ejecutan
+  con PDO, validación, CSRF y transacciones atómicas.
 - El login vincula la credencial al empleado seleccionado, regenera la sesión y
   limita intentos repetidos.
 - La autorización acepta la convención `Y/N` utilizada por el TPV y mantiene
@@ -32,6 +34,10 @@ comprometida y rotarse antes de desplegar esta versión.
 4. Ejecuta `make check` antes del despliegue.
 5. Prueba cobro, reversión, impresión y concurrencia en una copia de la base de
    datos antes de actualizar producción.
+
+Las mutaciones del frontend esperan ahora respuestas JSON. Si se integra un
+cliente distinto, debe enviar el token CSRF de la sesión y tratar los códigos
+HTTP de error sin reintentar ciegamente operaciones de venta.
 
 Los demás scripts heredados todavía deben migrarse gradualmente de `mysql_*` a
 PDO. No deben exponerse a redes no confiables hasta completar esa migración.
