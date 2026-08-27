@@ -6,7 +6,13 @@ function security_random_token()
 		return bin2hex(random_bytes(32));
 	}
 
-	return bin2hex(openssl_random_pseudo_bytes(32));
+	$strong = false;
+	$bytes = openssl_random_pseudo_bytes(32, $strong);
+	if ($bytes === false || !$strong) {
+		throw new RuntimeException('No secure random source is available.');
+	}
+
+	return bin2hex($bytes);
 }
 
 function csrf_token()
@@ -35,10 +41,18 @@ function require_authenticated_employee()
 	}
 }
 
+function permission_value_is_allowed($value)
+{
+	$value = strtoupper((string) $value);
+	// Existing SYSME installations use Y/N; some historical datasets use S/N.
+	return $value === 'Y' || $value === 'S';
+}
+
 function require_employee_permission($permission)
 {
 	require_authenticated_employee();
-	if (!isset($_SESSION[$permission]) || $_SESSION[$permission] !== 'S') {
+	$value = isset($_SESSION[$permission]) ? $_SESSION[$permission] : '';
+	if (!permission_value_is_allowed($value)) {
 		api_error(403, 'permission_denied', 'No tienes permiso para realizar esta operación.');
 	}
 }

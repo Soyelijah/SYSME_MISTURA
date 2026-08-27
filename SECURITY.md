@@ -20,6 +20,8 @@ comprometida y rotarse antes de desplegar esta versión.
 - Login, imágenes y cobro utilizan consultas preparadas mediante PDO.
 - El login vincula la credencial al empleado seleccionado, regenera la sesión y
   limita intentos repetidos.
+- La autorización acepta la convención `Y/N` utilizada por el TPV y mantiene
+  compatibilidad con instalaciones históricas que usan `S/N`.
 - Los endpoints JSON no muestran errores de base de datos.
 
 ## Despliegue y migración
