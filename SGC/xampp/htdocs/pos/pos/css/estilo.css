@@ -513,3 +513,456 @@ div.tab button.active {
 input {
      background: white;
     }
+
+/*
+ * Capa visual responsive del TPV.
+ * Conserva las clases y porcentajes que usa el PHP heredado, pero mejora la
+ * ergonomia tactil, la jerarquia y el comportamiento en pantallas estrechas.
+ */
+:root {
+	--tpv-ink: #10243e;
+	--tpv-ink-soft: #1d3b5c;
+	--tpv-surface: #ffffff;
+	--tpv-canvas: #edf3f7;
+	--tpv-line: #cbd8e2;
+	--tpv-muted: #587086;
+	--tpv-accent: #f2a900;
+	--tpv-accent-strong: #d98f00;
+	--tpv-danger: #b42318;
+	--tpv-success: #167a55;
+	--tpv-radius: 16px;
+	--tpv-shadow: 0 12px 30px rgba(16, 36, 62, 0.12);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	min-height: 100%;
+	background: var(--tpv-canvas);
+}
+
+html,
+body {
+	min-height: 100%;
+}
+
+body {
+	background:
+		radial-gradient(circle at 100% 0, rgba(242, 169, 0, 0.12), transparent 30rem),
+		linear-gradient(180deg, #f7fafc 0, var(--tpv-canvas) 100%);
+	color: var(--tpv-ink);
+	font-family: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
+	line-height: 1.45;
+	-webkit-font-smoothing: antialiased;
+}
+
+#pagina {
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding-bottom: 86px;
+}
+
+.header {
+	align-items: center;
+	background: linear-gradient(110deg, var(--tpv-ink), var(--tpv-ink-soft));
+	box-shadow: 0 8px 24px rgba(16, 36, 62, 0.2);
+	color: #ffffff;
+	display: flex;
+	font-size: clamp(1rem, 3vw, 1.25rem);
+	font-weight: 750;
+	gap: 12px;
+	height: auto;
+	justify-content: space-between;
+	letter-spacing: 0.02em;
+	min-height: 58px;
+	padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+	position: sticky;
+	top: 0;
+	z-index: 50;
+}
+
+.content {
+	background: transparent;
+	margin: 0 auto;
+	max-width: 1180px;
+	padding: clamp(14px, 2.5vw, 28px);
+	width: 100%;
+}
+
+.incontent {
+	padding: 0;
+	width: 100%;
+}
+
+.incontent > h3,
+.popup > h3 {
+	font-size: clamp(1.15rem, 4vw, 1.55rem);
+	letter-spacing: -0.02em;
+	margin: 0 0 14px;
+}
+
+.incontent > ul {
+	background: rgba(255, 255, 255, 0.9);
+	border: 1px solid var(--tpv-line);
+	border-radius: var(--tpv-radius);
+	box-shadow: var(--tpv-shadow);
+	list-style: none;
+	margin: 0 0 22px;
+	padding: 14px 18px;
+}
+
+.footer,
+.footerpopup {
+	align-items: center;
+	background: rgba(16, 36, 62, 0.96);
+	bottom: 0;
+	box-shadow: 0 -8px 24px rgba(16, 36, 62, 0.18);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	height: auto;
+	justify-content: center;
+	left: 0;
+	min-height: 68px;
+	padding: 10px max(12px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+	position: fixed;
+	right: 0;
+	z-index: 60;
+}
+
+.btn,
+.btn2 {
+	align-items: center;
+	background: var(--tpv-ink-soft);
+	background-image: none;
+	border: 1px solid rgba(255, 255, 255, 0.24);
+	border-radius: 12px;
+	box-shadow: 0 6px 14px rgba(16, 36, 62, 0.16);
+	color: #ffffff;
+	cursor: pointer;
+	display: inline-flex;
+	font-family: inherit;
+	font-size: 0.95rem;
+	font-weight: 700;
+	justify-content: center;
+	line-height: 1.15;
+	min-height: 44px;
+	padding: 10px 16px;
+	text-align: center;
+	touch-action: manipulation;
+	transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.footer .btn,
+.footerpopup .btn {
+	background: var(--tpv-accent);
+	border-color: transparent;
+	color: #17263a;
+}
+
+.btn:hover,
+.btn2:hover,
+.footer .btn:hover,
+.footerpopup .btn:hover {
+	background: var(--tpv-accent-strong);
+	background-image: none;
+	box-shadow: 0 8px 18px rgba(16, 36, 62, 0.22);
+	text-decoration: none;
+	transform: translateY(-1px);
+}
+
+.btn:active,
+.btn2:active,
+.tile-action:active,
+.btncat:active {
+	transform: translateY(1px) scale(0.99);
+}
+
+.boton,
+.botonsub,
+.botonpro,
+.botonprocombi {
+	background: var(--tpv-surface);
+	border: 1px solid var(--tpv-line);
+	border-radius: var(--tpv-radius);
+	box-shadow: 0 7px 18px rgba(16, 36, 62, 0.1);
+	margin: 4px;
+	transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.boton:hover,
+.botonsub:hover,
+.botonpro:hover,
+.botonprocombi:hover {
+	border-color: var(--tpv-accent);
+	box-shadow: var(--tpv-shadow);
+	transform: translateY(-2px);
+}
+
+.btncat,
+.btncatcat,
+.tile-action {
+	align-items: stretch;
+	color: var(--tpv-ink);
+	display: flex;
+	flex-direction: column;
+	font-family: inherit;
+	font-weight: 750;
+	height: 100%;
+	justify-content: flex-start;
+	line-height: 1.2;
+	min-height: 44px;
+	overflow: hidden;
+	padding: 10px;
+	text-align: center;
+	touch-action: manipulation;
+	width: 100%;
+}
+
+.btncat img,
+.btncatcat img,
+.tile-action img {
+	border-radius: 10px;
+	flex: 1 1 auto;
+	height: calc(100% - 28px);
+	margin-top: 6px;
+	min-height: 0;
+	object-fit: cover;
+	width: 100%;
+}
+
+.procuenta,
+.procuenta2 {
+	border-radius: 999px;
+	bottom: 7px;
+	font-size: 0.78rem;
+	line-height: 1;
+	min-width: 24px;
+	padding: 6px;
+}
+
+.procuenta {
+	background: var(--tpv-danger);
+	right: 7px;
+}
+
+.procuenta2 {
+	background: var(--tpv-success);
+	left: 7px;
+}
+
+div.tab {
+	background: rgba(255, 255, 255, 0.92);
+	border: 1px solid var(--tpv-line);
+	border-radius: 14px;
+	display: flex;
+	gap: 4px;
+	margin-bottom: 14px;
+	overflow-x: auto;
+	padding: 4px;
+	position: sticky;
+	top: 66px;
+	z-index: 40;
+}
+
+div.tab button {
+	border-radius: 10px;
+	color: var(--tpv-muted);
+	flex: 1 0 auto;
+	font-family: inherit;
+	font-weight: 700;
+	min-height: 44px;
+	padding: 10px 16px;
+	touch-action: manipulation;
+}
+
+div.tab button:hover {
+	background: #e7eef4;
+}
+
+div.tab button.active {
+	background: var(--tpv-ink);
+	color: #ffffff;
+}
+
+.tabcontent {
+	padding: 0;
+}
+
+.tabla {
+	background: var(--tpv-surface);
+	border: 1px solid var(--tpv-line);
+	border-radius: 14px;
+	box-shadow: var(--tpv-shadow);
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.tabla table {
+	min-width: 620px;
+}
+
+.tabla td {
+	border-color: var(--tpv-line);
+	padding: 10px 8px;
+}
+
+.tabla tr:nth-child(odd) {
+	background: #eef5fa;
+}
+
+.tabla tr:first-child td,
+.tabla tr:first-child:hover td {
+	background: var(--tpv-ink-soft);
+	color: #ffffff;
+	font-weight: 700;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+	background: var(--tpv-surface);
+	border: 1px solid #9db0bf;
+	border-radius: 10px;
+	color: var(--tpv-ink);
+	font: inherit;
+	min-height: 44px;
+	padding: 9px 12px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+	accent-color: var(--tpv-accent-strong);
+	min-height: 22px;
+	min-width: 22px;
+}
+
+.popup {
+	background: rgba(16, 36, 62, 0.97);
+	color: #ffffff;
+	height: 100vh;
+	height: 100dvh;
+	inset: 0;
+	overflow-y: auto;
+	padding: max(24px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(96px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+	position: fixed;
+	z-index: 100;
+}
+
+.operation-error {
+	background: var(--tpv-danger);
+	border-radius: 12px;
+	box-shadow: var(--tpv-shadow);
+}
+
+#mapa-mesas {
+	border-radius: 14px;
+	box-shadow: inset 0 0 0 1px var(--tpv-line);
+	max-width: 100%;
+	overflow: auto;
+}
+
+#pagina > .header,
+#pagina > .content,
+#pagina > .footer {
+	animation: tpv-enter 240ms ease-out both;
+}
+
+@keyframes tpv-enter {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 720px) {
+	body {
+		font-size: 0.98rem;
+	}
+
+	#pagina {
+		padding-bottom: 92px;
+	}
+
+	.header {
+		min-height: 54px;
+		padding-block: 8px;
+	}
+
+	.content {
+		padding: 12px;
+		padding-bottom: 100px;
+	}
+
+	.boton,
+	.botonsub,
+	.botonpro {
+		aspect-ratio: 1 / 1;
+		height: auto;
+		min-height: 124px;
+		width: calc(50% - 8px);
+	}
+
+	.botonprocombi {
+		height: auto;
+		min-height: 76px;
+		width: calc(50% - 8px);
+	}
+
+	.panelticket {
+		float: none;
+		margin-bottom: 12px;
+		width: 100%;
+	}
+
+	.footer .btn,
+	.footerpopup .btn {
+		flex: 1 1 30%;
+		padding-inline: 8px;
+	}
+
+	div.tab {
+		top: 60px;
+	}
+}
+
+@media (max-width: 420px) {
+	.footer,
+	.footerpopup {
+		gap: 6px;
+		padding-inline: 8px;
+	}
+
+	.footer .btn,
+	.footerpopup .btn {
+		font-size: 0.82rem;
+		min-width: 0;
+	}
+
+	#buscador input[type="text"] {
+		display: block;
+		margin-bottom: 10px;
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}

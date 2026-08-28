@@ -39,13 +39,14 @@ $_SESSION['moneda'] = $row['moneda'];
 include "./".$_SESSION['idioma'].".php";
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo htmlspecialchars($_SESSION['idioma'], ENT_QUOTES, 'UTF-8'); ?>">
     <head>
         <meta charset="utf-8" />
         <title>
 		<?php echo $txtappname; ?>
         </title>
-		<meta name="viewport" content="width=device-width"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+		<meta name="theme-color" content="#10243e" />
 		<link rel="stylesheet" href="./css/estilo.css?<?php echo time(); ?>" />
 		<script src="./js/jquery.js"></script>
 		<script src="./js/cargomedia.js"></script>
@@ -59,7 +60,7 @@ include "./".$_SESSION['idioma'].".php";
 
 
 
-        <div id="pagina">
+        <div id="pagina" role="main">
 		</div>
 
 			<div id="operaciones1" class="oculto"></div>
