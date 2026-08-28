@@ -527,7 +527,7 @@ export const AdminPanel: React.FC = () => {
                   <div
                     key={cat.id}
                     className={`p-3 rounded-2xl border relative group overflow-hidden flex flex-col justify-between ${
-                      isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
+                      isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
                     }`}
                   >
                     <div className="space-y-2">
@@ -538,16 +538,20 @@ export const AdminPanel: React.FC = () => {
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-xs">
+                        <span className="absolute bottom-1 right-1 bg-black/75 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-xs">
                           {count} platos
                         </span>
                       </div>
-                      <div className="font-extrabold text-xs text-slate-900 dark:text-white truncate">
+                      <div className={`font-extrabold text-xs truncate ${
+                        isLight ? 'text-slate-900' : 'text-white'
+                      }`}>
                         {cat.name}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className={`flex items-center justify-between pt-2 mt-2 border-t ${
+                      isLight ? 'border-slate-100' : 'border-slate-800'
+                    }`}>
                       <button
                         onClick={() => handleEditCategory(cat)}
                         className="text-xs text-blue-600 dark:text-blue-400 font-bold hover:underline"
@@ -561,7 +565,7 @@ export const AdminPanel: React.FC = () => {
                               deleteCategory(cat.id);
                             }
                           }}
-                          className="text-slate-400 hover:text-rose-500"
+                          className="text-slate-400 hover:text-rose-500 p-1"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
@@ -574,14 +578,16 @@ export const AdminPanel: React.FC = () => {
           </div>
 
           {/* Products Section */}
-          <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className={`space-y-3 pt-4 border-t ${
+            isLight ? 'border-slate-200' : 'border-slate-800'
+          }`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-black flex items-center gap-2">
                   <Package className="w-4 h-4 text-emerald-500" />
                   <span>Productos y Precios</span>
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Edición de PVP, control de stock y asignación de cocina.
                 </p>
               </div>
@@ -606,8 +612,8 @@ export const AdminPanel: React.FC = () => {
                   value={catalogSearch}
                   onChange={(e) => setCatalogSearch(e.target.value)}
                   placeholder="Buscar producto por nombre..."
-                  className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800 text-white'
+                  className={`w-full pl-10 pr-4 py-2 rounded-xl text-xs border focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium ${
+                    isLight ? 'bg-white border-slate-300 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
                   }`}
                 />
               </div>
@@ -617,8 +623,10 @@ export const AdminPanel: React.FC = () => {
                   onClick={() => setSelectedCatalogCategory('all')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                     selectedCatalogCategory === 'all'
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
-                      : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                   }`}
                 >
                   Todos ({products.length})
@@ -630,7 +638,9 @@ export const AdminPanel: React.FC = () => {
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                       selectedCatalogCategory === c.id
                         ? 'bg-blue-600 text-white shadow-sm'
-                        : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        : isLight
+                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                     }`}
                   >
                     {c.name}
@@ -647,7 +657,7 @@ export const AdminPanel: React.FC = () => {
                   <div
                     key={prod.id}
                     className={`p-3.5 rounded-2xl border transition-all flex flex-col justify-between ${
-                      isLight ? 'bg-white border-slate-200 shadow-sm hover:shadow-md' : 'bg-slate-900 border-slate-800'
+                      isLight ? 'bg-white border-slate-200 shadow-xs hover:shadow-md' : 'bg-slate-900 border-slate-800'
                     }`}
                   >
                     <div className="space-y-2.5">
@@ -656,17 +666,25 @@ export const AdminPanel: React.FC = () => {
                           src={prod.image}
                           alt={prod.name}
                           referrerPolicy="no-referrer"
-                          className="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shrink-0"
+                          className={`w-14 h-14 rounded-xl object-cover border shrink-0 ${
+                            isLight ? 'border-slate-200' : 'border-slate-800'
+                          }`}
                         />
                         <div className="min-w-0 flex-1">
-                          <span className="text-[10px] text-slate-400 block font-medium truncate">
+                          <span className={`text-[10px] block font-semibold truncate ${
+                            isLight ? 'text-slate-500' : 'text-slate-400'
+                          }`}>
                             {cat?.name || 'General'}
                           </span>
-                          <h3 className="font-black text-xs text-slate-900 dark:text-white line-clamp-1">
+                          <h3 className={`font-black text-xs line-clamp-1 ${
+                            isLight ? 'text-slate-900' : 'text-white'
+                          }`}>
                             {prod.name}
                           </h3>
                           <div className="flex items-center gap-1.5 mt-1 font-mono">
-                            <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                            <span className={`text-sm font-black ${
+                              isLight ? 'text-emerald-600' : 'text-emerald-400'
+                            }`}>
                               {prod.price.toFixed(2)} {currency}
                             </span>
                             <span className="text-[10px] text-slate-400">
@@ -677,18 +695,20 @@ export const AdminPanel: React.FC = () => {
                       </div>
 
                       {/* Stock & Kitchen Status */}
-                      <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-950 text-[11px]">
+                      <div className={`flex items-center justify-between p-2 rounded-xl text-[11px] ${
+                        isLight ? 'bg-slate-100 text-slate-800' : 'bg-slate-950 text-slate-200'
+                      }`}>
                         <div className="flex items-center gap-1">
-                          <span className="text-slate-400">Stock:</span>
-                          <strong className={`font-mono ${prod.stock <= prod.minStock ? 'text-rose-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                          <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Stock:</span>
+                          <strong className={`font-mono ${prod.stock <= prod.minStock ? 'text-rose-500' : isLight ? 'text-slate-900 font-bold' : 'text-slate-300'}`}>
                             {prod.stock} uds
                           </strong>
                         </div>
 
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           prod.available
-                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
-                            : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300'
+                            ? isLight ? 'bg-emerald-100 text-emerald-800' : 'bg-emerald-950/60 text-emerald-300'
+                            : isLight ? 'bg-rose-100 text-rose-800' : 'bg-rose-950/60 text-rose-300'
                         }`}>
                           {prod.available ? 'En Carta' : 'Agotado'}
                         </span>
@@ -696,10 +716,16 @@ export const AdminPanel: React.FC = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div className={`flex items-center justify-between pt-2 mt-2 border-t ${
+                      isLight ? 'border-slate-100' : 'border-slate-800'
+                    }`}>
                       <button
                         onClick={() => handleEditProduct(prod)}
-                        className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1"
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                          isLight
+                            ? 'bg-slate-100 hover:bg-blue-50 text-slate-800 hover:text-blue-600'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        }`}
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>Editar</span>

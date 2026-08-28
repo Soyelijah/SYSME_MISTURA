@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { POSProvider, usePOS } from './context/POSContext';
 import { Navbar } from './components/Navbar';
 import { CashShiftBanner } from './components/CashShiftBanner';
@@ -18,6 +18,16 @@ import { LoginScreen } from './components/LoginScreen';
 
 const POSMainContent: React.FC = () => {
   const { activeView, themeMode, isLoggedIn } = usePOS();
+
+  useEffect(() => {
+    if (themeMode === 'vibrant-light') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+  }, [themeMode]);
 
   if (!isLoggedIn) {
     return <LoginScreen />;

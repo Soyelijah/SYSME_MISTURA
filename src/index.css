@@ -3,10 +3,18 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #030712;
-    color: #f3f4f6;
     user-select: none;
     -webkit-user-select: none;
+  }
+  
+  html.light body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
+  html.dark body, body {
+    background-color: #030712;
+    color: #f3f4f6;
   }
   
   h1, h2, h3, h4, h5, h6 {
