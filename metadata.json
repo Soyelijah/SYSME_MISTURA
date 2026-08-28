@@ -1,0 +1,8 @@
+{
+  "name": "Dy Pos - Sistema de Gestión Comercial y TPV Gastronómico",
+  "description": "Sistema profesional de Punto de Venta (TPV/POS) gastronómico Dy Pos: control total de base de datos (backup/restore, visor SQL/JSON, CRUD), salones interactivos con nueva paleta moderna, comandas táctiles, KDS de cocina, cierre Z y gestión multi-rol.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

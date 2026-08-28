@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+*.err
+.DS_Store
+sysmeserver/data/*.err
+sysmeserver/data/*.log

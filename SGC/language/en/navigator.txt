@@ -1,0 +1,10 @@
+First
+Prior
+Next
+Last
+Add
+Delete
+Edit
+Save
+Cancel
+Refresh

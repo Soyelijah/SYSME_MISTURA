@@ -1,0 +1,809 @@
+SYSME TPV#SYSME TPV
+ Gesti�n del Cat�logo# Gesti�n del Cat�logo
+CATEGORIAS#CATEGORIAS
+PRODUCTOS#PRODUCTOS
+TARIFAS ESPECIALES#TARIFAS ESPECIALES
+PROMOCIONES ESPECIALES#PROMOCIONES ESPECIALES
+ Gesti�n de Stock# Gesti�n de Stock
+ALMACENES#ALMACENES
+TRASPASO DE MERCANCIAS#TRASPASO DE MERCANCIAS
+ENTRADA DE PRODUCTOS#ENTRADA DE PRODUCTOS
+INFORME DE EXISTENCIAS#INFORME DE EXISTENCIAS
+GESTI�N DE INVENTARIO#GESTI�N DE INVENTARIO
+PROVEEDORES#PROVEEDORES
+ Modulo de Hosteler�a# Modulo de Hosteler�a
+MESAS#MESAS
+SALONES#SALONES
+OPCIONES DE COCINA#OPCIONES DE COCINA
+RESERVAS#RESERVAS
+PANEL COCINA#PANEL COCINA
+ Gesti�n de Ventas# Gesti�n de Ventas
+TERMINAL DE VENTAS#TERMINAL DE VENTAS
+TICKETS#TICKETS
+FACTURAS#FACTURAS
+CLIENTES#CLIENTES
+ADMINISTRAR PUNTO DE VENTA#ADMINISTRAR PUNTO DE VENTA
+MOVIMIENTOS DE CAJA#MOVIMIENTOS DE CAJA
+ Configuraci�n del Sistema# Configuraci�n del Sistema
+CONFIGURACION#CONFIGURACION
+DATOS DE EMPRESA#DATOS DE EMPRESA
+PUNTOS DE VENTA#PUNTOS DE VENTA
+FORMAS DE PAGO#FORMAS DE PAGO
+EMPLEADOS#EMPLEADOS
+ Men� Principal# Men� Principal
+VENTAS#VENTAS
+MODULO DE HOSTELER�A#MODULO DE HOSTELER�A
+CATALOGO#CATALOGO
+SISTEMA#SISTEMA
+STOCK#STOCK
+INFORMES#INFORMES
+ENTRADAS / SALIDAS DE CAJA#ENTRADAS / SALIDAS DE CAJA
+MOVIMIENTOS CAJA#MOVIMIENTOS CAJA
+OPEN / CLOSE POINT OF SALE#OPEN / CLOSE POINT OF SALE
+HALL SETTINGS#HALL SETTINGS
+COLORES#COLORES
+TALLAS#TALLAS
+PROPOSALS#PROPOSALS
+USERS#USERS
+USER GROUPS#USER GROUPS
+PRODUCT MANUFACTURE#PRODUCT MANUFACTURE
+ORDERS TO SUPPLIERS#ORDERS TO SUPPLIERS
+Gesti�n del Punto de venta#Gesti�n del Punto de venta
+SALIR#SALIR
+AYUDA ONLINE#AYUDA ONLINE
+SYSME SOFTWARE#SYSME SOFTWARE
+ACTIVACION ELITE#ACTIVACION ELITE
+Configuraci�n#Configuraci�n
+Guardar Cambios#Guardar Cambios
+Salir#Salir
+Opciones#Opciones
+% de impuesto por defecto en entrada de albaranes:#% de impuesto por defecto en entrada de albaranes:
+% de impuesto por defecto en alta de productos:#% de impuesto por defecto en alta de productos:
+Serie de facturaci�n:#Serie de facturaci�n:
+Definici�n del Impuesto:#Definici�n del Impuesto:
+Mostrar advertencias de stock m�nimo#Mostrar advertencias de stock m�nimo
+Ordenar categor�as y productos por nombre en terminal de ventas#Ordenar categor�as y productos por nombre en terminal de ventas
+Copia de Seguridad de Base de Datos#Copia de Seguridad de Base de Datos
+Restaurar Copia de Seguridad#Restaurar Copia de Seguridad
+Borrar Base de Datos (excepto productos)#Borrar Base de Datos (excepto productos)
+Cambiar idioma#Cambiar idioma
+Pesta�a por defecto en terminal de ventas#Pesta�a por defecto en terminal de ventas
+Solicitar contrase�a de empleado al finalizar una venta#Solicitar contrase�a de empleado al finalizar una venta
+Solicitar contrase�a de empleado al iniciar una venta#Solicitar contrase�a de empleado al iniciar una venta
+Solicitar contrase�a de empleado al iniciar el programa#Solicitar contrase�a de empleado al iniciar el programa
+Seleccione Idioma / Select Language#Seleccione Idioma / Select Language
+Configuraci�n de Red#Configuraci�n de Red
+Servidor:#Servidor:
+Nombre o IP del equipo#Nombre o IP del equipo
+ Cajon Portamonedas # Cajon Portamonedas 
+Impresora :#Impresora :
+Puerto :#Puerto :
+Secuencia:#Secuencia:
+(Si no se quiere CHR poner entre comillas)#(Si no se quiere CHR poner entre comillas)
+(Separado por 
+Punto y Coma)#(Separado por 
+Punto y Coma)
+Cadena Corte Papel:#Cadena Corte Papel:
+Imprimir Tiquet en Puerto#Imprimir Tiquet en Puerto
+Utilizo una Impresora Fiscal#Utilizo una Impresora Fiscal
+Cortar Papel al Finalizar Tiquet#Cortar Papel al Finalizar Tiquet
+Probar Corte Papel#Probar Corte Papel
+Impresoras#Impresoras
+Probar Apertura Cajon#Probar Apertura Cajon
+Visor del Cliente#Visor del Cliente
+N� Caracteres Linea 1:#N� Caracteres Linea 1:
+Texto Prueba:#Texto Prueba:
+Mensajes de Bienvenida#Mensajes de Bienvenida
+Mensajes de Venta#Mensajes de Venta
+N� Caracteres Linea 2:#N� Caracteres Linea 2:
+Linea 1:#Linea 1:
+Linea 2:#Linea 2:
+Gracias por su compra 1:#Gracias por su compra 1:
+Gracias por su compra 2:#Gracias por su compra 2:
+A Devolver:#A Devolver:
+Total a Pagar:#Total a Pagar:
+Habilitar Visor#Habilitar Visor
+Probar Visor#Probar Visor
+Borrar Visor#Borrar Visor
+(Separado por 
+Punto y Coma)#(Separado por 
+Punto y Coma)
+(Separado por 
+Punto y Coma)#(Separado por 
+Punto y Coma)
+Informes#Informes
+Exportar a CSV#Exportar a CSV
+Filtro de Fechas#Filtro de Fechas
+Desde#Desde
+Hasta#Hasta
+Filtro de Horas#Filtro de Horas
+Exportar a HTML#Exportar a HTML
+Total Ventas#Total Ventas
+Total#Total
+Por Categorias#Por Categorias
+Categoria#Categoria
+Ventas#Ventas
+Por Productos#Por Productos
+Producto#Producto
+Por Empleado#Por Empleado
+Empleado#Empleado
+Por Impuesto#Por Impuesto
+SubTotal#SubTotal
+Impuesto#Impuesto
+Impuestos#Impuestos
+Por Mesa#Por Mesa
+IdMesa#IdMesa
+Mesa#Mesa
+Empleado:#Empleado:
+Label11#Label11
+Label19#Label19
+Almac�n:#Almac�n:
+Venta:#Venta:
+Fecha:#Fecha:
+Tarifa:#Tarifa:
+Label9#Label9
+Label6#Label6
+Label5#Label5
+Tpv:#Tpv:
+Mesa:#Mesa:
+Ticket:#Ticket:
+Label4#Label4
+Label15#Label15
+Label17#Label17
+Labelpre#Labelpre
+LabelDNIAlbaran#LabelDNIAlbaran
+Cliente:#Cliente:
+none#none
+Total Venta:#Total Venta:
+Id#Id
+Precio#Precio
+Dto %#Dto %
+Cant#Cant
+Opc#Opc
+Notas#Notas
++ Nota#+ Nota
++ Op Cocina#+ Op Cocina
+Precio Manual#Precio Manual
++ Descuento#+ Descuento
+Vista Ampliada#Vista Ampliada
+Pasar Cargos a Habitaci�n#Pasar Cargos a Habitaci�n
+Hacer Factura#Hacer Factura
+Eliminar#Eliminar
+-#-
+1#1
+2#2
+3#3
+4#4
+5#5
+6#6
+7#7
+8#8
+9#9
+0#0
+,#,
+C#C
+Finalizar Venta#Finalizar Venta
+Cancelar Venta#Cancelar Venta
+Finalizar con Factura#Finalizar con Factura
+Dejar Pendiente#Dejar Pendiente
+Asignar a Cliente#Asignar a Cliente
+Asignar a Mesa#Asignar a Mesa
+Aplicar Descuento#Aplicar Descuento
+Enviar orden a Cocina#Enviar orden a Cocina
+Insertar Cup�n Promocional#Insertar Cup�n Promocional
+Imprimir sin Finalizar#Imprimir sin Finalizar
+M�s Opciones#M�s Opciones
+Imprimir el �ltimo Ticket Generado#Imprimir el �ltimo Ticket Generado
+Dividir en 2 Ventas#Dividir en 2 Ventas
+Eliminar Impuestos#Eliminar Impuestos
+Pasar Cargos a Huesped#Pasar Cargos a Huesped
+A�adir Observaciones#A�adir Observaciones
+Configuraci�n de Tickets#Configuraci�n de Tickets
+Un Producto por Linea (incremento de cantidad)#Un Producto por Linea (incremento de cantidad)
+Configuraci�n de Orden de Cocina#Configuraci�n de Orden de Cocina
+Configuraci�n de Cargo a Huesped#Configuraci�n de Cargo a Huesped
+Configurar Albaran#Configurar Albaran
+Imprimir como Varios#Imprimir como Varios
+Ver Teclado#Ver Teclado
+Guardar PreVenta#Guardar PreVenta
+dar cambio#dar cambio
+Imprimir Albaran#Imprimir Albaran
+   Configurar Vales#   Configurar Vales
+Invitaci�n#Invitaci�n
+Imprimir Entradas y Finalizar Venta#Imprimir Entradas y Finalizar Venta
+Mostrar Pre-Impresi�n antes de Imprimir Ticket#Mostrar Pre-Impresi�n antes de Imprimir Ticket
+Venta R�pida - No solicitar forma de pago al finalizar venta#Venta R�pida - No solicitar forma de pago al finalizar venta
+Cambiar Tarifa#Cambiar Tarifa
+Impresora Habilitada#Impresora Habilitada
+Cambiar Empleado#Cambiar Empleado
+Ventas Pendientes#Ventas Pendientes
+Mapa del Sal�n#Mapa del Sal�n
+Abrir Caja de Dinero#Abrir Caja de Dinero
+Terminal T�ctil#Terminal T�ctil
+Codigo de Barras / Manual#Codigo de Barras / Manual
+C�digo de Barras:#C�digo de Barras:
+Buscador Manual:#Buscador Manual:
+Busqueda de Producto#Busqueda de Producto
+Categoria:#Categoria:
+Cantidad:#Cantidad:
+Close#Close
+A�adir Nota al Producto:#A�adir Nota al Producto:
+Guardar Nota#Guardar Nota
+Teclado T�ctil#Teclado T�ctil
+Aplicar Descuento al Producto:#Aplicar Descuento al Producto:
+Descuento:#Descuento:
+Tipo de Descuento#Tipo de Descuento
+ Vista Ampliada de datos # Vista Ampliada de datos 
+Volver a vista simple#Volver a vista simple
+De:#De:
+Leido#Leido
+Camareros#Camareros
+MESA 00 = BARRA#MESA 00 = BARRA
+AVISO#AVISO
+Borrar Venta#Borrar Venta
+Elegir Trabajador#Elegir Trabajador
+idioma#idioma
+Mesas#Mesas
+Listado#Listado
+N� Mesa#N� Mesa
+Descripcion#Descripcion
+Salon#Salon
+Tarifa#Tarifa
+N�mero Mesa:#N�mero Mesa:
+Descripci�n:#Descripci�n:
+Salon:#Salon:
+Im�gen#Im�gen
+Im�gen Ocupada#Im�gen Ocupada
+Esta Mesa es Barra        #Esta Mesa es Barra        
+Tarifa Por Defecto#Tarifa Por Defecto
+ Salir # Salir 
+salones#salones
+Id:#Id:
+Default Hall in this Point of Sale:#Default Hall in this Point of Sale:
+Nombre:#Nombre:
+SET AS DEFAULT HALL IN THIS POS#SET AS DEFAULT HALL IN THIS POS
+Nombre#Nombre
+Configurar Mapa de Mesas#Configurar Mapa de Mesas
+Empleados#Empleados
+ Lista # Lista 
+Id Empleado#Id Empleado
+Activo#Activo
+C�digo :#C�digo :
+Foto#Foto
+Nombre :#Nombre :
+Contrase�a:#Contrase�a:
+Activo:               #Activo:               
+Privilegios de Acceso#Privilegios de Acceso
+Privilegios en Terminal de Ventas#Privilegios en Terminal de Ventas
+Permitir Abrir Cajon#Permitir Abrir Cajon
+Permitir Precios Manuales#Permitir Precios Manuales
+Permitir Borrar Lineas de Tiquet#Permitir Borrar Lineas de Tiquet
+Permitir Cancelar Tiquet#Permitir Cancelar Tiquet
+Permitir Modificar Tiquet que haya sido enviado a Cocina#Permitir Modificar Tiquet que haya sido enviado a Cocina
+Permitir Descuentos#Permitir Descuentos
+Formas de Pago#Formas de Pago
+Forma de Pago#Forma de Pago
+traducir#traducir
+Puntos de Venta#Puntos de Venta
+Lista#Lista
+Datos#Datos
+Siguiente C�digo de Caja: #Siguiente C�digo de Caja: 
+Label2#Label2
+Caja de Trabajo Actual:#Caja de Trabajo Actual:
+Vincular a este Equipo#Vincular a este Equipo
+Activaci�n de licencia#Activaci�n de licencia
+Introduzca a continuaci�n la CLAVE de licencia que le ha sido proporcionada por su proveedor al comprar el producto.#Introduzca a continuaci�n la CLAVE de licencia que le ha sido proporcionada por su proveedor al comprar el producto.
+Clave:#Clave:
+Id. Instalacion:#Id. Instalacion:
+Label8#Label8
+Activar#Activar
+Continuar Evaluaci�n#Continuar Evaluaci�n
+PVP#PVP
+Aplicar descuento:#Aplicar descuento:
+C�digo#C�digo
+Dto#Dto
+Subtotal#Subtotal
+%IVA#%IVA
+IVA#IVA
+Nota#Nota
+Observaciones#Observaciones
+Camarero#Camarero
+Venta#Venta
+Fecha Venta#Fecha Venta
+Cerrada#Cerrada
+Maestro de Tiquets#Maestro de Tiquets
+Buscador#Buscador
+Fecha Desde:#Fecha Desde:
+Fecha Hasta:#Fecha Hasta:
+N Tiquet/s Filtrado/s#N Tiquet/s Filtrado/s
+Hora Hasta:#Hora Hasta:
+Hora Desde:#Hora Desde:
+Buscar#Buscar
+Imprimir#Imprimir
+Total:#Total:
+labeltotal#labeltotal
+Fecha#Fecha
+Apellidos#Apellidos
+Obs#Obs
+Ticket#Ticket
+Obs:#Obs:
+Factura:#Factura:
+Generar Factura#Generar Factura
+Anular Ticket#Anular Ticket
+Borrar Tiquet#Borrar Tiquet
+Imprimir Ticket#Imprimir Ticket
+Categor�a#Categor�a
+Cantidad#Cantidad
+Impresi�n de documentos#Impresi�n de documentos
+Enviar una copia a otra impresora:#Enviar una copia a otra impresora:
+Num. Copias:#Num. Copias:
+Archivo de formato:#Archivo de formato:
+Impresora:#Impresora:
+Mostrar#Mostrar
+Modificar#Modificar
+A�adir#A�adir
+Order#Order
+Description#Description
+Imprimir en:#Imprimir en:
+Guardar#Guardar
+Abrir#Abrir
+Categorias#Categorias
+Imagen:#Imagen:
+Color:#Color:
+Descripcion:#Descripcion:
+Borrar Imagen#Borrar Imagen
+ Categoria Visible en . . . # Categoria Visible en . . . 
+Cambiar Color#Cambiar Color
+Productos#Productos
+Categor�a:#Categor�a:
+Producto:#Producto:
+Cod.Barras:#Cod.Barras:
+Precio:#Precio:
+% Impuesto:#% Impuesto:
+LabelResultado#LabelResultado
+Id Adicional:#Id Adicional:
+PVP:#PVP:
+C�digos de Barras#C�digos de Barras
+A�adir a la lista de impresi�n de c�digos de barras#A�adir a la lista de impresi�n de c�digos de barras
+A�adir Todos Los Resultados#A�adir Todos Los Resultados
+A�adir Producto Seleccionado#A�adir Producto Seleccionado
+Id Adicional#Id Adicional
+Pvp#Pvp
+Cod.Barras#Cod.Barras
+Nuevo Producto#Nuevo Producto
+Editar Producto#Editar Producto
+Borrar Producto#Borrar Producto
+Ficha de Producto#Ficha de Producto
+Copiar Producto#Copiar Producto
+Composici�n del Producto#Composici�n del Producto
+Opciones de Combinaci�n#Opciones de Combinaci�n
+Sincronizar en Web#Sincronizar en Web
+Unidad de Medida:#Unidad de Medida:
+16#16
+Precio Final:#Precio Final:
+Precio de Coste:#Precio de Coste:
+Este dato debe ser una estimaci�n.#Este dato debe ser una estimaci�n.
+Precio Ultima Compra:#Precio Ultima Compra:
+Stock en Almacenes:#Stock en Almacenes:
+Contabilizar en Stock#Contabilizar en Stock
+Visible en Entrada de Mercanc�as#Visible en Entrada de Mercanc�as
+Visible en Ordenes a Coc�na (solo en modulo de hosteler�a)#Visible en Ordenes a Coc�na (solo en modulo de hosteler�a)
+Visible en Terminal de Ventas#Visible en Terminal de Ventas
+Sujeto a Rec Equiv#Sujeto a Rec Equiv
+Sujeto a Retenciones#Sujeto a Retenciones
+Eliminar Imagen#Eliminar Imagen
+Autogenerar#Autogenerar
+Agregar a Favoritos#Agregar a Favoritos
+Impuesto Incluido?#Impuesto Incluido?
+Almac�n#Almac�n
+Aviso de Stock M�nimo#Aviso de Stock M�nimo
+Historico de Precios de Coste#Historico de Precios de Coste
+ Precios de Compra # Precios de Compra 
+Precios de �ltima Compra Visible solo para Administradores#Precios de �ltima Compra Visible solo para Administradores
+ Presencia en Almacenes # Presencia en Almacenes 
+ Rotaci�n # Rotaci�n 
+ Rotaci�n Almac�n: # Rotaci�n Almac�n: 
+Almacen#Almacen
+Id Categoria#Id Categoria
+Cod Producto#Cod Producto
+Stock M�nimo#Stock M�nimo
+Precio Ponderado#Precio Ponderado
+ Rotaci�n Ventas y Compras: # Rotaci�n Ventas y Compras: 
+N� Ventas#N� Ventas
+Precio Medio Venta#Precio Medio Venta
+Precio Ultima Venta#Precio Ultima Venta
+Precio Medio Compra#Precio Medio Compra
+Precio Ultima Compra#Precio Ultima Compra
+Fecha Primera Venta#Fecha Primera Venta
+Fecha Ultima Venta#Fecha Ultima Venta
+Fecha Primera Compra#Fecha Primera Compra
+Fecha Ultima Compra#Fecha Ultima Compra
+ Operaciones # Operaciones 
+  Cambiar Precio a Todos los Productos de la Categoria ...  #  Cambiar Precio a Todos los Productos de la Categoria ...  
+%#%
+Aplicar#Aplicar
+ Marcar . . . # Marcar . . . 
+ Venta # Venta 
+ Compra # Compra 
+ Inventario # Inventario 
+ Introducir en Stock . . . # Introducir en Stock . . . 
+ Introducir . . . # Introducir . . . 
+ Eliminar del Stock . . . # Eliminar del Stock . . . 
+ Eliminar . . . # Eliminar . . . 
+GENERANDO CAMBIOS . . .  ESPERE POR FAVOR#GENERANDO CAMBIOS . . .  ESPERE POR FAVOR
+ Importaci�n Albaranes y Productos desde Excel # Importaci�n Albaranes y Productos desde Excel 
+Abrir Plantilla#Abrir Plantilla
+Importar Productos desde Excel#Importar Productos desde Excel
+Impresi�n de C�digos de Barras#Impresi�n de C�digos de Barras
+Eliminar Todos#Eliminar Todos
+C�digo de Barras#C�digo de Barras
+Cantidad a Imprimir#Cantidad a Imprimir
+ Colores y Tallas # Colores y Tallas 
+ Colores # Colores 
+Colores disponibles:#Colores disponibles:
+Paso 1 - Seleccionar los colores del Producto#Paso 1 - Seleccionar los colores del Producto
+Colores del Producto:#Colores del Producto:
+Duplicar Color#Duplicar Color
+Buscar Color#Buscar Color
+Refrescar#Refrescar
+Color#Color
+Color y tallas dependientes creadas, seleccione ahora el nuevo color y guarde los cambios#Color y tallas dependientes creadas, seleccione ahora el nuevo color y guarde los cambios
+ Tallas # Tallas 
+Tallas disponibles:#Tallas disponibles:
+Precio Venta:#Precio Venta:
+Tallas disponibles del Producto:#Tallas disponibles del Producto:
+Paso 2 - Seleccionar las tallas de cada color del Producto#Paso 2 - Seleccionar las tallas de cada color del Producto
+Precio con iva incluido#Precio con iva incluido
+Talla#Talla
+Gestion de Errores#Gestion de Errores
+ Error # Error 
+Se ha producido un error en la aplicacion con la siguiente descripcion:#Se ha producido un error en la aplicacion con la siguiente descripcion:
+Enviar#Enviar
+Aceptar#Aceptar
+Registro de Facturas#Registro de Facturas
+Busqueda#Busqueda
+Hasta:#Hasta:
+Desde:#Desde:
+ Ver solo Facturas de Cafeteria / Tienda# Ver solo Facturas de Cafeteria / Tienda
+Mostrar PreImpresi�n#Mostrar PreImpresi�n
+Imprimir Listado#Imprimir Listado
+Guardar Cada Factura en 1 Fichero .PDF#Guardar Cada Factura en 1 Fichero .PDF
+Serie#Serie
+Factura#Factura
+Cliente Doc#Cliente Doc
+Cliente Nombre#Cliente Nombre
+Cliente Apellidos#Cliente Apellidos
+Pagada#Pagada
+Totales#Totales
+Sub-Total:#Sub-Total:
+Impuestos:#Impuestos:
+Origen:#Origen:
+Esta factura es de Tienda#Esta factura es de Tienda
+Serie:#Serie:
+Facturar#Facturar
+Anular Factura#Anular Factura
+Marcar como Pagada#Marcar como Pagada
+Marcar como Pendiente#Marcar como Pendiente
+Imprimir Factura#Imprimir Factura
+obs#obs
+Borrar#Borrar
+Anular#Anular
+Cancelar#Cancelar
+Teclado#Teclado
+TOTAL#TOTAL
+ENTREGADO#ENTREGADO
+A DEVOLVER#A DEVOLVER
+NUEVO PRECIO#NUEVO PRECIO
+CONTRASE�A EMPLEADO#CONTRASE�A EMPLEADO
+IMPORTE#IMPORTE
+NUM. HABITACION#NUM. HABITACION
+ACEPTAR#ACEPTAR
+CANCELAR#CANCELAR
+LabelModoPago#LabelModoPago
+MODO DE PAGO#MODO DE PAGO
+exportar imagenes#exportar imagenes
+Detalle de la Venta:#Detalle de la Venta:
+Ventas Pendientes:#Ventas Pendientes:
+Recuperar#Recuperar
+Volver#Volver
+Tpv#Tpv
+Administrador de Cajas#Administrador de Cajas
+Punto de venta actual:#Punto de venta actual:
+LabelCajaTrabajo#LabelCajaTrabajo
+Imprimir Informe de Cierre#Imprimir Informe de Cierre
+Imprimir Totales de Caja (Resumido)#Imprimir Totales de Caja (Resumido)
+No Imprimir Nada#No Imprimir Nada
+ Seleccione El Tipo de Operacion # Seleccione El Tipo de Operacion 
+Abrir Punto de Venta#Abrir Punto de Venta
+Saldo Actual:#Saldo Actual:
+LabelSaldo#LabelSaldo
+Cerrar Punto de Venta#Cerrar Punto de Venta
+Ver Totales de Caja#Ver Totales de Caja
+Atenci�n, la caja se cerrara con el siguiente importe:#Atenci�n, la caja se cerrara con el siguiente importe:
+labelcambiofinal#labelcambiofinal
+�Es correcto? �Desea continuar, extraer dinero o Cancelar?#�Es correcto? �Desea continuar, extraer dinero o Cancelar?
+Continuar#Continuar
+Extraer Dinero#Extraer Dinero
+Seleccione el punto de venta con el cual quiere operar:#Seleccione el punto de venta con el cual quiere operar:
+Estado:#Estado:
+LabelEstado#LabelEstado
+Prefijo:#Prefijo:
+Obs :#Obs :
+Add#Add
+Cliente#Cliente
+Documento:#Documento:
+LabelDni#LabelDni
+LabelNombre#LabelNombre
+LabelApellidos#LabelApellidos
+Buscar Cliente#Buscar Cliente
+Detalle#Detalle
+Pendientes#Pendientes
+A�adidos#A�adidos
+Category#Category
+Product#Product
+Qty#Qty
+Price#Price
+Tax#Tax
+<<#<<
+<#<
+>#>
+>>#>>
+Vista Previa#Vista Previa
+Finalizar#Finalizar
+Seleccionar Ticket#Seleccionar Ticket
+Ticket Id:#Ticket Id:
+Date#Date
+Maestro de Clientes#Maestro de Clientes
+ Busqueda # Busqueda 
+Poblaci�n:#Poblaci�n:
+Apellidos:#Apellidos:
+Empleado Asignado:#Empleado Asignado:
+Telefono:#Telefono:
+Cumplea�os:#Cumplea�os:
+/#/
+Documento#Documento
+Direccion#Direccion
+Poblacion#Poblacion
+CP#CP
+Tel�fono#Tel�fono
+Cliente Seleccionado#Cliente Seleccionado
+Documento (*):#Documento (*):
+Tipo Doc (*) :#Tipo Doc (*) :
+Tipo Cliente (*) :#Tipo Cliente (*) :
+Nombre (*) :#Nombre (*) :
+Direcci�n:#Direcci�n:
+Pa�s :#Pa�s :
+Provincia:#Provincia:
+C. Postal:#C. Postal:
+Tel�fono 2:#Tel�fono 2:
+Tel�fono 1:#Tel�fono 1:
+E-Mail 1:#E-Mail 1:
+E-Mail 2:#E-Mail 2:
+Observaciones:#Observaciones:
+(*) : Indica que estos campos son Requeridos#(*) : Indica que estos campos son Requeridos
+Fecha Nacimiento:#Fecha Nacimiento:
+Asignar Cliente a Factura#Asignar Cliente a Factura
+Asignar Cliente a Presupuesto#Asignar Cliente a Presupuesto
+Asignar Cliente a Salida de Almacen#Asignar Cliente a Salida de Almacen
+Asignar Cliente a Reserva#Asignar Cliente a Reserva
+Asignar Cliente a Venta#Asignar Cliente a Venta
+Como Llegar - Google Maps#Como Llegar - Google Maps
+ Facturas # Facturas 
+Facturas de :  #Facturas de :  
+Id Factura#Id Factura
+Fecha Factura#Fecha Factura
+Cuota Impuestos#Cuota Impuestos
+ Tiquets # Tiquets 
+Detalle de las lineas del tiquet seleccionado#Detalle de las lineas del tiquet seleccionado
+Tiquets de :  #Tiquets de :  
+Linea#Linea
+IVA (%)#IVA (%)
+Descuento#Descuento
+Id Tiquet#Id Tiquet
+Movimientos de Caja#Movimientos de Caja
+Punto de Venta:#Punto de Venta:
+Apertura desde:#Apertura desde:
+Apertura hasta:#Apertura hasta:
+Aperturas#Aperturas
+Movimientos#Movimientos
+Imprimir Informe#Imprimir Informe
+Caja#Caja
+Apertura#Apertura
+Hora#Hora
+Importe Inicial#Importe Inicial
+Cierre#Cierre
+Importe Final#Importe Final
+Abierta?#Abierta?
+Tipo#Tipo
+Descripci�n#Descripci�n
+Importe#Importe
+Saldo#Saldo
+Modo#Modo
+A�adir Movimiento#A�adir Movimiento
+Mostrar el Mapa del Sal�n al Iniciar una Nueva Venta#Mostrar el Mapa del Sal�n al Iniciar una Nueva Venta
+Leyenda#Leyenda
+Mesa Libre#Mesa Libre
+Mesa Ocupada#Mesa Ocupada
+Mesa Pretiquet#Mesa Pretiquet
+Sal�n:#Sal�n:
+SALON: #SALON: 
+Sal�n Siguiente#Sal�n Siguiente
+Sal�n Anterior#Sal�n Anterior
+19#19
+Precio Compra#Precio Compra
+Auto#Auto
+Cambiar Tama�o y Fuente de Letra#Cambiar Tama�o y Fuente de Letra
+Maestro de Almacenes#Maestro de Almacenes
+Id Almacen#Id Almacen
+ Datos # Datos 
+Ubicaci�n :#Ubicaci�n :
+Almac�n de Trabajo:#Almac�n de Trabajo:
+Stock Real    #Stock Real    
+Integrando Productos con Nuevo Almacen, espere . . .#Integrando Productos con Nuevo Almacen, espere . . .
+Vincular este Equipo a este Almac�n#Vincular este Equipo a este Almac�n
+Composici�n de producto#Composici�n de producto
+LabelTipo#LabelTipo
+LabelProducto#LabelProducto
+LabelTipoID#LabelTipoID
+LabelProductoID#LabelProductoID
+Unidad de Medida#Unidad de Medida
+Buscar:#Buscar:
+Codigo de Barras#Codigo de Barras
+Resultado#Resultado
+Cantidad a A�adir#Cantidad a A�adir
+Id Tipo Producto#Id Tipo Producto
+Tipo Producto#Tipo Producto
+Id Producto#Id Producto
+ Insertar Producto (Buscador) # Insertar Producto (Buscador) 
+Cod Barras#Cod Barras
+Tipo de Producto#Tipo de Producto
+Inserta Detalles de la Linea:#Inserta Detalles de la Linea:
+Cantidad  Producto Principal:#Cantidad  Producto Principal:
+Precio Venta del Combinado::#Precio Venta del Combinado::
+Cantidad  Producto Combinado:#Cantidad  Producto Combinado:
+A�adir con Producto Seleccionado#A�adir con Producto Seleccionado
+A�adir con Grupo filtrado#A�adir con Grupo filtrado
+Opciones de Cocina#Opciones de Cocina
+ Desplazamiento: # Desplazamiento: 
+Id Nota#Id Nota
+Opci�n#Opci�n
+Id Nota:#Id Nota:
+Nota:#Nota:
+ Tipo de nota # Tipo de nota 
+Registro de Stock#Registro de Stock
+Informe de Existencias#Informe de Existencias
+Almacen:#Almacen:
+Id Producto:#Id Producto:
+Id Interno:#Id Interno:
+Cod Barras:#Cod Barras:
+ Ordenar Por . . . # Ordenar Por . . . 
+Valoraci�n econ�mica del Stock (solo los registros filtrados)   #Valoraci�n econ�mica del Stock (solo los registros filtrados)   
+Seg�n Precio Medio de Compra:#Seg�n Precio Medio de Compra:
+Seg�n Precio de Venta:#Seg�n Precio de Venta:
+Stock#Stock
+Precio Medio de Compra#Precio Medio de Compra
+Precio Venta#Precio Venta
+ACTUALIZANDO CARACTERISTICAS DEL STOCK A LA VERSION V2.51 O SUPERIORES#ACTUALIZANDO CARACTERISTICAS DEL STOCK A LA VERSION V2.51 O SUPERIORES
+ Productos en Stock M�nimo # Productos en Stock M�nimo 
+Atenci�n, si el stock minimo es 0. El producto no se tendra en cuenta en esta lista.#Atenci�n, si el stock minimo es 0. El producto no se tendra en cuenta en esta lista.
+Stock Minimo#Stock Minimo
+ Stock en Tiempo Real  # Stock en Tiempo Real  
+Proceso Detenido#Proceso Detenido
+Iniciar#Iniciar
+Detener#Detener
+Traspaso Entre Almacenes#Traspaso Entre Almacenes
+Buscador #Buscador 
+Id Traspaso#Id Traspaso
+Fecha Desde#Fecha Desde
+Fecha Hasta#Fecha Hasta
+Almac�n Proveedor#Almac�n Proveedor
+Almac�n Destino#Almac�n Destino
+0 Registros Filtrados#0 Registros Filtrados
+Doble click para ver los Datos#Doble click para ver los Datos
+Quitar Filtro#Quitar Filtro
+Almacen Proveedor#Almacen Proveedor
+Almacen Destino#Almacen Destino
+Datos del Traspaso#Datos del Traspaso
+Tramitado#Tramitado
+Seleccione el Almac�n Proveedor#Seleccione el Almac�n Proveedor
+Seleccione el Almac�n Destino#Seleccione el Almac�n Destino
+Productos a Traspasar#Productos a Traspasar
+Tramitar Traspaso#Tramitar Traspaso
+Imprimir Traspaso#Imprimir Traspaso
+Insertar Nuevo Producto#Insertar Nuevo Producto
+Eliminar Producto Seleccionado#Eliminar Producto Seleccionado
+Nuevo Traspaso#Nuevo Traspaso
+ Insertar Cabecera Nuevo Traspaso # Insertar Cabecera Nuevo Traspaso 
+ Insertar Producto a Traspasar # Insertar Producto a Traspasar 
+Filtrado X productos#Filtrado X productos
+Doble Click Para Insertar#Doble Click Para Insertar
+Cod. Barras:#Cod. Barras:
+C�digo:#C�digo:
+Precio Coste#Precio Coste
+Iva#Iva
+Cant en Stock#Cant en Stock
+Maestro de Inventarios#Maestro de Inventarios
+Id Inventario:#Id Inventario:
+Fecha Inventario Desde: #Fecha Inventario Desde: 
+Fecha Inventario Hasta: #Fecha Inventario Hasta: 
+Registros Filtrados#Registros Filtrados
+Id Inventario#Id Inventario
+Fecha Inventario#Fecha Inventario
+Eliminar Inventario#Eliminar Inventario
+Nuevo Inventario#Nuevo Inventario
+Modificar Inventario#Modificar Inventario
+ Datos de Inventario # Datos de Inventario 
+Id Interno#Id Interno
+Cod Categoria#Cod Categoria
+Fecha: #Fecha: 
+observaciones#observaciones
+Imprimir Inventario#Imprimir Inventario
+Consolidaci�n Parcial#Consolidaci�n Parcial
+Consolidaci�n Total#Consolidaci�n Total
+Comparar con Existencias#Comparar con Existencias
+ Insertar Producto a Inventario # Insertar Producto a Inventario 
+Doble Click o INTRO Para Insertar#Doble Click o INTRO Para Insertar
+Tipo Complemento:#Tipo Complemento:
+Mantener este buscador abierto#Mantener este buscador abierto
+Opciones al insertar nuevo producto #Opciones al insertar nuevo producto 
+ Insertar Cabecera Nuevo Inventario # Insertar Cabecera Nuevo Inventario 
+Entrada de Albaranes#Entrada de Albaranes
+Proveedor#Proveedor
+Id Albaran#Id Albaran
+(Doble Click Para ir al Albaran)#(Doble Click Para ir al Albaran)
+Fecha Albaran#Fecha Albaran
+Eliminar Albar�n#Eliminar Albar�n
+Nuevo Albar�n#Nuevo Albar�n
+Modificar Albar�n#Modificar Albar�n
+Albar�n#Albar�n
+Base Imponible#Base Imponible
+%DTO#%DTO
+%DTO PP#%DTO PP
+%Iva#%Iva
+%Rec. Equiv#%Rec. Equiv
+Modificar Totales#Modificar Totales
+cantidad#cantidad
+Almacenado (S/N)#Almacenado (S/N)
+Id. Albaran#Id. Albaran
+Insertar (Ins)#Insertar (Ins)
+Almac�n Vinculado:#Almac�n Vinculado:
+Finalizar Albar�n #Finalizar Albar�n 
+ Datos Albaran # Datos Albaran 
+Buscar Proveedor#Buscar Proveedor
+Insertar Producto en Albaran#Insertar Producto en Albaran
+Unidad#Unidad
+Insertar#Insertar
+ Detalles de la Linea:# Detalles de la Linea:
+% IVA#% IVA
+% DTO#% DTO
+Importar Excel#Importar Excel
+ PEDIDOS PENDIENTES # PEDIDOS PENDIENTES 
+Actualizar#Actualizar
+ Lista de Pedidos: # Lista de Pedidos: 
+ Lineas de Pedidos: # Lineas de Pedidos: 
+Id Pedido#Id Pedido
+Id Proveedor#Id Proveedor
+Fecha Pedido#Fecha Pedido
+Importado#Importado
+Importar Una#Importar Una
+Importar Todas#Importar Todas
+Maestro de Proveedores#Maestro de Proveedores
+NIF:#NIF:
+Resultado: (Doble Click para ir a ese Proveedor)#Resultado: (Doble Click para ir a ese Proveedor)
+Razon Social:#Razon Social:
+Fax#Fax
+Id Proveedor:#Id Proveedor:
+Nif:#Nif:
+Poblacion:#Poblacion:
+E-Mail:#E-Mail:
+Pers. Contacto:#Pers. Contacto:
+Web:#Web:
+FAX:#FAX:
+Movil:#Movil:
+Tel�fono:#Tel�fono:
+Asignar Proveedor a Salida de Almacen#Asignar Proveedor a Salida de Almacen
+SubTotal:#SubTotal:
+ Detalles de:# Detalles de:
+Almac�n de destino:#Almac�n de destino:
+% Impuesto#% Impuesto
+A�adir Seleccionado#A�adir Seleccionado
