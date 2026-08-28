@@ -495,11 +495,11 @@ export const DatabaseManager: React.FC = () => {
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2 font-serif">
                   <span>Dy Pos Data Studio & Engine</span>
                   <span className="bg-indigo-500/30 text-indigo-300 text-[10px] font-mono px-2 py-0.5 rounded-full border border-indigo-400/30">
-                    Control Total
+                    Solo Administrador
                   </span>
                 </h1>
-                <p className="text-xs text-indigo-200/80">
-                  Motor de persistencia, explorador de colecciones, backups SQL/JSON y manipulación en caliente de datos.
+                <p className="text-xs text-indigo-200/90 font-medium">
+                  Motor de persistencia, explorador de colecciones, backups SQL/JSON y copias de seguridad del restaurante.
                 </p>
               </div>
             </div>
@@ -541,20 +541,20 @@ export const DatabaseManager: React.FC = () => {
 
         {/* Real-time Storage Metrics Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-white/10 text-xs">
-          <div className="bg-black/30 p-2.5 rounded-xl border border-white/5">
-            <span className="text-[11px] text-slate-400 block">Registros Totales</span>
+          <div className="bg-black/40 p-3 rounded-2xl border border-white/10">
+            <span className="text-[11px] text-slate-300 font-semibold block">Registros Totales</span>
             <span className="text-base font-black text-white font-mono">{dbStats.totalRecords} filas</span>
           </div>
-          <div className="bg-black/30 p-2.5 rounded-xl border border-white/5">
-            <span className="text-[11px] text-slate-400 block">Tamaño en Memoria</span>
+          <div className="bg-black/40 p-3 rounded-2xl border border-white/10">
+            <span className="text-[11px] text-slate-300 font-semibold block">Tamaño en Memoria</span>
             <span className="text-base font-black text-emerald-400 font-mono">{dbStats.sizeKB} KB</span>
           </div>
-          <div className="bg-black/30 p-2.5 rounded-xl border border-white/5">
-            <span className="text-[11px] text-slate-400 block">Motor de Almacenamiento</span>
-            <span className="text-base font-black text-indigo-300">DyPos LocalStore</span>
+          <div className="bg-black/40 p-3 rounded-2xl border border-white/10">
+            <span className="text-[11px] text-slate-300 font-semibold block">Motor de Almacenamiento</span>
+            <span className="text-base font-black text-indigo-200">DyPos LocalStore</span>
           </div>
-          <div className="bg-black/30 p-2.5 rounded-xl border border-white/5">
-            <span className="text-[11px] text-slate-400 block">Integridad de Esquema</span>
+          <div className="bg-black/40 p-3 rounded-2xl border border-white/10">
+            <span className="text-[11px] text-slate-300 font-semibold block">Integridad de Esquema</span>
             <span className="text-base font-black text-emerald-400 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5" /> 100% OK
             </span>
@@ -579,14 +579,18 @@ export const DatabaseManager: React.FC = () => {
                 isSelected
                   ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 border-indigo-400'
                   : isLight
-                  ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-xs'
                   : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-800'
               }`}
             >
               <Icon className="w-4 h-4" />
               <span>{table.name}</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
-                isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                isSelected
+                  ? 'bg-white/20 text-white'
+                  : isLight
+                  ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                  : 'bg-slate-800 text-slate-400'
               }`}>
                 {table.count}
               </span>
@@ -596,13 +600,13 @@ export const DatabaseManager: React.FC = () => {
       </div>
 
       {/* Main Table Explorer & Grid */}
-      <div className={`p-5 rounded-3xl border shadow-sm space-y-4 ${
+      <div className={`p-5 rounded-3xl border shadow-xs space-y-4 ${
         isLight ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
       }`}>
         {/* Table Toolbar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="relative flex-1 sm:w-80">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="relative flex-1 sm:max-w-md">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
@@ -611,13 +615,13 @@ export const DatabaseManager: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full pl-9 pr-3 py-2 rounded-xl text-xs font-medium border outline-none transition-all ${
                   isLight
-                    ? 'bg-slate-50 border-slate-200 focus:border-indigo-500'
+                    ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white'
                     : 'bg-slate-950 border-slate-800 focus:border-indigo-500 text-white'
                 }`}
               />
             </div>
-            <span className="text-xs text-slate-400 font-mono">
-              {filteredRecords.length} filas encontradas
+            <span className={`text-xs font-mono font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+              {filteredRecords.length} filas
             </span>
           </div>
 
@@ -625,11 +629,11 @@ export const DatabaseManager: React.FC = () => {
             <button
               onClick={handleExportCSV}
               title="Exportar esta tabla a CSV"
-              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
-                isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
               }`}
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
               <span>Exportar CSV</span>
             </button>
 
@@ -644,10 +648,12 @@ export const DatabaseManager: React.FC = () => {
         </div>
 
         {/* Records Data Table */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 max-h-[500px]">
+        <div className={`overflow-x-auto rounded-2xl border max-h-[500px] ${
+          isLight ? 'border-slate-200' : 'border-slate-800'
+        }`}>
           <table className="w-full text-left text-xs">
-            <thead className={`sticky top-0 z-10 text-[11px] uppercase tracking-wider font-mono ${
-              isLight ? 'bg-slate-100 text-slate-600 border-b border-slate-200' : 'bg-slate-950 text-slate-400 border-b border-slate-800'
+            <thead className={`sticky top-0 z-10 text-[11px] uppercase tracking-wider font-mono font-bold ${
+              isLight ? 'bg-slate-100 text-slate-800 border-b border-slate-200' : 'bg-slate-950 text-slate-400 border-b border-slate-800'
             }`}>
               <tr>
                 <th className="p-3">ID / Clave</th>
@@ -656,10 +662,12 @@ export const DatabaseManager: React.FC = () => {
                 <th className="p-3 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
+            <tbody className={`divide-y font-sans ${
+              isLight ? 'divide-slate-200 text-slate-900' : 'divide-slate-800/60 text-slate-100'
+            }`}>
               {filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-slate-400">
+                  <td colSpan={4} className="p-8 text-center text-slate-400 font-medium">
                     No se encontraron registros que coincidan con la búsqueda.
                   </td>
                 </tr>
@@ -673,16 +681,18 @@ export const DatabaseManager: React.FC = () => {
                     <tr
                       key={pkVal}
                       className={`transition-colors ${
-                        isLight ? 'hover:bg-slate-50' : 'hover:bg-slate-800/40'
+                        isLight ? 'hover:bg-indigo-50/40' : 'hover:bg-slate-800/40'
                       }`}
                     >
-                      <td className="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                      <td className="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
                         {String(pkVal)}
                       </td>
-                      <td className="p-3 font-bold text-slate-800 dark:text-slate-200">
+                      <td className={`p-3 font-bold ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
                         {mainName}
                       </td>
-                      <td className="p-3 text-[11px] text-slate-500 dark:text-slate-400 max-w-md truncate font-mono">
+                      <td className={`p-3 text-[11px] max-w-md truncate font-mono ${
+                        isLight ? 'text-slate-600 font-medium' : 'text-slate-400'
+                      }`}>
                         {JSON.stringify(record)}
                       </td>
                       <td className="p-3 text-right">
@@ -690,14 +700,22 @@ export const DatabaseManager: React.FC = () => {
                           <button
                             onClick={() => handleOpenEditRecord(record)}
                             title="Editar / Ver JSON del registro"
-                            className="p-1.5 rounded-lg bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-slate-700"
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              isLight
+                                ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'
+                                : 'bg-slate-800 text-indigo-400 hover:bg-slate-700'
+                            }`}
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteRecord(pkVal)}
                             title="Eliminar este registro"
-                            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100"
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              isLight
+                                ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+                                : 'bg-rose-950/40 text-rose-400 hover:bg-rose-900/50'
+                            }`}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -718,19 +736,21 @@ export const DatabaseManager: React.FC = () => {
       }`}>
         <div className="flex items-center gap-2">
           <ShieldAlert className="w-5 h-5 text-amber-500" />
-          <h3 className="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-white">
-            Herramientas de Mantenimiento & Purgado
+          <h3 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-white">
+            Herramientas de Mantenimiento & Purgado (Zona Protegida)
           </h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           {/* Purgar Ventas */}
           <div className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
-            isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+            isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
           }`}>
             <div>
-              <span className="font-bold text-slate-800 dark:text-white block">Purgar Ventas de Prueba</span>
-              <span className="text-slate-400 text-[11px]">Elimina todos los tickets y pedidos antiguos dejando el menú y camareros intactos.</span>
+              <span className="font-extrabold text-slate-900 dark:text-white block">Purgar Ventas de Prueba</span>
+              <span className={`text-[11px] block mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                Elimina tickets y pedidos de prueba dejando el catálogo de platos y usuarios intactos.
+              </span>
             </div>
             <button
               onClick={() => {
@@ -738,7 +758,7 @@ export const DatabaseManager: React.FC = () => {
                 setMaintenanceAction('purge_sales');
                 setConfirmPhrase('');
               }}
-              className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/30 self-start"
+              className="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 dark:text-amber-300 font-bold border border-amber-500/40 self-start transition-all"
             >
               Purgar Historial
             </button>
@@ -746,18 +766,20 @@ export const DatabaseManager: React.FC = () => {
 
           {/* Resetear Stock */}
           <div className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
-            isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+            isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
           }`}>
             <div>
-              <span className="font-bold text-slate-800 dark:text-white block">Resetear Stock de Productos</span>
-              <span className="text-slate-400 text-[11px]">Restaura el inventario de todos los platos y bebidas a 100 unidades automáticamente.</span>
+              <span className="font-extrabold text-slate-900 dark:text-white block">Resetear Stock de Productos</span>
+              <span className={`text-[11px] block mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                Restaura el inventario de todos los platos y bebidas a 100 unidades automáticamente.
+              </span>
             </div>
             <button
               onClick={() => {
                 sound.playTap();
                 setMaintenanceAction('reset_stock');
               }}
-              className="px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/30 self-start"
+              className="px-3.5 py-2 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-800 dark:text-blue-300 font-bold border border-blue-500/40 self-start transition-all"
             >
               Restablecer Stock
             </button>
@@ -765,11 +787,13 @@ export const DatabaseManager: React.FC = () => {
 
           {/* Hard Reset */}
           <div className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
-            isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
+            isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
           }`}>
             <div>
-              <span className="font-bold text-rose-600 dark:text-rose-400 block">Formateo de Fábrica (Hard Reset)</span>
-              <span className="text-slate-400 text-[11px]">Borra todo el almacenamiento y reinicia el sistema a sus valores limpios originales.</span>
+              <span className="font-extrabold text-rose-700 dark:text-rose-400 block">Formateo de Fábrica (Hard Reset)</span>
+              <span className={`text-[11px] block mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                Borra todo el almacenamiento local y reinicia el sistema a sus valores iniciales limpios.
+              </span>
             </div>
             <button
               onClick={() => {
@@ -777,7 +801,7 @@ export const DatabaseManager: React.FC = () => {
                 setMaintenanceAction('factory_reset');
                 setConfirmPhrase('');
               }}
-              className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/30 self-start"
+              className="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-800 dark:text-rose-300 font-bold border border-rose-500/40 self-start transition-all"
             >
               Formatear Todo
             </button>
@@ -789,7 +813,7 @@ export const DatabaseManager: React.FC = () => {
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className={`w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden flex flex-col max-h-[85vh] ${
-            isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800 text-white'
+            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
           }`}>
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -807,7 +831,7 @@ export const DatabaseManager: React.FC = () => {
             </div>
 
             <div className="p-4 flex-1 overflow-y-auto space-y-3">
-              <p className="text-xs text-slate-400">
+              <p className={`text-xs ${isLight ? 'text-slate-600 font-medium' : 'text-slate-400'}`}>
                 Modifique los campos en formato JSON. Se validará la sintaxis antes de guardar en la base de datos local.
               </p>
               <textarea
@@ -818,21 +842,27 @@ export const DatabaseManager: React.FC = () => {
                 }}
                 className={`w-full h-80 p-3 rounded-2xl font-mono text-xs border outline-none transition-all ${
                   isLight
-                    ? 'bg-slate-50 border-slate-300 text-slate-900'
-                    : 'bg-slate-950 border-slate-800 text-emerald-400'
+                    ? 'bg-slate-50 border-slate-300 text-slate-900 focus:bg-white focus:border-indigo-500'
+                    : 'bg-slate-950 border-slate-800 text-emerald-400 focus:border-indigo-500'
                 }`}
               />
               {jsonError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-semibold">
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs font-semibold">
                   {jsonError}
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2 bg-slate-50 dark:bg-slate-950/50">
+            <div className={`p-4 border-t flex items-center justify-end gap-2 ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/50 border-slate-800'
+            }`}>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800"
+                className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                  isLight
+                    ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800'
+                    : 'border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300'
+                }`}
               >
                 Cancelar
               </button>
@@ -851,7 +881,7 @@ export const DatabaseManager: React.FC = () => {
       {maintenanceAction && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className={`w-full max-w-md p-6 rounded-3xl border shadow-2xl space-y-4 ${
-            isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800 text-white'
+            isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
           }`}>
             <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/20">
               <AlertTriangle className="w-6 h-6" />
@@ -863,7 +893,7 @@ export const DatabaseManager: React.FC = () => {
                 {maintenanceAction === 'reset_stock' && '¿Restablecer Stock de Menú?'}
                 {maintenanceAction === 'factory_reset' && '¿Formateo Completo de Fábrica?'}
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className={`text-xs ${isLight ? 'text-slate-600 font-medium' : 'text-slate-400'}`}>
                 {maintenanceAction === 'purge_sales' && 'Esta acción borrará todas las comandas y ventas de prueba. Para confirmar escribe PURGAR:'}
                 {maintenanceAction === 'reset_stock' && 'Todos los productos tendrán un stock establecido de 100 unidades.'}
                 {maintenanceAction === 'factory_reset' && 'Se borrarán todos los datos personalizados. Para confirmar escribe RESET DYPOS:'}
@@ -877,7 +907,7 @@ export const DatabaseManager: React.FC = () => {
                 onChange={(e) => setConfirmPhrase(e.target.value)}
                 placeholder={maintenanceAction === 'purge_sales' ? 'PURGAR' : 'RESET DYPOS'}
                 className={`w-full text-center py-2.5 rounded-xl border text-xs font-mono font-bold uppercase tracking-wider outline-none ${
-                  isLight ? 'bg-slate-50 border-slate-300' : 'bg-slate-950 border-slate-800'
+                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                 }`}
               />
             )}
@@ -885,7 +915,11 @@ export const DatabaseManager: React.FC = () => {
             <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={() => setMaintenanceAction(null)}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all ${
+                  isLight
+                    ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800'
+                    : 'border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300'
+                }`}
               >
                 Cancelar
               </button>
