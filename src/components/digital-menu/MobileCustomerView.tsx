@@ -7,7 +7,8 @@ import {
   ShoppingBag, PhoneCall, HelpCircle, Receipt, ArrowLeft, Info,
   SlidersHorizontal, ChevronDown, CheckCircle2, QrCode, Layers, Compass
 } from 'lucide-react';
-import { Product, Category, Table, RestaurantBrand, Language } from '../../types';
+import { Product, Category, Table, Language } from '../../types';
+import type { RestaurantSettings } from '../../context/POSContext';
 import { getCategoryTheme } from '../../utils/theme';
 import { getCategoryMeta } from '../../utils/categoryMeta';
 import { sound } from '../../utils/sound';
@@ -18,7 +19,7 @@ interface MobileCustomerViewProps {
   categories: Category[];
   products: Product[];
   tables: Table[];
-  restaurantBrand: RestaurantBrand;
+  restaurantBrand: RestaurantSettings;
   selectedTable: string;
   onSelectTable: (tableNum: string) => void;
   language: Language;
@@ -55,7 +56,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showWifiInfo, setShowWifiInfo] = useState<boolean>(false);
   const [showTableSelector, setShowTableSelector] = useState<boolean>(false);
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'directory' | 'specials' | 'favorites'>('directory');
 
   // Category Icon Resolver
@@ -151,16 +152,16 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
   }, [products]);
 
   // Helper to check if a product is in cart and its quantity
-  const getProductCartCount = (productId: number) => {
+  const getProductCartCount = (productId: string) => {
     const item = cart.find(c => c.product.id === productId);
     return item ? item.quantity : 0;
   };
 
-  const getProductCartIndex = (productId: number) => {
+  const getProductCartIndex = (productId: string) => {
     return cart.findIndex(c => c.product.id === productId);
   };
 
-  const toggleFavorite = (productId: number, e: React.MouseEvent) => {
+  const toggleFavorite = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     sound.playTap();
     setFavorites(prev =>

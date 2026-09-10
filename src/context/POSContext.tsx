@@ -11,6 +11,7 @@ import {
   DEFAULT_WAITER_PERMISSIONS, DEFAULT_KITCHEN_PERMISSIONS
 } from '../data/mockData';
 import { isViewAllowedForUser, getDefaultViewForUser } from '../utils/permissions';
+import { authenticateWaiter } from '../utils/auth';
 
 export interface RestaurantSettings {
   name: string;
@@ -43,9 +44,7 @@ interface POSContextType {
   setTerminal: (term: POSTerminal) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (loggedIn: boolean) => void;
-  login: (pin: string) => boolean;
   loginUser: (user: Waiter, pin: string) => boolean;
-  quickLogin: (user: Waiter) => void;
   logout: () => void;
 
   // Device Station Simulation
@@ -74,6 +73,7 @@ interface POSContextType {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   addProduct: (product: Omit<Product, 'id'>) => Product;
   updateProduct: (id: string, updates: Partial<Product>) => void;
+  updateProductStock: (id: string, stock: number) => void;
   deleteProduct: (id: string) => void;
   rates: Rate[];
   selectedRateId: string;
@@ -81,6 +81,7 @@ interface POSContextType {
 
   // Orders / Sales
   sales: Sale[];
+  setSales: React.Dispatch<React.SetStateAction<Sale[]>>;
   activeSale: Sale | null;
   setActiveSale: (sale: Sale | null) => void;
   createSale: (tableId?: number, dinersCount?: number) => Sale;
@@ -100,6 +101,7 @@ interface POSContextType {
   // Cash Shifts & Arqueo
   currentShift: CashShift | null;
   shiftHistory: CashShift[];
+  setShiftHistory: React.Dispatch<React.SetStateAction<CashShift[]>>;
   openCashShift: (initialCash: number, notes?: string) => CashShift;
   addCashMovement: (movement: Omit<CashMovement, 'id' | 'date' | 'time' | 'userName'>) => CashMovement;
   closeCashShift: (countedCash: number, notes?: string) => { report: CashRegisterReport; shift: CashShift };
@@ -547,46 +549,20 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [waiter]);
 
   // Login / Logout
-  const login = (pin: string): boolean => {
-    const matched = waiters.find(w => w.pin === pin);
-    if (matched) {
-      setWaiter(matched);
-      setIsLoggedIn(true);
-      sessionStorage.setItem('sysme_session_active', 'true');
-      setIsLoginModalOpen(false);
-      setActiveSale(prev => prev ? { ...prev, currentWaiterId: matched.id, currentWaiterName: matched.name } : null);
-      if (!isViewAllowedForUser(activeView, matched)) {
-        setActiveView(getDefaultViewForUser(matched));
-      }
-      return true;
-    }
-    return false;
-  };
-
   const loginUser = (selectedUser: Waiter, pin: string): boolean => {
-    if (selectedUser.pin === pin) {
-      setWaiter(selectedUser);
+    const authenticatedUser = authenticateWaiter(waiters, selectedUser.id, pin);
+    if (authenticatedUser) {
+      setWaiter(authenticatedUser);
       setIsLoggedIn(true);
       sessionStorage.setItem('sysme_session_active', 'true');
       setIsLoginModalOpen(false);
-      setActiveSale(prev => prev ? { ...prev, currentWaiterId: selectedUser.id, currentWaiterName: selectedUser.name } : null);
-      if (!isViewAllowedForUser(activeView, selectedUser)) {
-        setActiveView(getDefaultViewForUser(selectedUser));
+      setActiveSale(prev => prev ? { ...prev, currentWaiterId: authenticatedUser.id, currentWaiterName: authenticatedUser.name } : null);
+      if (!isViewAllowedForUser(activeView, authenticatedUser)) {
+        setActiveView(getDefaultViewForUser(authenticatedUser));
       }
       return true;
     }
     return false;
-  };
-
-  const quickLogin = (selectedUser: Waiter) => {
-    setWaiter(selectedUser);
-    setIsLoggedIn(true);
-    sessionStorage.setItem('sysme_session_active', 'true');
-    setIsLoginModalOpen(false);
-    setActiveSale(prev => prev ? { ...prev, currentWaiterId: selectedUser.id, currentWaiterName: selectedUser.name } : null);
-    if (!isViewAllowedForUser(activeView, selectedUser)) {
-      setActiveView(getDefaultViewForUser(selectedUser));
-    }
   };
 
   const logout = () => {
@@ -658,6 +634,10 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateProduct = (id: string, updates: Partial<Product>) => {
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+  };
+
+  const updateProductStock = (id: string, stock: number) => {
+    updateProduct(id, { stock });
   };
 
   const deleteProduct = (id: string) => {
@@ -1315,9 +1295,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setTerminal,
         isLoggedIn,
         setIsLoggedIn,
-        login,
         loginUser,
-        quickLogin,
         logout,
         stationMode,
         setStationMode,
@@ -1338,11 +1316,13 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setProducts,
         addProduct,
         updateProduct,
+        updateProductStock,
         deleteProduct,
         rates,
         selectedRateId,
         setSelectedRateId,
         sales,
+        setSales,
         activeSale,
         setActiveSale,
         createSale,
@@ -1358,6 +1338,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markAllKitchenItemsServed,
         currentShift,
         shiftHistory,
+        setShiftHistory,
         openCashShift,
         addCashMovement,
         closeCashShift,

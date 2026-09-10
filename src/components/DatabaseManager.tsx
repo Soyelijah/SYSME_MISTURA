@@ -120,7 +120,16 @@ export const DatabaseManager: React.FC = () => {
     },
   ], [products, categories, tables, sales, shiftHistory, waiters]);
 
-  const activeTableObj = tableDefinitions.find(t => t.key === selectedTableKey) || tableDefinitions[0];
+  // Collections have different record shapes and React setter types. Keep the
+  // dynamic database explorer boundary explicit instead of leaking a union of
+  // incompatible setters through every indexed operation below.
+  const activeTableObj: {
+    key: string;
+    name: string;
+    data: Array<Record<string, unknown>>;
+    setData: (records: any[]) => void;
+    primaryKey: string;
+  } = (tableDefinitions.find(t => t.key === selectedTableKey) || tableDefinitions[0]) as any;
 
   // Storage Stats Calculation
   const dbStats = useMemo(() => {

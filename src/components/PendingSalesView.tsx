@@ -88,7 +88,7 @@ export const PendingSalesView: React.FC = () => {
 
   const handlePrintPreticket = (sale: Sale, e: React.MouseEvent) => {
     e.stopPropagation();
-    sound.playPrint();
+    sound.playPrinter();
     printPreTicket(sale);
   };
 

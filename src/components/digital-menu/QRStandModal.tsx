@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { QrCode, X, Printer, Wifi, Sparkles, Smartphone, Check, Download } from 'lucide-react';
-import { Table, RestaurantBrand } from '../../types';
+import { Table } from '../../types';
+import type { RestaurantSettings } from '../../context/POSContext';
 import { sound } from '../../utils/sound';
 
 interface QRStandModalProps {
@@ -10,7 +11,7 @@ interface QRStandModalProps {
   tables: Table[];
   selectedTableNumber: string;
   onSelectTableNumber: (tableNum: string) => void;
-  restaurantBrand: RestaurantBrand;
+  restaurantBrand: RestaurantSettings;
   isLight: boolean;
 }
 

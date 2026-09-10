@@ -4,7 +4,7 @@ import { Waiter, Language, ThemeMode } from '../types';
 import {
   ShieldCheck, Lock, Unlock, User, ChefHat, Sparkles,
   Clock, Utensils, Sun, Moon, Volume2, VolumeX, CheckCircle2,
-  AlertCircle, Smartphone, Monitor, ChevronRight, Zap, RefreshCw
+  AlertCircle, Smartphone, Monitor, ChevronRight, RefreshCw
 } from 'lucide-react';
 import { sound } from '../utils/sound';
 import { LanguageSelector } from './LanguageSelector';
@@ -14,7 +14,6 @@ export const LoginScreen: React.FC = () => {
     t,
     waiters,
     loginUser,
-    quickLogin,
     restaurantBrand,
     terminal,
     warehouse,
@@ -113,16 +112,11 @@ export const LoginScreen: React.FC = () => {
         sound.playSuccess();
       } else {
         sound.playBeep();
-        setPinError(`PIN incorrecto. (Sugerencia de prueba: ${userToLogin.pin})`);
+        setPinError('PIN incorrecto. Inténtelo de nuevo.');
         setPinInput('');
         setIsAuthenticating(false);
       }
     }, 150);
-  };
-
-  const handleDirectQuickLogin = (userToLogin: Waiter) => {
-    sound.playSuccess();
-    quickLogin(userToLogin);
   };
 
   // Helper role badge formatting
@@ -293,37 +287,12 @@ export const LoginScreen: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Demo PIN hint indicator */}
-                      <div className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                        isSelected ? 'bg-white/25 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                      }`}>
-                        PIN: {u.pin}
-                      </div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Quick 1-Click Demo Login Bar */}
-            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-1 text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2">
-                <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                <span>Acceso Rápido Directo (Demo 1-Click):</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                {waiters.slice(0, 4).map(u => (
-                  <button
-                    key={`quick-${u.id}`}
-                    onClick={() => handleDirectQuickLogin(u)}
-                    title={`Entrar directamente como ${u.name}`}
-                    className="p-1.5 text-[10px] font-black rounded-xl bg-slate-100 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-all truncate text-center shadow-xs"
-                  >
-                    {u.role === 'admin' ? '🛡️ Admin' : u.role === 'cashier' ? '💰 Cajera' : u.role === 'kitchen' ? '🍳 Cocina' : '📱 Garzón'}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* RIGHT: Numeric Keypad & PIN Entry */}
@@ -359,7 +328,7 @@ export const LoginScreen: React.FC = () => {
               {/* PIN Dots Display */}
               <div className="text-center my-3">
                 <div className="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">
-                  Ingrese el PIN de 4 dígitos (Sugerencia: <strong className="font-mono text-blue-600 dark:text-blue-400">{selectedUser.pin}</strong>)
+                  Ingrese el PIN de 4 dígitos
                 </div>
                 
                 <div className="flex items-center justify-center gap-3 my-2">

@@ -3,7 +3,7 @@ import { usePOS } from '../context/POSContext';
 import { Printer, X, Download, QrCode, ReceiptText } from 'lucide-react';
 
 export const TicketPrintModal: React.FC = () => {
-  const { printableTicket, setPrintableTicket, restaurantSettings, themeMode, currency } = usePOS();
+  const { printableTicket, setPrintableTicket, restaurantBrand, themeMode, currency } = usePOS();
   const isLight = themeMode === 'vibrant-light';
 
   if (!printableTicket) return null;
@@ -49,11 +49,11 @@ export const TicketPrintModal: React.FC = () => {
         <div className="flex-1 overflow-y-auto bg-white text-slate-950 p-6 rounded-2xl font-mono text-xs shadow-inner space-y-3 leading-tight border-2 border-slate-300">
           {/* Header */}
           <div className="text-center space-y-1 pb-2 border-b-2 border-dashed border-slate-400">
-            <h2 className="text-base font-black tracking-wider uppercase">{restaurantSettings.name || 'Dy Pos PRO Restaurant'}</h2>
-            <p className="text-[11px] font-bold text-slate-800">{restaurantSettings.businessName || 'Dy Pos Gastronomía & Hostelería'}</p>
-            <p className="text-[10px] text-slate-700">NIF / CIF: {restaurantSettings.cif || 'B-87654321'}</p>
-            <p className="text-[10px] text-slate-700">{restaurantSettings.address || 'Av. Principal Gastronómica 101'}</p>
-            <p className="text-[10px] text-slate-700">Tel: {restaurantSettings.phone || '+34 912 345 678'}</p>
+            <h2 className="text-base font-black tracking-wider uppercase">{restaurantBrand.name || 'Dy Pos PRO Restaurant'}</h2>
+            <p className="text-[11px] font-bold text-slate-800">{restaurantBrand.tagline || 'Dy Pos Gastronomía & Hostelería'}</p>
+            <p className="text-[10px] text-slate-700">NIF / CIF: {restaurantBrand.cif || 'B-87654321'}</p>
+            <p className="text-[10px] text-slate-700">{restaurantBrand.address || 'Av. Principal Gastronómica 101'}</p>
+            <p className="text-[10px] text-slate-700">Tel: {restaurantBrand.phone || '+34 912 345 678'}</p>
           </div>
 
           {/* Ticket Meta */}
@@ -174,4 +174,3 @@ export const TicketPrintModal: React.FC = () => {
     </div>
   );
 };
-
