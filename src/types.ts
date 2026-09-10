@@ -154,6 +154,7 @@ export interface SaleLine {
 export interface Sale {
   id: number;
   number: string;
+  ticketNumber?: string;
   date: string;
   time: string;
   tableNumber: string;

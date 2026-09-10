@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Waiter } from '../types';
 import { Play, Ban, Delete, KeyRound, ShieldCheck } from 'lucide-react';
 import { sound } from '../utils/sound';
+import { authenticateWaiter } from '../utils/auth';
 import { usePOS } from '../context/POSContext';
 
 interface EmployeePasswordModalProps {
@@ -86,16 +87,13 @@ export const EmployeePasswordModal: React.FC<EmployeePasswordModalProps> = ({
 
   const handleAccept = () => {
     sound.playTap();
-    // Check if password matches any waiter PIN or matches current waiter or is demo accepted
-    const matched = waiters.find(w => w.pin === password) ||
-      (password.trim() === '' ? currentWaiter : null) ||
-      (table.waiterId ? waiters.find(w => w.id === table.waiterId) : null) ||
-      currentWaiter;
+    // Require an exact PIN match; UI state must never bypass authentication.
+    const matched = authenticateWaiter(waiters, currentWaiter.id, password);
 
     if (matched) {
       onAccept(matched, table);
     } else {
-      sound.playAlert();
+      sound.playError();
       setErrorMsg('Contraseña incorrecta');
       setPassword('');
     }
@@ -144,7 +142,7 @@ export const EmployeePasswordModal: React.FC<EmployeePasswordModalProps> = ({
                     '•'.repeat(password.length)
                   ) : (
                     <span className="text-slate-500 text-xs sm:text-sm font-sans tracking-normal font-medium">
-                      Ingrese PIN (Demo: 1234)...
+                      Ingrese PIN...
                     </span>
                   )}
                   <span className="inline-block w-2.5 h-6 bg-emerald-400 ml-1.5 animate-pulse rounded-xs" />
@@ -367,4 +365,3 @@ export const EmployeePasswordModal: React.FC<EmployeePasswordModalProps> = ({
     </div>
   );
 };
-

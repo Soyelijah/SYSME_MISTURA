@@ -142,7 +142,7 @@ export const LoginModal: React.FC = () => {
           </div>
           {pinError && (
             <span className="text-rose-600 dark:text-rose-400 text-xs font-black block animate-bounce">
-              ¡PIN incorrecto! Inténtelo de nuevo (Demo: {selectedUser.pin})
+              ¡PIN incorrecto! Inténtelo de nuevo.
             </span>
           )}
         </div>
@@ -181,4 +181,3 @@ export const LoginModal: React.FC = () => {
     </div>
   );
 };
-

@@ -123,12 +123,12 @@ export const DigitalMenu: React.FC = () => {
   }, [products]);
 
   // Helper to check if a product is in cart and its quantity
-  const getProductCartCount = (productId: number) => {
+  const getProductCartCount = (productId: string) => {
     const item = cart.find(c => c.product.id === productId);
     return item ? item.quantity : 0;
   };
 
-  const getProductCartIndex = (productId: number) => {
+  const getProductCartIndex = (productId: string) => {
     return cart.findIndex(c => c.product.id === productId);
   };
 
@@ -310,7 +310,7 @@ export const DigitalMenu: React.FC = () => {
                   Carta Gastronómica & Coctelería de Autor
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {restaurantBrand.slogan || 'Cocina fusión y tradicional con producto de temporada, pescados frescos de lonja y carnes maduradas a la brasa.'}
+                  {restaurantBrand.tagline || 'Cocina fusión y tradicional con producto de temporada, pescados frescos de lonja y carnes maduradas a la brasa.'}
                 </p>
               </div>
 
