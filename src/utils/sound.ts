@@ -278,6 +278,18 @@ class POSSoundEngine {
       }
     } catch {}
   }
+
+  public playAdd() {
+    this.playItemAdd();
+  }
+
+  public playPrint() {
+    this.playPrinter();
+  }
+
+  public playAlert() {
+    this.playWarning();
+  }
 }
 
 export const sound = new POSSoundEngine();

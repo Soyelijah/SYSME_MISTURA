@@ -8,15 +8,16 @@ import {
   Utensils, Sun, Wine, CheckCircle2, AlertCircle, ShoppingBag,
   Layers, Grid, Eye, CreditCard, ChefHat, FileText, Filter,
   ChevronLeft, ChevronRight, LogOut, RefreshCw, CheckSquare, Square,
-  Receipt, Flame, Zap
+  Receipt, Flame, Zap, QrCode
 } from 'lucide-react';
 import { sound } from '../utils/sound';
+import { formatCLP } from '../utils/currency';
 
 export const FloorPlanView: React.FC = () => {
   const {
     t, salons, selectedSalonId, setSelectedSalonId,
     tables, openTable, createSale, sales, setActiveSale, setSelectedRateId,
-    setActiveView, logout, waiter, setWaiter, themeMode
+    setActiveView, logout, waiter, setWaiter, themeMode, currency
   } = usePOS();
 
   const isLight = themeMode === 'vibrant-light';
@@ -127,15 +128,15 @@ export const FloorPlanView: React.FC = () => {
       {/* ========================================================
           1. TOP DY POS HEADER BAR (MODERN SALON CONTROLS)
       ======================================================== */}
-      <div className={`px-3 py-2.5 sm:px-4 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-sm border-b transition-colors ${
+      <div className={`px-2.5 py-2 sm:px-4 flex items-center justify-between gap-2 shrink-0 shadow-xs border-b transition-colors ${
         isLight
           ? 'bg-white/95 backdrop-blur-md border-slate-200 text-slate-800'
           : 'bg-slate-900/95 backdrop-blur-md border-slate-800 text-slate-100'
       }`}>
         {/* Salon Indicator & Quick Selector Tabs */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-bold">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs font-bold w-full sm:w-auto">
           {/* Salones Pills */}
-          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-950 p-1 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0">
             {salons.map(s => {
               const isSelected = s.id === selectedSalonId;
               const sColor = salonColors[s.id] || salonColors[1];
@@ -146,9 +147,9 @@ export const FloorPlanView: React.FC = () => {
                     sound.playTap();
                     setSelectedSalonId(s.id);
                   }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all shrink-0 ${
                     isSelected
-                      ? `bg-gradient-to-r ${sColor.bg} text-white shadow-md shadow-indigo-600/20 scale-[1.02]`
+                      ? `bg-gradient-to-r ${sColor.bg} text-white shadow-xs`
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -159,29 +160,29 @@ export const FloorPlanView: React.FC = () => {
           </div>
 
           {/* Color Legend (Modern Dy Pos Palette) */}
-          <div className="hidden lg:flex items-center gap-3 sm:gap-4 pl-3 border-l border-slate-200 dark:border-slate-800">
+          <div className="hidden lg:flex items-center gap-3 sm:gap-4 pl-3 border-l border-slate-200 dark:border-slate-800 shrink-0">
             {/* Libre */}
             <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 bg-emerald-500 rounded-md border border-emerald-400 shadow-sm block"></span>
+              <span className="w-3.5 h-3.5 bg-emerald-500 rounded-md border border-emerald-400 shadow-xs block"></span>
               <span className="text-slate-600 dark:text-slate-400 text-[11px] font-semibold">Libre</span>
             </div>
 
             {/* Ocupada */}
             <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 bg-rose-500 rounded-md border border-rose-400 shadow-sm block"></span>
+              <span className="w-3.5 h-3.5 bg-rose-500 rounded-md border border-rose-400 shadow-xs block"></span>
               <span className="text-slate-600 dark:text-slate-400 text-[11px] font-semibold">Ocupada</span>
             </div>
 
             {/* Pre-ticket Impreso / Cobro */}
             <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 bg-purple-600 rounded-md border border-purple-400 shadow-sm block"></span>
+              <span className="w-3.5 h-3.5 bg-purple-600 rounded-md border border-purple-400 shadow-xs block"></span>
               <span className="text-slate-600 dark:text-slate-400 text-[11px] font-semibold">Cuenta / Pre-ticket</span>
             </div>
           </div>
         </div>
 
         {/* View & Density Controls + Navigation Pill Buttons */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <div className="hidden sm:flex items-center gap-2 sm:gap-3 ml-auto">
           {/* Density / Size Selector */}
           <div className="hidden md:flex items-center bg-slate-100 dark:bg-slate-950 p-1 rounded-2xl border border-slate-200 dark:border-slate-800 text-[11px] font-bold">
             <button
@@ -189,7 +190,7 @@ export const FloorPlanView: React.FC = () => {
               title="Modo Matriz Dy Pos 10x"
               className={`px-3 py-1 rounded-xl transition-all ${
                 tableDensity === 'compact'
-                  ? 'bg-indigo-600 text-white font-black shadow-sm'
+                  ? 'bg-indigo-600 text-white font-black shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -200,7 +201,7 @@ export const FloorPlanView: React.FC = () => {
               title="Tarjetas Táctiles Medias"
               className={`px-3 py-1 rounded-xl transition-all ${
                 tableDensity === 'medium'
-                  ? 'bg-indigo-600 text-white font-black shadow-sm'
+                  ? 'bg-indigo-600 text-white font-black shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -211,7 +212,7 @@ export const FloorPlanView: React.FC = () => {
               title="Detalle Ampliado"
               className={`px-3 py-1 rounded-xl transition-all ${
                 tableDensity === 'large'
-                  ? 'bg-indigo-600 text-white font-black shadow-sm'
+                  ? 'bg-indigo-600 text-white font-black shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -219,43 +220,31 @@ export const FloorPlanView: React.FC = () => {
             </button>
           </div>
 
-          {/* Floor Theme Toggle */}
+          {/* QR Menu shortcut */}
           <button
-            onClick={() => {
-              sound.playTap();
-              setFloorTheme(prev => 
-                prev === 'modern' ? 'slate' : prev === 'slate' ? 'parquet' : prev === 'parquet' ? 'minimal' : 'modern'
-              );
-            }}
-            title="Cambiar diseño de piso de salón"
-            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white shadow-sm"
+            onClick={() => { sound.playTap(); setActiveView('menu'); }}
+            className="touch-btn px-2.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-black shadow-xs flex items-center gap-1.5 transition-transform active:scale-95 cursor-pointer"
+            title="Ver y generar Códigos QR para las mesas"
           >
-            {floorTheme === 'modern' ? '🏛️ Moderno' : floorTheme === 'slate' ? '🌑 Pizarra' : floorTheme === 'parquet' ? '🪵 Madera' : '⚪ Estudio'}
+            <QrCode className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Carta QR</span>
           </button>
 
-          {/* Navigation Buttons (Anterior, Siguiente, Salir) */}
+          {/* Navigation Buttons (Anterior, Siguiente) */}
           <button
             onClick={handlePrevSalon}
-            className="touch-btn px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-sm flex items-center gap-1 border border-slate-300 dark:border-slate-700"
+            className="touch-btn px-2.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-xs flex items-center gap-1 border border-slate-300 dark:border-slate-700"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Anterior</span>
+            <span className="hidden md:inline">Anterior</span>
           </button>
 
           <button
             onClick={handleNextSalon}
-            className="touch-btn px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-sm flex items-center gap-1 border border-slate-300 dark:border-slate-700"
+            className="touch-btn px-2.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold shadow-xs flex items-center gap-1 border border-slate-300 dark:border-slate-700"
           >
-            <span className="hidden sm:inline">Siguiente</span>
+            <span className="hidden md:inline">Siguiente</span>
             <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => { sound.playTap(); logout(); }}
-            className="touch-btn px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-black shadow-sm flex items-center gap-1 border border-rose-200 dark:border-rose-900/60"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Salir</span>
           </button>
         </div>
       </div>
@@ -263,7 +252,7 @@ export const FloorPlanView: React.FC = () => {
       {/* ========================================================
           2. MAIN FLOOR / TABLE CANVAS (MODERN DY POS PALETTE)
       ======================================================== */}
-      <div className={`flex-1 p-3 sm:p-5 overflow-y-auto ${
+      <div className={`flex-1 p-2.5 sm:p-4 overflow-y-auto ${
         floorTheme === 'modern'
           ? (isLight ? 'dypos-modern-floor' : 'dypos-dark-floor')
           : floorTheme === 'slate'
@@ -276,10 +265,10 @@ export const FloorPlanView: React.FC = () => {
           {/* Density Grid Container */}
           <div className={
             tableDensity === 'compact'
-              ? 'grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-10 xl:grid-cols-10 gap-2.5 sm:gap-3.5'
+              ? 'grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-10 gap-2 sm:gap-3'
               : tableDensity === 'medium'
-              ? 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-3.5 sm:gap-4'
-              : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5'
+              ? 'grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2.5 sm:gap-3.5'
+              : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4'
           }>
             {currentSalonTables.map(table => {
               const isFree = table.status === 'free';
@@ -290,7 +279,8 @@ export const FloorPlanView: React.FC = () => {
                 ? sales.find(s => s.id === table.currentSaleId && s.status === 'open')
                 : null;
 
-              const ticketNum = currentSale ? currentSale.number : (table.ticketNumber || (table.currentSaleId ? String(table.currentSaleId) : ''));
+              const rawTicketNum = currentSale ? currentSale.number : (table.ticketNumber || (table.currentSaleId ? String(table.currentSaleId) : ''));
+              const shortTicketNum = rawTicketNum.includes('-') ? rawTicketNum.split('-').pop() : rawTicketNum;
               const isPrinted = currentSale ? currentSale.preticketPrinted : (table.preticketPrinted || table.status === 'billed');
               const totalAmount = currentSale ? currentSale.total : (table.total || 0);
 
@@ -303,8 +293,8 @@ export const FloorPlanView: React.FC = () => {
                     key={table.id}
                     id={`table-btn-${table.id}`}
                     onClick={() => handleTableClick(table)}
-                    title={isOccupied ? `${table.name} - Ticket #${ticketNum} • Atendiendo: ${currentSale?.currentWaiterName || currentSale?.waiterName || table.currentWaiterName || 'Camarero'} (${totalAmount.toFixed(2)}€)` : `${table.name} - Libre`}
-                    className={`touch-btn relative aspect-square rounded-2xl flex flex-col justify-between p-2 font-bold transition-all shadow-md border-2 hover:scale-[1.03] active:scale-95 ${
+                    title={isOccupied ? `${table.name} - Ticket #${rawTicketNum} • Atendiendo: ${currentSale?.currentWaiterName || currentSale?.waiterName || table.currentWaiterName || 'Camarero'} (${formatCLP(totalAmount, currency)})` : `${table.name} - Libre`}
+                    className={`touch-btn relative aspect-square rounded-2xl flex flex-col justify-between p-2 font-bold transition-all shadow-md border-2 hover:scale-[1.03] active:scale-95 cursor-pointer ${
                       isFree
                         ? isLight
                           ? 'bg-gradient-to-b from-white to-emerald-50/80 border-emerald-400/90 text-emerald-950 shadow-emerald-500/10 hover:border-emerald-500'
@@ -321,10 +311,10 @@ export const FloorPlanView: React.FC = () => {
                     {/* Header of Table Box */}
                     <div className="w-full flex items-center justify-between text-[11px] leading-none font-mono">
                       {isOccupied ? (
-                        <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-black ${
+                        <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-black tracking-tight ${
                           isLight && !isPrinted ? 'bg-black/30 text-white' : 'bg-white/20 text-current'
                         }`}>
-                          #{ticketNum}
+                          #{shortTicketNum}
                         </span>
                       ) : (
                         <span className="text-[10px] opacity-60 font-sans">{table.seats}p</span>
@@ -390,7 +380,7 @@ export const FloorPlanView: React.FC = () => {
                 >
                   <div className="flex items-center justify-between w-full">
                     <span className="text-xs font-black bg-black/20 px-2 py-0.5 rounded-lg font-mono">
-                      {isOccupied ? `#${ticketNum}` : `${table.seats} plazas`}
+                      {isOccupied ? `#${shortTicketNum}` : `${table.seats} plazas`}
                     </span>
                     {isOccupied && (
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${
@@ -405,7 +395,7 @@ export const FloorPlanView: React.FC = () => {
                     <h4 className="text-base sm:text-lg font-black tracking-tight">{table.name}</h4>
                     {isOccupied && totalAmount > 0 && (
                       <span className="text-sm sm:text-base font-black text-amber-300 font-mono block mt-1">
-                        {totalAmount.toFixed(2)} €
+                        {formatCLP(totalAmount, currency)}
                       </span>
                     )}
                   </div>
@@ -443,7 +433,7 @@ export const FloorPlanView: React.FC = () => {
                   <button
                     key={sale.id}
                     onClick={() => handleOpenUnassignedSale(sale)}
-                    title={`Ticket #${sale.number} - Total: ${sale.total.toFixed(2)}€`}
+                    title={`Ticket #${sale.number} - Total: ${formatCLP(sale.total, currency)}`}
                     className={`touch-btn flex flex-col items-center justify-center p-1.5 rounded-xl border transition-all shrink-0 min-w-[42px] ${
                       isLight
                         ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 hover:border-indigo-500 text-slate-800'

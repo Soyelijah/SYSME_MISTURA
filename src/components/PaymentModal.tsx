@@ -6,6 +6,7 @@ import {
   ShieldCheck, Receipt
 } from 'lucide-react';
 import { sound } from '../utils/sound';
+import { formatCLP, roundCLP, CLP_QUICK_CASH_PRESETS, normalizeCurrencySymbol } from '../utils/currency';
 import confetti from 'canvas-confetti';
 
 export const PaymentModal: React.FC = () => {
@@ -21,14 +22,15 @@ export const PaymentModal: React.FC = () => {
   const [roomNumber, setRoomNumber] = useState<string>('Habitación 204');
   const [autoPrintTicket, setAutoPrintTicket] = useState<boolean>(true);
 
-  const total = activeSale ? activeSale.total : 0;
-  const cashNum = parseFloat(cashGiven) || 0;
+  const total = roundCLP(activeSale ? activeSale.total : 0);
+  const cashNum = roundCLP(parseFloat(cashGiven.replace(/[^\d]/g, '')) || 0);
   const change = Math.max(0, cashNum - total);
   const isCashSufficient = cashNum >= total;
+  const currSymbol = normalizeCurrencySymbol(currency);
 
   useEffect(() => {
     if (activeSale) {
-      setCashGiven(activeSale.total.toFixed(2));
+      setCashGiven(String(roundCLP(activeSale.total)));
       setSelectedMethod('cash');
     }
   }, [activeSale]);
@@ -37,19 +39,17 @@ export const PaymentModal: React.FC = () => {
 
   const handleQuickCash = (amount: number) => {
     sound.playTap();
-    setCashGiven(amount.toFixed(2));
+    setCashGiven(String(roundCLP(amount)));
   };
 
   const handleNumpad = (digit: string) => {
     sound.playTap();
     if (digit === 'C') {
       setCashGiven('');
-    } else if (digit === '.') {
-      if (!cashGiven.includes('.')) {
-        setCashGiven(prev => (prev === '' ? '0.' : prev + '.'));
-      }
+    } else if (digit === '000') {
+      setCashGiven(prev => (prev === '' || prev === '0' ? '' : `${prev}000`));
     } else {
-      setCashGiven(prev => prev + digit);
+      setCashGiven(prev => (prev === '0' ? digit : prev + digit));
     }
   };
 
@@ -106,7 +106,7 @@ export const PaymentModal: React.FC = () => {
           <div className="text-right">
             <span className="text-xs opacity-90 block font-medium">Total a Pagar:</span>
             <span className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-emerald-300 drop-shadow">
-              {total.toFixed(2)} {currency}
+              {formatCLP(total, currSymbol)}
             </span>
           </div>
         </div>
@@ -185,7 +185,7 @@ export const PaymentModal: React.FC = () => {
             <div className={`space-y-3 p-4 rounded-2xl border ${
               isLight ? 'bg-slate-50 border-slate-300' : 'bg-slate-950 border-slate-800'
             }`}>
-              {/* Quick Cash preset pills */}
+              {/* Quick Cash preset pills (CLP) */}
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 <button
                   onClick={() => handleQuickCash(total)}
@@ -195,9 +195,9 @@ export const PaymentModal: React.FC = () => {
                       : 'bg-slate-900 hover:bg-emerald-950 hover:border-emerald-500 border-slate-700 text-slate-100'
                   }`}
                 >
-                  Exacto ({total.toFixed(2)}{currency})
+                  Exacto ({formatCLP(total, currSymbol)})
                 </button>
-                {[10, 20, 50, 100, 200].map(amt => (
+                {CLP_QUICK_CASH_PRESETS.map(amt => (
                   <button
                     key={amt}
                     disabled={amt < total}
@@ -210,7 +210,7 @@ export const PaymentModal: React.FC = () => {
                         : 'opacity-40 border-transparent text-slate-400 cursor-not-allowed'
                     }`}
                   >
-                    {amt} {currency}
+                    {formatCLP(amt, currSymbol)}
                   </button>
                 ))}
               </div>
@@ -221,20 +221,21 @@ export const PaymentModal: React.FC = () => {
                 <div className="space-y-3">
                   <div>
                     <label className={`text-xs font-black block mb-1.5 ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
-                      Importe Entregado por Cliente:
+                      Importe Entregado por Cliente (CLP):
                     </label>
                     <div className="relative">
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={cashGiven}
-                        onChange={(e) => setCashGiven(e.target.value)}
+                        onChange={(e) => setCashGiven(e.target.value.replace(/[^\d]/g, ''))}
                         className={`w-full px-4 py-2.5 border-2 rounded-2xl text-2xl font-mono font-black focus:outline-none ${
                           isLight
                             ? 'bg-white border-slate-300 text-emerald-700 focus:border-emerald-500'
                             : 'bg-slate-900 border-slate-700 text-emerald-400 focus:border-emerald-500'
                         }`}
                       />
-                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold font-mono text-sm">{currency}</span>
+                      <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold font-mono text-sm">CLP {currSymbol}</span>
                     </div>
                   </div>
 
@@ -245,17 +246,17 @@ export const PaymentModal: React.FC = () => {
                       : isLight ? 'bg-rose-100 border-rose-400 text-rose-950' : 'bg-rose-950/80 border-rose-500/80 text-rose-100'
                   }`}>
                     <span className="text-xs font-black">
-                      {isCashSufficient ? 'Cambio a Devolver:' : 'Falta dinero:'}
+                      {isCashSufficient ? 'Vuelto a Devolver:' : 'Falta dinero:'}
                     </span>
                     <span className="text-2xl font-mono font-black">
-                      {isCashSufficient ? `${change.toFixed(2)} ${currency}` : `${(total - cashNum).toFixed(2)} ${currency}`}
+                      {isCashSufficient ? formatCLP(change, currSymbol) : formatCLP(total - cashNum, currSymbol)}
                     </span>
                   </div>
                 </div>
 
                 {/* Tactile Numpad */}
                 <div className="grid grid-cols-3 gap-1.5">
-                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '.'].map(key => (
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '000'].map(key => (
                     <button
                       key={key}
                       onClick={() => handleNumpad(key)}
@@ -283,7 +284,7 @@ export const PaymentModal: React.FC = () => {
               </div>
               <h4 className="font-black text-base">Esperando Datáfono / Tarjeta Contactless</h4>
               <p className={`text-xs max-w-sm mx-auto font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                Acerque la tarjeta contactless del cliente al terminal o inserte chip para autorizar el cobro de <strong className="text-indigo-600 dark:text-indigo-400 font-mono font-black">{total.toFixed(2)}{currency}</strong>.
+                Acerque la tarjeta contactless del cliente al terminal o inserte chip para autorizar el cobro de <strong className="text-indigo-600 dark:text-indigo-400 font-mono font-black">{formatCLP(total, currSymbol)}</strong>.
               </p>
             </div>
           )}
@@ -298,7 +299,7 @@ export const PaymentModal: React.FC = () => {
               </div>
               <h4 className="font-black text-base">Pago con QR / Cripto</h4>
               <p className={`text-xs max-w-sm mx-auto font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                Factura instantánea Lightning: <span className="font-mono text-amber-800 dark:text-amber-300 font-black">~ {Math.round(total * 1400)} SATS</span>
+                Factura instantánea Lightning: <span className="font-mono text-amber-800 dark:text-amber-300 font-black">~ {Math.round(total * 1.1).toLocaleString('es-CL')} SATS</span>
               </p>
             </div>
           )}
@@ -364,7 +365,7 @@ export const PaymentModal: React.FC = () => {
             }`}
           >
             <CheckCircle2 className="w-5 h-5" />
-            <span>CONFIRMAR Y FINALIZAR COBRO ({total.toFixed(2)} {currency})</span>
+            <span>CONFIRMAR Y FINALIZAR COBRO ({formatCLP(total, currSymbol)})</span>
           </button>
         </div>
       </div>

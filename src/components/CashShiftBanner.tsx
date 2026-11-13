@@ -3,6 +3,7 @@ import { usePOS } from '../context/POSContext';
 import { Lock, Unlock, AlertCircle, Coins, ArrowRight, ShieldCheck, Monitor, Smartphone, ChefHat } from 'lucide-react';
 import { sound } from '../utils/sound';
 import { hasUserPermission } from '../utils/permissions';
+import { formatCLP } from '../utils/currency';
 
 export const CashShiftBanner: React.FC = () => {
   const {
@@ -19,6 +20,11 @@ export const CashShiftBanner: React.FC = () => {
   const isLight = themeMode === 'vibrant-light';
   const canOpenClose = hasUserPermission(waiter, 'canOpenCloseCash');
   const canMoveCash = hasUserPermission(waiter, 'canCashMovements');
+
+  // Do not show banner on mobile waiter or kitchen screens
+  if (stationMode === 'waiter-mobile' || stationMode === 'kitchen-kds' || waiter.role === 'waiter') {
+    return null;
+  }
 
   // If cash register is NOT open
   if (!currentShift || currentShift.status !== 'open') {
@@ -72,7 +78,7 @@ export const CashShiftBanner: React.FC = () => {
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span className="font-bold">
-          Caja Abierta: <span className="font-mono">{currentShift.initialCash.toFixed(2)}{currency}</span> (Fondo)
+          Caja Abierta: <span className="font-mono">{formatCLP(currentShift.initialCash, currency)}</span> (Fondo)
         </span>
         <span className="opacity-60 hidden sm:inline">•</span>
         <span className="hidden sm:inline text-[11px] opacity-80">

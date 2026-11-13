@@ -197,8 +197,27 @@ export const QRStandModal: React.FC<QRStandModalProps> = ({
                 </div>
 
                 {/* QR Box */}
-                <div className="my-4 p-3 bg-white rounded-2xl shadow-lg border border-slate-200">
-                  <QrCode className="w-28 h-28 text-slate-900" />
+                <div className="my-4 p-3 bg-white rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center justify-center">
+                  {(() => {
+                    const menuUrl = typeof window !== 'undefined'
+                      ? (() => {
+                          try {
+                            const url = new URL(window.location.href);
+                            return `${url.origin}${url.pathname}?mode=customer&table=${selectedTableNumber}`;
+                          } catch {
+                            return `${window.location.origin}/?mode=customer&table=${selectedTableNumber}`;
+                          }
+                        })()
+                      : `https://dypos.app/?mode=customer&table=${selectedTableNumber}`;
+
+                    return (
+                      <img
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(menuUrl)}&margin=4`}
+                        alt={`Código QR Carta Mesa ${selectedTableNumber}`}
+                        className="w-28 h-28 object-contain"
+                      />
+                    );
+                  })()}
                 </div>
 
                 {/* Table Badge */}

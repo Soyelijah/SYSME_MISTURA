@@ -293,14 +293,33 @@ export const KitchenDisplay: React.FC = () => {
                                   </div>
 
                                   {(item.selectedOption || item.kitchenNotes || item.observations) && (
-                                    <div className={`text-xs px-2.5 py-1 rounded-xl mt-1.5 font-bold border ${
+                                    <div className={`p-2 rounded-xl mt-1.5 space-y-1 border ${
                                       isLight
-                                        ? 'bg-amber-50 text-amber-900 border-amber-200'
-                                        : 'bg-amber-950/60 text-amber-300 border-amber-800/60'
+                                        ? 'bg-amber-50 text-amber-950 border-amber-300 shadow-2xs'
+                                        : 'bg-amber-950/70 text-amber-200 border-amber-800/80'
                                     }`}>
-                                      {item.selectedOption && `• ${item.selectedOption} `}
-                                      {item.kitchenNotes && `[${item.kitchenNotes}] `}
-                                      {item.observations}
+                                      {item.selectedOption && (
+                                        <div className="flex flex-wrap gap-1">
+                                          {item.selectedOption.split(',').map((opt, oIdx) => (
+                                            <span
+                                              key={oIdx}
+                                              className={`text-[11px] font-black px-2 py-0.5 rounded-lg border ${
+                                                isLight
+                                                  ? 'bg-amber-200 text-amber-950 border-amber-400'
+                                                  : 'bg-amber-900/80 text-amber-200 border-amber-700'
+                                              }`}
+                                            >
+                                              🔥 {opt.trim()}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      )}
+                                      {(item.kitchenNotes || item.observations) && (
+                                        <div className="text-xs font-bold italic flex items-center gap-1">
+                                          <span className="not-italic font-black text-[10px] uppercase tracking-wider opacity-80">Nota:</span>
+                                          <span>{item.kitchenNotes || item.observations}</span>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
                                 </div>

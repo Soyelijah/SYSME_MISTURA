@@ -6,11 +6,25 @@ export type TableStatus = 'free' | 'occupied' | 'kitchen' | 'billed';
 
 export type KitchenItemStatus = 'pending' | 'cooking' | 'ready' | 'served';
 
-export type ActiveView = 'floor' | 'pos' | 'kitchen' | 'menu' | 'reports' | 'inventory' | 'sysme-hub' | 'pending-sales' | 'admin';
+export type ActiveView =
+  | 'dashboard'
+  | 'floor'
+  | 'delivery'
+  | 'pos'
+  | 'kitchen'
+  | 'menu'
+  | 'clients'
+  | 'reports'
+  | 'inventory'
+  | 'sysme-hub'
+  | 'pending-sales'
+  | 'admin';
 
-export type UserRole = 'admin' | 'cashier' | 'waiter' | 'kitchen';
+export type UserRole = 'admin' | 'cashier' | 'waiter' | 'kitchen' | 'manager' | 'delivery';
 
 export type DeviceStationMode = 'master-pc' | 'waiter-mobile' | 'kitchen-kds';
+
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 export interface UserPermissions {
   canOpenCloseCash: boolean;
@@ -21,19 +35,132 @@ export interface UserPermissions {
   canManageUsers: boolean;
   canViewFinancialReports: boolean;
   canTransferTables: boolean;
+  canCharge?: boolean;
+  canCloseBills?: boolean;
+  canPrintPrebill?: boolean;
+  canPrintPrebills?: boolean;
 }
 
 export interface Waiter {
   id: number;
   name: string;
+  username?: string;
   pin: string;
   role: UserRole;
+  customRoleId?: string;
   avatar?: string;
   email?: string;
   phone?: string;
   active?: boolean;
+  lastLoginAt?: string;
   permissions?: UserPermissions;
 }
+
+export interface SystemModulesConfig {
+  dailyCashClose: boolean;
+  inventoryControl: boolean;
+  onlineStore: boolean;
+  qrMenu: boolean;
+  kitchenKDS: boolean;
+  invoicing: boolean;
+  clientsAndSuppliers: boolean;
+  expenseControl: boolean;
+  graphicalReports: boolean;
+  whatsappAgent: boolean;
+  reservations: boolean;
+  cardTerminal: boolean;
+  deliveryAndCounter: boolean;
+}
+
+export interface TicketTemplateConfig {
+  printLogo: boolean;
+  headerText: string;
+  footerText: string;
+  showCurrencySymbol: boolean;
+  saleIdFormat: 'last4' | 'full' | 'none';
+  maxProductNameLength: number;
+  suggestTip: boolean;
+  tipPercentage: number;
+  paperWidth: '58mm' | '80mm';
+  fontSize: 'compact' | 'normal' | 'large';
+  showWaiter: boolean;
+  showTable: boolean;
+  showTime: boolean;
+  showDiners: boolean;
+  showSubtotalTax: boolean;
+  autoPrint: boolean;
+  copies: number;
+  printerAreaId?: string;
+}
+
+export interface TicketPrintSettings {
+  precuenta: TicketTemplateConfig;
+  comanda: TicketTemplateConfig;
+}
+
+export interface PrintArea {
+  id: string;
+  name: string;
+  printerName: string;
+  connectionType: 'network' | 'usb' | 'bluetooth';
+  ipOrPort: string;
+  paperWidth: '58mm' | '80mm';
+  copies: number;
+  categoryIds: number[];
+  autoCut: boolean;
+  active: boolean;
+  notes?: string;
+}
+
+export interface ModifierOptionItem {
+  id: string;
+  name: string;
+  priceExtra: number;
+  active: boolean;
+}
+
+export interface ModifierGroup {
+  id: string;
+  name: string;
+  icon: 'flame' | 'utensils' | 'package' | 'alert' | 'sparkles';
+  color: string;
+  multiSelect: boolean;
+  required: boolean;
+  categoryIds: number[];
+  options: ModifierOptionItem[];
+}
+
+export interface CustomRole {
+  id: string;
+  name: string;
+  description?: string;
+  baseRole: UserRole;
+  isWaiter: boolean;
+  isDeliveryDriver: boolean;
+  permissions: Record<string, boolean>;
+}
+
+export interface CustomerClient {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  taxId?: string;
+  address?: string;
+  fiscalAddress?: string;
+  origin?: 'TPV' | 'Delivery' | 'Web' | 'Manual';
+  group?: 'General' | 'VIP' | 'Frecuente' | 'Empresa';
+  notes?: string;
+  balance: number;
+  ordersCount: number;
+  totalSpent: number;
+  createdAt: string;
+  active: boolean;
+}
+
+export type OrderChannel = 'salon' | 'mostrador' | 'delivery' | 'express';
+export type DeliveryWorkflowStatus = 'preparing' | 'ready' | 'dispatched' | 'delivered';
+
 
 export interface Warehouse {
   id: number;
@@ -99,25 +226,44 @@ export interface ProductOption {
   priceExtra: number;
 }
 
+/** Producto o plato vendible del catalogo (precios en CLP enteros con IVA incluido). */
 export interface Product {
   id: string;
   name: string;
   categoryId: number;
   subcategoryId?: number;
-  price: number; // PVP con IVA
+  /** Precio de venta al publico con IVA incluido, en Pesos Chilenos (CLP enteros). */
+  price: number;
+  /** Costo de compra / elaboracion en Pesos Chilenos (CLP enteros). */
   buyPrice: number;
-  iva: number; // ej: 10 o 21
+  /** Porcentaje de IVA aplicable (en Chile: 19% general, 0% exento). */
+  iva: number;
   stock: number;
   minStock: number;
   image: string;
   isKitchen: boolean;
-  kitchenBlock: number; // 1: Primeros/Bebidas, 2: Segundos, 3: Postres
+  /** Bloque de marcha KDS: 1 Entradas/Bebidas, 2 Fondos, 3 Postres, 4 Barra. */
+  kitchenBlock?: number;
   description?: string;
   allergens?: string[];
   available: boolean;
   options?: ProductOption[];
   isCombination?: boolean;
   combinationGroup?: string;
+}
+
+/** Datos fiscales y configuracion de marca del establecimiento (moneda CLP por defecto). */
+export interface RestaurantBrand {
+  name: string;
+  tagline?: string;
+  cif: string;
+  address: string;
+  phone: string;
+  city: string;
+  postalCode?: string;
+  currency?: string;
+  tipPercentage?: number;
+  ticketFooter?: string;
 }
 
 export interface Rate {
@@ -141,8 +287,10 @@ export interface SaleLine {
   kitchenNotes?: string;
   observations?: string;
   kitchenBlock: number;
+  courseBlock?: number;
   kitchenStatus: KitchenItemStatus;
   selectedOption?: string;
+  modifiersExtraPrice?: number;
   sentToKitchenAt?: string;
   waiterId?: number;
   waiterName?: string;
@@ -154,6 +302,7 @@ export interface SaleLine {
 export interface Sale {
   id: number;
   number: string;
+  ticketNumber?: string;
   date: string;
   time: string;
   tableNumber: string;
@@ -168,6 +317,15 @@ export interface Sale {
   rateId: string;
   rateName: string;
   status: 'open' | 'closed' | 'parked' | 'cancelled';
+  orderType?: OrderChannel;
+  deliveryStatus?: DeliveryWorkflowStatus;
+  deliveryAddress?: string;
+  deliveryPhone?: string;
+  customerId?: string;
+  customerName?: string;
+  driverId?: number;
+  driverName?: string;
+  deliveryFee?: number;
   items: SaleLine[];
   subtotal: number;
   taxTotal: number;
@@ -180,7 +338,9 @@ export interface Sale {
     cryptoTx?: string;
   };
   observations?: string;
+  notes?: string;
   preticketPrinted?: boolean;
+  shiftId?: string;
   createdAt: string;
   closedAt?: string;
 }
@@ -214,6 +374,7 @@ export interface CashShift {
   openedBy: string;
   openedAtDate: string;
   openedAtTime: string;
+  openedAtIso?: string;
   initialCash: number;
   status: 'open' | 'closed';
   closedBy?: string;

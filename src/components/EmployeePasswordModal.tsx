@@ -144,7 +144,7 @@ export const EmployeePasswordModal: React.FC<EmployeePasswordModalProps> = ({
                     '•'.repeat(password.length)
                   ) : (
                     <span className="text-slate-500 text-xs sm:text-sm font-sans tracking-normal font-medium">
-                      Ingrese PIN (Demo: 1234)...
+                      Ingrese PIN de empleado...
                     </span>
                   )}
                   <span className="inline-block w-2.5 h-6 bg-emerald-400 ml-1.5 animate-pulse rounded-xs" />

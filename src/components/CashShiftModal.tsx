@@ -7,6 +7,19 @@ import {
 } from 'lucide-react';
 import { sound } from '../utils/sound';
 import { hasUserPermission } from '../utils/permissions';
+import {
+  CLP_DENOMINATIONS,
+  CLP_INITIAL_CASH_PRESETS,
+  formatCLP,
+  formatSignedCLP,
+  roundCLP,
+  normalizeCurrencySymbol,
+} from '../utils/currency';
+import {
+  createEmptyBillCounts,
+  calculateBillCountsTotal,
+  calculateShiftCashSummary,
+} from '../utils/cashShift';
 
 export const CashShiftModal: React.FC = () => {
   const {
@@ -15,6 +28,7 @@ export const CashShiftModal: React.FC = () => {
     cashModalMode,
     setCashModalMode,
     currentShift,
+    shiftHistory,
     openCashShift,
     addCashMovement,
     closeCashShift,
@@ -29,47 +43,56 @@ export const CashShiftModal: React.FC = () => {
   const isLight = themeMode === 'vibrant-light';
   const canOpenClose = hasUserPermission(waiter, 'canOpenCloseCash');
   const canMoveCash = hasUserPermission(waiter, 'canCashMovements');
+  const currSymbol = normalizeCurrencySymbol(currency);
 
-  // State for Open Shift
-  const [initialCashInput, setInitialCashInput] = useState<number>(250.00);
+  // State for Open Shift (CLP)
+  const [initialCashInput, setInitialCashInput] = useState<number>(50000);
   const [openNotes, setOpenNotes] = useState<string>('Apertura de turno de caja general');
 
   // State for Movements (In / Out)
   const [movType, setMovType] = useState<'in' | 'out'>('out');
-  const [movAmount, setMovAmount] = useState<number>(25.00);
+  const [movAmount, setMovAmount] = useState<number>(10000);
   const [movConcept, setMovConcept] = useState<string>('');
   const [movCategory, setMovCategory] = useState<'supplier' | 'advance' | 'deposit' | 'petty_cash' | 'change' | 'other'>('supplier');
   const [movReceipt, setMovReceipt] = useState<string>('');
 
-  // State for Close Shift & Arqueo Denominations
-  const [billCounts, setBillCounts] = useState<Record<string, number>>({
-    '500': 0, '200': 0, '100': 0, '50': 2, '20': 4, '10': 5, '5': 6,
-    '2': 10, '1': 15, '0.50': 10, '0.20': 15, '0.10': 20
-  });
+  // State for Close Shift & Arqueo Denominations (Billetes y monedas CLP)
+  // Siempre inicia en 0 para evitar conteos ficticios pre-rellenados que provoquen descuadres
+  const [billCounts, setBillCounts] = useState<Record<number, number>>(createEmptyBillCounts);
   const [closeNotes, setOpenCloseNotes] = useState<string>('Cuadre de caja fin de turno');
   const [lastClosedReport, setLastClosedReport] = useState<any>(null);
 
-  // Sales totals for active shift
-  const closedSales = sales.filter(s => s.status === 'closed');
-  const cashSales = closedSales.filter(s => s.paymentMethod === 'cash').reduce((sum, s) => sum + s.total, 0);
-  const cardSales = closedSales.filter(s => s.paymentMethod === 'card').reduce((sum, s) => sum + s.total, 0);
-  const cryptoSales = closedSales.filter(s => s.paymentMethod === 'crypto').reduce((sum, s) => sum + s.total, 0);
-  const otherSales = closedSales.filter(s => s.paymentMethod === 'other').reduce((sum, s) => sum + s.total, 0);
-  const totalSales = closedSales.reduce((sum, s) => sum + s.total, 0);
+  // Al abrir o cerrar el modal, limpiar el conteo previo o el reporte anterior
+  useEffect(() => {
+    if (isCashShiftModalOpen) {
+      setBillCounts(createEmptyBillCounts());
+    } else {
+      setLastClosedReport(null);
+    }
+  }, [isCashShiftModalOpen]);
 
-  const shiftMovements = currentShift?.movements || [];
-  const totalCashIn = shiftMovements.filter(m => m.type === 'in').reduce((acc, m) => acc + m.amount, 0);
-  const totalCashOut = shiftMovements.filter(m => m.type === 'out').reduce((acc, m) => acc + m.amount, 0);
+  // Totales reales EXCLUSIVOS del turno activo (no mezcla ventas de turnos ya cerrados)
+  const {
+    closedSales,
+    cashSales,
+    cardSales,
+    cryptoSales,
+    otherSales,
+    totalCashIn,
+    totalCashOut,
+    netMovements,
+    initialCash: initialShiftCash,
+    expectedCashInDrawer,
+  } = calculateShiftCashSummary({
+    sales,
+    currentShift,
+    shiftHistory,
+    fallbackInitialCash: terminal.initialCash,
+  });
 
-  const initialShiftCash = currentShift ? currentShift.initialCash : terminal.initialCash;
-  const expectedCashInDrawer = initialShiftCash + cashSales + totalCashIn - totalCashOut;
-
-  // Calculated counted cash from denominations
-  const totalCountedCash = Object.entries(billCounts).reduce((sum, [denom, count]) => {
-    return sum + parseFloat(denom) * (count || 0);
-  }, 0);
-
-  const difference = Math.round((totalCountedCash - expectedCashInDrawer) * 100) / 100;
+  // Total contado físicamente en billetes y monedas CLP
+  const totalCountedCash = calculateBillCountsTotal(billCounts);
+  const difference = roundCLP(totalCountedCash - expectedCashInDrawer);
 
   if (!isCashShiftModalOpen) return null;
 
@@ -225,31 +248,31 @@ export const CashShiftModal: React.FC = () => {
                   <label className={`block text-xs font-black uppercase tracking-wider ${
                     isLight ? 'text-slate-700' : 'text-slate-300'
                   }`}>
-                    Fondo Inicial en Efectivo ({currency})
+                    Fondo Inicial en Efectivo (CLP {currSymbol})
                   </label>
                   <div className="relative">
                     <span className={`absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black font-mono ${
                       isLight ? 'text-slate-600' : 'text-slate-400'
                     }`}>
-                      {currency}
+                      {currSymbol}
                     </span>
                     <input
                       type="number"
-                      step="0.01"
+                      step="1000"
                       min="0"
                       value={initialCashInput}
-                      onChange={(e) => setInitialCashInput(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => setInitialCashInput(roundCLP(parseInt(e.target.value, 10) || 0))}
                       className={`w-full pl-12 pr-4 py-3.5 rounded-2xl text-2xl font-black font-mono border focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                         isLight ? 'bg-slate-50 border-slate-300 text-slate-950' : 'bg-slate-950 border-slate-700 text-white'
                       }`}
-                      placeholder="0.00"
+                      placeholder="50000"
                       required
                     />
                   </div>
 
                   {/* Quick Preset Buttons */}
                   <div className="flex flex-wrap gap-2 pt-1">
-                    {[100, 150, 200, 250, 300, 500].map(amount => (
+                    {CLP_INITIAL_CASH_PRESETS.map(amount => (
                       <button
                         key={amount}
                         type="button"
@@ -262,7 +285,7 @@ export const CashShiftModal: React.FC = () => {
                             : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700'
                         }`}
                       >
-                        {amount}{currency}
+                        {formatCLP(amount, currSymbol)}
                       </button>
                     ))}
                   </div>
@@ -278,7 +301,7 @@ export const CashShiftModal: React.FC = () => {
                     type="text"
                     value={openNotes}
                     onChange={(e) => setOpenNotes(e.target.value)}
-                    placeholder="Ej: Turno mañana, cajón revisado con cambio de 1€ y 2€..."
+                    placeholder="Ej: Turno mañana, cajón revisado con sencillo de $1.000 y monedas de $500..."
                     className={`w-full px-4 py-3 rounded-xl text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                       isLight ? 'bg-slate-50 border-slate-300 text-slate-950 placeholder-slate-400' : 'bg-slate-950 border-slate-700 text-white placeholder-slate-500'
                     }`}
@@ -290,7 +313,7 @@ export const CashShiftModal: React.FC = () => {
                   className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm shadow-lg shadow-emerald-600/30 active:scale-98 transition-all flex items-center justify-center gap-2"
                 >
                   <Unlock className="w-4 h-4" />
-                  <span>Confirmar y Abrir Turno de Caja ({initialCashInput.toFixed(2)}{currency})</span>
+                  <span>Confirmar y Abrir Turno de Caja ({formatCLP(initialCashInput, currSymbol)})</span>
                 </button>
               </form>
             )}
@@ -336,24 +359,24 @@ export const CashShiftModal: React.FC = () => {
                   <label className={`block text-xs font-black uppercase tracking-wider ${
                     isLight ? 'text-slate-700' : 'text-slate-300'
                   }`}>
-                    Importe del Movimiento ({currency})
+                    Importe del Movimiento (CLP {currSymbol})
                   </label>
                   <div className="relative">
                     <span className={`absolute left-4 top-1/2 -translate-y-1/2 text-xl font-black font-mono ${
                       isLight ? 'text-slate-600' : 'text-slate-400'
                     }`}>
-                      {currency}
+                      {currSymbol}
                     </span>
                     <input
                       type="number"
-                      step="0.01"
-                      min="0.10"
+                      step="100"
+                      min="10"
                       value={movAmount}
-                      onChange={(e) => setMovAmount(parseFloat(e.target.value) || 0)}
+                      onChange={(e) => setMovAmount(roundCLP(parseInt(e.target.value, 10) || 0))}
                       className={`w-full pl-12 pr-4 py-3.5 rounded-2xl text-xl font-black font-mono border focus:outline-none focus:ring-2 ${
                         movType === 'in' ? 'focus:ring-emerald-500' : 'focus:ring-rose-500'
                       } ${isLight ? 'bg-slate-50 border-slate-300 text-slate-950' : 'bg-slate-950 border-slate-700 text-white'}`}
-                      placeholder="0.00"
+                      placeholder="10000"
                       required
                     />
                   </div>
@@ -428,7 +451,7 @@ export const CashShiftModal: React.FC = () => {
                   }`}
                 >
                   {movType === 'in' ? <ArrowDownRight className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
-                  <span>Registrar {movType === 'in' ? 'Entrada' : 'Salida'} ({movAmount.toFixed(2)}{currency})</span>
+                  <span>Registrar {movType === 'in' ? 'Entrada' : 'Salida'} ({formatCLP(movAmount, currSymbol)})</span>
                 </button>
               </form>
             )}
@@ -454,19 +477,19 @@ export const CashShiftModal: React.FC = () => {
                           isLight ? 'bg-white border-slate-300 text-slate-900 shadow-xs' : 'bg-slate-900 border-slate-800 text-slate-100'
                         }`}>
                           <span className={`block text-[11px] font-bold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Fondo Inicial</span>
-                          <span className="font-mono font-black text-base block mt-0.5">{initialShiftCash.toFixed(2)}{currency}</span>
+                          <span className="font-mono font-black text-base block mt-0.5">{formatCLP(initialShiftCash, currSymbol)}</span>
                         </div>
                         <div className={`p-3 rounded-xl border ${
                           isLight ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-xs' : 'bg-emerald-950/50 border-emerald-700/80 text-emerald-100'
                         }`}>
                           <span className={`block text-[11px] font-black ${isLight ? 'text-emerald-800' : 'text-emerald-300'}`}>Ventas Efectivo</span>
-                          <span className="font-mono font-black text-base text-emerald-700 dark:text-emerald-300 block mt-0.5">+{cashSales.toFixed(2)}{currency}</span>
+                          <span className="font-mono font-black text-base text-emerald-700 dark:text-emerald-300 block mt-0.5">+{formatCLP(cashSales, currSymbol)}</span>
                         </div>
                         <div className={`p-3 rounded-xl border ${
                           isLight ? 'bg-blue-50 border-blue-300 text-blue-950 shadow-xs' : 'bg-blue-950/50 border-blue-700/80 text-blue-100'
                         }`}>
                           <span className={`block text-[11px] font-black ${isLight ? 'text-blue-800' : 'text-blue-300'}`}>Ventas Tarjetas</span>
-                          <span className="font-mono font-black text-base text-blue-700 dark:text-blue-300 block mt-0.5">{cardSales.toFixed(2)}{currency}</span>
+                          <span className="font-mono font-black text-base text-blue-700 dark:text-blue-300 block mt-0.5">{formatCLP(cardSales, currSymbol)}</span>
                         </div>
                         <div className={`p-3 rounded-xl border ${
                           isLight ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs' : 'bg-amber-950/50 border-amber-700/80 text-amber-100'
@@ -475,42 +498,65 @@ export const CashShiftModal: React.FC = () => {
                           <span className={`font-mono font-black text-base block mt-0.5 ${
                             totalCashIn >= totalCashOut ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'
                           }`}>
-                            {totalCashIn >= totalCashOut ? `+${(totalCashIn - totalCashOut).toFixed(2)}` : `-${(totalCashOut - totalCashIn).toFixed(2)}`}{currency}
+                            {formatSignedCLP(totalCashIn - totalCashOut, currSymbol, { forcePlusOnZero: true })}
                           </span>
                         </div>
                       </div>
 
-                      <div className={`flex items-center justify-between pt-2.5 border-t text-xs ${
+                      <div className={`flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t text-xs ${
                         isLight ? 'border-slate-300' : 'border-slate-800'
                       }`}>
-                        <span className={`font-black ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>Efectivo Teórico Esperado en Cajón:</span>
+                        <div>
+                          <span className={`font-black block ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
+                            Efectivo Teórico Esperado en Cajón:
+                          </span>
+                          <span className={`text-[11px] font-medium ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                            Fondo + Efectivo del turno ({closedSales.length} venta{closedSales.length === 1 ? '' : 's'}) + Entradas - Salidas
+                            {(cryptoSales + otherSales) > 0 && ` • Otros métodos: ${formatCLP(cryptoSales + otherSales, currSymbol)}`}
+                          </span>
+                        </div>
                         <span className="font-mono font-black text-lg text-purple-700 dark:text-purple-400 bg-purple-500/10 px-3 py-1 rounded-xl border border-purple-500/30">
-                          {expectedCashInDrawer.toFixed(2)}{currency}
+                          {formatCLP(expectedCashInDrawer, currSymbol)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Arqueo de Billetes y Monedas */}
+                    {/* Arqueo de Billetes y Monedas (CLP) */}
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                         <span className={`font-black uppercase tracking-wider flex items-center gap-1.5 ${
                           isLight ? 'text-slate-700' : 'text-slate-300'
                         }`}>
                           <Calculator className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                          <span>Conteo Físico de Billetes y Monedas</span>
+                          <span>Conteo Físico de Billetes y Monedas (CLP)</span>
                         </span>
-                        <span className={`text-xs font-bold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                          Total Contado:{' '}
-                          <strong className="font-mono font-black text-sm text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-800">
-                            {totalCountedCash.toFixed(2)}{currency}
-                          </strong>
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => { sound.playTap(); setBillCounts(createEmptyBillCounts()); }}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                              isLight
+                                ? 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100'
+                                : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                            }`}
+                            title="Poner todas las denominaciones en 0"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            <span>Limpiar ($0)</span>
+                          </button>
+                          <span className={`text-xs font-bold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                            Total Contado:{' '}
+                            <strong className="font-mono font-black text-sm text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/60 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-800">
+                              {formatCLP(totalCountedCash, currSymbol)}
+                            </strong>
+                          </span>
+                        </div>
                       </div>
 
-                      <div className={`grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2.5 rounded-2xl border ${
+                      <div className={`grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-44 overflow-y-auto p-2.5 rounded-2xl border ${
                         isLight ? 'bg-slate-100 border-slate-300' : 'bg-slate-950 border-slate-800'
                       }`}>
-                        {Object.keys(billCounts).map(denom => (
+                        {CLP_DENOMINATIONS.map(denom => (
                           <div
                             key={denom}
                             className={`flex flex-col items-center p-1.5 rounded-xl border text-center shadow-xs transition-all ${
@@ -522,14 +568,14 @@ export const CashShiftModal: React.FC = () => {
                             <span className={`text-[11px] font-black font-mono ${
                               isLight ? 'text-slate-700' : 'text-slate-300'
                             }`}>
-                              {denom}{currency}
+                              {formatCLP(denom, currSymbol)}
                             </span>
                             <input
                               type="number"
                               min="0"
                               value={billCounts[denom] || ''}
                               onChange={(e) => {
-                                const val = parseInt(e.target.value) || 0;
+                                const val = parseInt(e.target.value, 10) || 0;
                                 setBillCounts(prev => ({ ...prev, [denom]: val }));
                               }}
                               placeholder="0"
@@ -590,7 +636,7 @@ export const CashShiftModal: React.FC = () => {
 
                       <div className="text-right shrink-0">
                         <div className="text-xl sm:text-2xl font-black font-mono tracking-tight">
-                          {difference >= 0 ? `+${difference.toFixed(2)}` : difference.toFixed(2)} {currency}
+                          {formatSignedCLP(difference, currSymbol, { forcePlusOnZero: true })}
                         </div>
                       </div>
                     </div>
@@ -650,23 +696,23 @@ export const CashShiftModal: React.FC = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Fondo Inicial:</span>
-                        <span className="font-bold">{lastClosedReport.initialCash.toFixed(2)}{currency}</span>
+                        <span className="font-bold">{formatCLP(lastClosedReport.initialCash, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Ventas Efectivo:</span>
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">+{lastClosedReport.cashSales.toFixed(2)}{currency}</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">+{formatCLP(lastClosedReport.cashSales, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Ventas Tarjeta:</span>
-                        <span className="text-blue-600 dark:text-blue-400 font-bold">{lastClosedReport.cardSales.toFixed(2)}{currency}</span>
+                        <span className="text-blue-600 dark:text-blue-400 font-bold">{formatCLP(lastClosedReport.cardSales, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between font-black border-t pt-2 text-sm">
                         <span>TOTAL VENTAS:</span>
-                        <span>{lastClosedReport.totalSales.toFixed(2)}{currency}</span>
+                        <span>{formatCLP(lastClosedReport.totalSales, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Efectivo Contado:</span>
-                        <span className="font-black text-purple-600 dark:text-purple-400">{lastClosedReport.cashCounted.toFixed(2)}{currency}</span>
+                        <span className="font-black text-purple-600 dark:text-purple-400">{formatCLP(lastClosedReport.cashCounted, currSymbol)}</span>
                       </div>
                       <div className={`flex justify-between font-black pt-1 border-t border-dashed ${
                         lastClosedReport.difference === 0
@@ -674,7 +720,7 @@ export const CashShiftModal: React.FC = () => {
                           : 'text-rose-600 dark:text-rose-400'
                       }`}>
                         <span>DIFERENCIA / DESCUADRE:</span>
-                        <span>{lastClosedReport.difference >= 0 ? `+${lastClosedReport.difference.toFixed(2)}` : lastClosedReport.difference.toFixed(2)}{currency}</span>
+                        <span>{formatSignedCLP(lastClosedReport.difference, currSymbol, { forcePlusOnZero: true })}</span>
                       </div>
                     </div>
 

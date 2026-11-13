@@ -17,7 +17,7 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
   1: {
     // Tapas & Entrantes - Warm Spanish Amber / Orange
     id: 1,
-    name: 'Tapas & Entrantes',
+    name: 'Entradas y Piqueos',
     gradient: 'from-amber-500 via-orange-500 to-amber-600',
     solidBg: 'bg-amber-500',
     textHover: 'hover:text-amber-500',
@@ -30,9 +30,9 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
     glowColor: 'shadow-amber-500/30',
   },
   2: {
-    // Carnes & Brasa - Deep Fire Crimson & Ruby
+    // Carnes - Deep Fire Crimson & Ruby
     id: 2,
-    name: 'Carnes & Brasa',
+    name: 'Carnes',
     gradient: 'from-red-500 via-rose-600 to-red-700',
     solidBg: 'bg-red-600',
     textHover: 'hover:text-red-500',
@@ -45,9 +45,9 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
     glowColor: 'shadow-red-500/30',
   },
   3: {
-    // Pescados & Mariscos - Mediterranean Aqua & Cyan
+    // Pescado - Mediterranean Aqua & Cyan
     id: 3,
-    name: 'Pescados & Mariscos',
+    name: 'Pescado',
     gradient: 'from-cyan-500 via-teal-500 to-blue-600',
     solidBg: 'bg-cyan-600',
     textHover: 'hover:text-cyan-500',
@@ -60,9 +60,9 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
     glowColor: 'shadow-cyan-500/30',
   },
   4: {
-    // Arroces & Paellas - Golden Valencia Saffron
+    // Arroces - Golden Valencia Saffron
     id: 4,
-    name: 'Arroces & Pastas',
+    name: 'Arroces',
     gradient: 'from-yellow-400 via-amber-500 to-yellow-600',
     solidBg: 'bg-yellow-500',
     textHover: 'hover:text-yellow-600',
@@ -135,9 +135,9 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
     glowColor: 'shadow-amber-800/30',
   },
   9: {
-    // Postres de Autor - Strawberry Pink & Raspberry
+    // Postres - Strawberry Pink & Raspberry
     id: 9,
-    name: 'Postres Caseros',
+    name: 'Postres',
     gradient: 'from-pink-500 via-rose-500 to-fuchsia-600',
     solidBg: 'bg-pink-500',
     textHover: 'hover:text-pink-500',
@@ -268,6 +268,76 @@ export const CATEGORY_THEMES: Record<number, CategoryTheme> = {
     borderColor: 'border-purple-300 dark:border-purple-600/40',
     accentHex: '#8b5cf6',
     glowColor: 'shadow-purple-500/30',
+  },
+  120: {
+    id: 120,
+    name: 'Tradición Peruana',
+    gradient: 'from-red-600 via-amber-600 to-yellow-600',
+    solidBg: 'bg-red-600',
+    textHover: 'hover:text-red-500',
+    badgeBg: 'bg-red-100 dark:bg-red-950/80',
+    badgeText: 'text-red-800 dark:text-red-300 font-bold',
+    cardBgLight: 'bg-gradient-to-b from-red-50/80 to-white hover:border-red-400',
+    cardBgDark: 'bg-gradient-to-b from-red-950/30 to-slate-900 hover:border-red-500',
+    borderColor: 'border-red-300 dark:border-red-600/40',
+    accentHex: '#dc2626',
+    glowColor: 'shadow-red-500/30',
+  },
+  121: {
+    id: 121,
+    name: 'Pastas',
+    gradient: 'from-amber-500 via-orange-500 to-rose-500',
+    solidBg: 'bg-orange-500',
+    textHover: 'hover:text-orange-500',
+    badgeBg: 'bg-orange-100 dark:bg-orange-950/80',
+    badgeText: 'text-orange-800 dark:text-orange-300 font-bold',
+    cardBgLight: 'bg-gradient-to-b from-orange-50/80 to-white hover:border-orange-400',
+    cardBgDark: 'bg-gradient-to-b from-orange-950/30 to-slate-900 hover:border-orange-500',
+    borderColor: 'border-orange-300 dark:border-orange-600/40',
+    accentHex: '#ea580c',
+    glowColor: 'shadow-orange-500/30',
+  },
+  122: {
+    id: 122,
+    name: 'Ensaladas',
+    gradient: 'from-emerald-500 via-green-500 to-lime-600',
+    solidBg: 'bg-emerald-600',
+    textHover: 'hover:text-emerald-500',
+    badgeBg: 'bg-emerald-100 dark:bg-emerald-950/80',
+    badgeText: 'text-emerald-800 dark:text-emerald-300 font-bold',
+    cardBgLight: 'bg-gradient-to-b from-emerald-50/80 to-white hover:border-emerald-400',
+    cardBgDark: 'bg-gradient-to-b from-emerald-950/30 to-slate-900 hover:border-emerald-500',
+    borderColor: 'border-emerald-300 dark:border-emerald-600/40',
+    accentHex: '#10b981',
+    glowColor: 'shadow-emerald-500/30',
+  },
+  123: {
+    id: 123,
+    name: 'Guarniciones',
+    gradient: 'from-lime-500 via-amber-500 to-yellow-600',
+    solidBg: 'bg-lime-600',
+    textHover: 'hover:text-lime-600',
+    badgeBg: 'bg-lime-100 dark:bg-lime-950/80',
+    badgeText: 'text-lime-800 dark:text-lime-300 font-bold',
+    cardBgLight: 'bg-gradient-to-b from-lime-50/80 to-white hover:border-lime-400',
+    cardBgDark: 'bg-gradient-to-b from-lime-950/30 to-slate-900 hover:border-lime-500',
+    borderColor: 'border-lime-300 dark:border-lime-600/40',
+    accentHex: '#65a30d',
+    glowColor: 'shadow-lime-500/30',
+  },
+  124: {
+    id: 124,
+    name: 'Sopas',
+    gradient: 'from-orange-500 via-red-500 to-amber-600',
+    solidBg: 'bg-orange-600',
+    textHover: 'hover:text-orange-500',
+    badgeBg: 'bg-orange-100 dark:bg-orange-950/80',
+    badgeText: 'text-orange-800 dark:text-orange-300 font-bold',
+    cardBgLight: 'bg-gradient-to-b from-orange-50/80 to-white hover:border-orange-400',
+    cardBgDark: 'bg-gradient-to-b from-orange-950/30 to-slate-900 hover:border-orange-500',
+    borderColor: 'border-orange-300 dark:border-orange-600/40',
+    accentHex: '#ea580c',
+    glowColor: 'shadow-orange-500/30',
   },
 };
 

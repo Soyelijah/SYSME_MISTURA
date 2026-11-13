@@ -6,12 +6,13 @@ import {
   Soup, Fish, Wheat, Sandwich, CupSoda, Beer, Coffee, Cake,
   GlassWater, Heart, Search, Filter, Bell, ShoppingBag, Plus,
   Minus, Info, Check, ArrowRight, ArrowLeft, Globe, Wifi, Clock, Utensils,
-  ChevronRight, Eye, ShieldCheck, Share2, Layers, Compass
+  ChevronRight, Eye, ShieldCheck, Share2, Layers, Compass, Copy, ExternalLink
 } from 'lucide-react';
 import { Product, Language } from '../types';
 import { getCategoryTheme } from '../utils/theme';
 import { getCategoryMeta } from '../utils/categoryMeta';
 import { sound } from '../utils/sound';
+import { formatCLP } from '../utils/currency';
 import { AVAILABLE_LANGUAGES } from '../utils/language';
 import { DishDetailModal } from './digital-menu/DishDetailModal';
 import { MobileOrderDrawer, CartItem } from './digital-menu/MobileOrderDrawer';
@@ -20,7 +21,7 @@ import { QRStandModal } from './digital-menu/QRStandModal';
 import { MobileCustomerView } from './digital-menu/MobileCustomerView';
 
 export const DigitalMenu: React.FC = () => {
-  const { categories, products, language, setLanguage, tables, themeMode, restaurantBrand } = usePOS();
+  const { categories, products, language, setLanguage, tables, themeMode, restaurantBrand, currency } = usePOS();
   const isLight = themeMode === 'vibrant-light';
 
   // Navigation State: null = "Directory of Animated Category Cards", number = "Drill-down to that specific category"
@@ -28,7 +29,8 @@ export const DigitalMenu: React.FC = () => {
   const [selectedDietary, setSelectedDietary] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [previewMode, setPreviewMode] = useState<'grid' | 'mobile'>('grid');
-  const [selectedTableForQR, setSelectedTableForQR] = useState<string>('101');
+  const [selectedTableForQR, setSelectedTableForQR] = useState<string>('1');
+  const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
 
   // Modals & Drawers
   const [selectedProductForDetail, setSelectedProductForDetail] = useState<Product | null>(null);
@@ -100,17 +102,20 @@ export const DigitalMenu: React.FC = () => {
       }
       if (selectedDietary === 'spicy') {
         return p.description && (
+          p.description.toLowerCase().includes('ají') ||
+          p.description.toLowerCase().includes('aji') ||
+          p.description.toLowerCase().includes('rocoto') ||
           p.description.toLowerCase().includes('brava') ||
           p.description.toLowerCase().includes('picante') ||
-          p.description.toLowerCase().includes('chile') ||
+          p.description.toLowerCase().includes('macho') ||
           p.description.toLowerCase().includes('pimienta')
         );
       }
       if (selectedDietary === 'drinks') {
-        return [6, 7, 8, 10, 102, 103, 104, 105, 106, 107, 108].includes(p.categoryId);
+        return [100, 6, 102, 7, 8, 103].includes(p.categoryId);
       }
       if (selectedDietary === 'chef') {
-        return p.price > 10 || p.isKitchen;
+        return p.price >= 15500 || p.isKitchen;
       }
 
       return true;
@@ -119,24 +124,29 @@ export const DigitalMenu: React.FC = () => {
 
   // Featured chef specials (top picks)
   const chefSpecials = useMemo(() => {
-    return products.filter(p => p.image && (p.price > 12 || p.categoryId === 100 || p.categoryId === 1 || p.categoryId === 2)).slice(0, 4);
+    return products.filter(p => p.image && (p.price >= 15500 || p.categoryId === 100 || p.categoryId === 1 || p.categoryId === 2)).slice(0, 4);
   }, [products]);
 
   // Helper to check if a product is in cart and its quantity
-  const getProductCartCount = (productId: number) => {
+  const getProductCartCount = (productId: string) => {
     const item = cart.find(c => c.product.id === productId);
     return item ? item.quantity : 0;
   };
 
-  const getProductCartIndex = (productId: number) => {
+  const getProductCartIndex = (productId: string) => {
     return cart.findIndex(c => c.product.id === productId);
   };
 
   // Cart operations
-  const handleAddToCart = (product: Product, quantity = 1, selectedOptions: string[] = [], notes = '') => {
+  const handleAddToCart = (product: Product, quantity = 1, selectedOptions: string[] = [], notes = '', extraPrice = 0) => {
     sound.playSuccess();
     setCart(prev => {
-      const existingIdx = prev.findIndex(item => item.product.id === product.id && item.notes === notes);
+      const existingIdx = prev.findIndex(
+        item =>
+          item.product.id === product.id &&
+          JSON.stringify(item.selectedOptions) === JSON.stringify(selectedOptions) &&
+          item.notes === notes
+      );
       if (existingIdx > -1) {
         const next = [...prev];
         next[existingIdx].quantity += quantity;
@@ -147,7 +157,7 @@ export const DigitalMenu: React.FC = () => {
           quantity,
           selectedOptions,
           notes,
-          unitPrice: product.price
+          unitPrice: product.price + extraPrice
         }];
       }
     });
@@ -191,44 +201,41 @@ export const DigitalMenu: React.FC = () => {
     <div className={`flex-1 flex flex-col h-full overflow-y-auto select-none transition-colors ${
       isLight ? 'bg-slate-100 text-slate-800' : 'bg-slate-950 text-slate-100'
     }`}>
-      {/* Top Navigation & Controls Bar */}
-      <div className={`sticky top-0 z-30 p-4 sm:px-6 backdrop-blur-xl border-b transition-colors ${
-        isLight ? 'bg-white/90 border-slate-200' : 'bg-slate-950/90 border-slate-800'
+      {/* Top Navigation & Controls Bar (Compact & Space-saving) */}
+      <div className={`sticky top-0 z-30 p-2.5 sm:px-5 backdrop-blur-xl border-b transition-colors ${
+        isLight ? 'bg-white/95 border-slate-200' : 'bg-slate-950/95 border-slate-800'
       }`}>
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           {/* Header Title with Branding */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 via-cyan-500 to-emerald-500 flex items-center justify-center text-white shadow-lg shadow-teal-500/30">
-              <QrCode className="w-5 h-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 via-cyan-500 to-emerald-500 flex items-center justify-center text-white shadow-sm shrink-0">
+              <QrCode className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-black tracking-tight flex items-center gap-2">
-                  <span>Carta Digital Interactiva QR</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-teal-500/20 text-teal-600 dark:text-teal-400 border border-teal-500/30 uppercase">
+                <h1 className="text-base sm:text-lg font-black tracking-tight flex items-center gap-1.5">
+                  <span>Carta Digital QR</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-teal-500/20 text-teal-600 dark:text-teal-400 border border-teal-500/30 uppercase">
                     En Vivo
                   </span>
                 </h1>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Experiencia gastronómica interactiva con selección visual de categorías y pedidos en mesa.
-              </p>
             </div>
           </div>
 
           {/* Right Action Tools */}
-          <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Language Switcher */}
-            <div className={`flex items-center p-1 rounded-2xl border ${
+            <div className={`flex items-center p-0.5 rounded-xl border ${
               isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
               {AVAILABLE_LANGUAGES.map(item => (
                 <button
                   key={item.code}
                   onClick={() => { sound.playTap(); setActiveLanguage(item.code); setLanguage(item.code); }}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all flex items-center gap-1 ${
+                  className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all flex items-center gap-1 ${
                     activeLanguage === item.code
-                      ? 'bg-teal-600 text-white shadow-md'
+                      ? 'bg-teal-600 text-white shadow-xs'
                       : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                   }`}
                   title={item.nativeName}
@@ -240,30 +247,30 @@ export const DigitalMenu: React.FC = () => {
             </div>
 
             {/* View Mode Toggle (Grid vs Mobile Simulator) */}
-            <div className={`flex items-center p-1 rounded-2xl border ${
+            <div className={`flex items-center p-0.5 rounded-xl border ${
               isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
               <button
                 onClick={() => { sound.playTap(); setPreviewMode('grid'); }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
                   previewMode === 'grid'
-                    ? 'bg-teal-600 text-white shadow-md'
+                    ? 'bg-teal-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Utensils className="w-3.5 h-3.5" />
-                <span>Vista Catálogo</span>
+                <span>Catálogo</span>
               </button>
               <button
                 onClick={() => { sound.playTap(); setPreviewMode('mobile'); }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
                   previewMode === 'mobile'
-                    ? 'bg-teal-600 text-white shadow-md'
+                    ? 'bg-teal-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span>Móvil Cliente</span>
+                <span>Móvil</span>
               </button>
             </div>
 
@@ -271,10 +278,10 @@ export const DigitalMenu: React.FC = () => {
             <button
               id="print-qr-stand-btn"
               onClick={() => { sound.playTap(); setShowQRStandModal(true); }}
-              className="touch-btn px-4 py-2 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-slate-950 rounded-2xl text-xs font-black shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-transform active:scale-95"
+              className="touch-btn px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-black shadow-xs flex items-center gap-1.5 transition-transform active:scale-95"
             >
-              <Printer className="w-4 h-4" />
-              <span>Soporte QR Físico</span>
+              <Printer className="w-3.5 h-3.5" />
+              <span>Soporte QR</span>
             </button>
           </div>
         </div>
@@ -283,50 +290,113 @@ export const DigitalMenu: React.FC = () => {
       {/* Main Content Area based on Mode */}
       {previewMode === 'grid' ? (
         /* ================= DESKTOP / TABLET GASTRONOMIC CATALOG VIEW ================= */
-        <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto w-full">
-          {/* Restaurant Hero Presentation Card */}
-          <div className={`relative rounded-3xl overflow-hidden p-6 sm:p-8 shadow-2xl border ${
+        <div className="p-3 sm:p-5 space-y-4 max-w-7xl mx-auto w-full">
+          {/* Restaurant Hero Presentation Card (Slim & Compact) */}
+          <div className={`relative rounded-2xl overflow-hidden p-4 sm:p-5 shadow-md border ${
             isLight
-              ? 'bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 border-teal-600/30 text-white'
-              : 'bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 border-slate-800 text-white'
+              ? 'bg-slate-900 border-teal-600/30 text-white'
+              : 'bg-slate-900 border-slate-800 text-white'
           }`}>
-            <div className="absolute inset-0 bg-[radial-gradient(#2dd4bf_1px,transparent_1px)] [background-size:20px_20px] opacity-10" />
-
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="max-w-2xl space-y-2">
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="max-w-2xl space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs px-3 py-1 rounded-full font-black uppercase tracking-wider">
+                  <span className="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
                     {restaurantBrand.name}
                   </span>
-                  <span className="flex items-center text-amber-300 text-xs font-black bg-black/40 px-2.5 py-1 rounded-full border border-amber-400/30">
-                    <Star className="w-3.5 h-3.5 fill-amber-300 mr-1" /> 4.9 (480+ valoraciones)
+                  <span className="flex items-center text-amber-300 text-[10px] font-black bg-black/40 px-2 py-0.5 rounded-full border border-amber-400/30">
+                    <Star className="w-3 h-3 fill-amber-300 mr-1" /> 4.9 (480+ reviews)
                   </span>
-                  <span className="flex items-center text-emerald-300 text-xs font-bold bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-500/30">
-                    <Clock className="w-3.5 h-3.5 mr-1" /> Cocina Abierta
+                  <span className="flex items-center text-emerald-300 text-[10px] font-bold bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    <Clock className="w-3 h-3 mr-1" /> Cocina Abierta
                   </span>
                 </div>
 
-                <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+                <h2 className="text-lg sm:text-xl font-black tracking-tight leading-tight">
                   Carta Gastronómica & Coctelería de Autor
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {restaurantBrand.slogan || 'Cocina fusión y tradicional con producto de temporada, pescados frescos de lonja y carnes maduradas a la brasa.'}
+                <p className="text-xs text-slate-300 line-clamp-1">
+                  {restaurantBrand.tagline || 'Cocina fusión y tradicional con producto de temporada, pescados frescos de lonja y carnes maduradas a la brasa.'}
                 </p>
               </div>
 
-              {/* Quick Table QR Badge */}
-              <div className="bg-black/50 backdrop-blur-md p-4 rounded-2xl border border-white/10 flex items-center gap-4 shrink-0">
-                <div className="p-2 bg-white rounded-xl shadow-md">
-                  <QrCode className="w-14 h-14 text-slate-900" />
+              {/* Live QR Code Station for Customer Scanning */}
+              <div className="bg-black/60 backdrop-blur-md p-3 rounded-2xl border border-white/15 flex flex-col sm:flex-row items-center gap-3.5 shrink-0">
+                {/* Live Real Scannable QR Image */}
+                <div className="p-1.5 bg-white rounded-xl shadow-lg border border-slate-200 shrink-0">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                      typeof window !== 'undefined'
+                        ? `${window.location.origin}${window.location.pathname}?mode=customer&table=${selectedTableForQR}`
+                        : `https://dypos.app/?mode=customer&table=${selectedTableForQR}`
+                    )}&margin=2`}
+                    alt={`QR Mesa ${selectedTableForQR}`}
+                    className="w-18 h-18 sm:w-20 sm:h-20 object-contain"
+                  />
                 </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-teal-300 block">
-                    Escaneo en Mesa
-                  </span>
-                  <h4 className="text-sm font-black text-white">Mesa {selectedTableForQR}</h4>
-                  <p className="text-[10px] text-slate-400">
-                    Acceso instantáneo para pedir y consultar carta
+
+                {/* Table Control & Explanation */}
+                <div className="space-y-1.5 text-center sm:text-left min-w-[200px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-black text-teal-300">
+                      QR de Mesa Escaneable
+                    </span>
+                    <select
+                      value={selectedTableForQR}
+                      onChange={e => { sound.playTap(); setSelectedTableForQR(e.target.value); }}
+                      className="bg-white/10 hover:bg-white/20 text-white font-bold text-xs px-2 py-0.5 rounded-lg border border-white/20 outline-none cursor-pointer"
+                    >
+                      {tables.slice(0, 25).map(t => (
+                        <option key={t.id} value={t.number} className="bg-slate-900 text-white">
+                          {t.name} (Nº {t.number})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <p className="text-[10px] text-slate-300 leading-tight">
+                    Enfoca la cámara del móvil aquí para abrir la carta interactiva con fotos y pedidos.
                   </p>
+
+                  {/* Actions for Manager / Staff */}
+                  <div className="flex items-center gap-1.5 pt-0.5 justify-center sm:justify-start">
+                    <button
+                      type="button"
+                      onClick={() => { sound.playTap(); setPreviewMode('mobile'); }}
+                      className="px-2 py-1 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                      title="Probar en simulador móvil"
+                    >
+                      <Smartphone className="w-3 h-3" />
+                      <span>Probar Carta</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sound.playTap();
+                        const url = `${window.location.origin}${window.location.pathname}?mode=customer&table=${selectedTableForQR}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                          setCopiedUrl(true);
+                          sound.playSuccess();
+                          setTimeout(() => setCopiedUrl(false), 2500);
+                        }).catch(() => {});
+                      }}
+                      className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Copiar enlace directo de la mesa"
+                    >
+                      {copiedUrl ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedUrl ? '¡Copiado!' : 'Copiar URL'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => { sound.playTap(); setShowQRStandModal(true); }}
+                      className="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black flex items-center gap-1 transition-all cursor-pointer"
+                      title="Imprimir soporte físico para sobremesa"
+                    >
+                      <Printer className="w-3 h-3" />
+                      <span>Soporte</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -371,7 +441,7 @@ export const DigitalMenu: React.FC = () => {
                       </span>
                       <h4 className="font-bold text-xs truncate">{spec.name}</h4>
                       <span className="text-xs font-black font-mono text-teal-600 dark:text-teal-400 mt-0.5 block">
-                        ${spec.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {formatCLP(spec.price, currency)}
                       </span>
                     </div>
                   </motion.div>
@@ -386,7 +456,9 @@ export const DigitalMenu: React.FC = () => {
           {selectedCategoryId === null && !searchQuery ? (
             <div className="space-y-6">
               {/* Search and Filter Bar at Directory Root */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-slate-900/60 border border-slate-800">
+              <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl border shadow-xs ${
+                isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-800'
+              }`}>
                 <div className="relative flex-1 max-w-md">
                   <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
                   <input
@@ -396,17 +468,19 @@ export const DigitalMenu: React.FC = () => {
                     placeholder="Buscar plato, ingrediente o alérgeno en toda la carta..."
                     className={`w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs border font-medium outline-none transition-all ${
                       isLight
-                        ? 'bg-white border-slate-200 text-slate-900 focus:border-teal-500 shadow-sm'
-                        : 'bg-slate-900 border-slate-800 text-slate-100 focus:border-teal-400'
+                        ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-teal-500'
+                        : 'bg-slate-900 border-slate-800 text-slate-100 placeholder-slate-500 focus:border-teal-400'
                     }`}
                   />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 font-bold hidden sm:inline">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-bold hidden sm:inline">
                     Explora nuestras especialidades:
                   </span>
-                  <span className="px-3 py-1 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 text-xs font-black">
+                  <span className={`px-3 py-1 rounded-xl text-xs font-black border ${
+                    isLight ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
+                  }`}>
                     {categories.length} Categorías
                   </span>
                 </div>
@@ -416,18 +490,18 @@ export const DigitalMenu: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                       <Compass className="w-4 h-4" />
                     </div>
-                    <h3 className="font-black text-lg tracking-tight">
+                    <h3 className={`font-black text-lg tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
                       Explorar la Carta por Categorías
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     Selecciona cualquier categoría para ingresar y descubrir los platos, recetas e ingredientes.
                   </p>
                 </div>
-                <span className="text-xs font-mono text-slate-500 hidden md:inline">
+                <span className="text-xs font-mono text-slate-500 dark:text-slate-400 hidden md:inline font-bold">
                   {products.length} platos en total
                 </span>
               </div>
@@ -451,9 +525,9 @@ export const DigitalMenu: React.FC = () => {
                       whileHover={{ y: -6, scale: 1.01 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectCategory(cat.id)}
-                      className={`group relative rounded-3xl border overflow-hidden shadow-xl hover:shadow-2xl cursor-pointer flex flex-col justify-between transition-all ${
+                      className={`group relative rounded-3xl border overflow-hidden shadow-lg hover:shadow-2xl cursor-pointer flex flex-col justify-between transition-all ${
                         isLight
-                          ? 'bg-white border-slate-200 hover:border-teal-500'
+                          ? 'bg-white border-slate-200 hover:border-teal-500 hover:shadow-teal-500/10'
                           : 'bg-slate-900/90 border-slate-800 hover:border-teal-500/80 hover:shadow-teal-500/10'
                       }`}
                     >
@@ -484,7 +558,7 @@ export const DigitalMenu: React.FC = () => {
                           </span>
                           {lowestPrice > 0 && (
                             <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-black/70 text-amber-300 backdrop-blur-md">
-                              Desde ${lowestPrice.toLocaleString('es-CL', { maximumFractionDigits: 0 })}
+                              Desde {formatCLP(lowestPrice, currency)}
                             </span>
                           )}
                         </div>
@@ -493,10 +567,14 @@ export const DigitalMenu: React.FC = () => {
                       {/* Card Content Body */}
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
-                          <h4 className="text-base font-black tracking-tight text-slate-100 group-hover:text-teal-400 transition-colors line-clamp-1">
+                          <h4 className={`text-base font-black tracking-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-1 ${
+                            isLight ? 'text-slate-900' : 'text-slate-100'
+                          }`}>
                             {cat.name}
                           </h4>
-                          <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                          <p className={`text-xs mt-1 line-clamp-2 leading-relaxed font-medium ${
+                            isLight ? 'text-slate-600' : 'text-slate-400'
+                          }`}>
                             {meta.subtitle}
                           </p>
 
@@ -504,7 +582,11 @@ export const DigitalMenu: React.FC = () => {
                           {sampleDishNames.length > 0 && (
                             <div className="mt-3 flex flex-wrap gap-1">
                               {sampleDishNames.map((name, i) => (
-                                <span key={i} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800/80 text-slate-300 border border-slate-700/60 truncate max-w-[130px]">
+                                <span key={i} className={`px-2 py-0.5 rounded-md text-[10px] font-medium border truncate max-w-[130px] ${
+                                  isLight
+                                    ? 'bg-slate-100 text-slate-700 border-slate-200'
+                                    : 'bg-slate-800/80 text-slate-300 border-slate-700/60'
+                                }`}>
                                   • {name}
                                 </span>
                               ))}
@@ -513,7 +595,9 @@ export const DigitalMenu: React.FC = () => {
                         </div>
 
                         {/* Action CTA Row */}
-                        <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-black text-teal-400">
+                        <div className={`pt-3 border-t flex items-center justify-between text-xs font-black transition-colors ${
+                          isLight ? 'border-slate-100 text-teal-700' : 'border-slate-800 text-teal-400'
+                        }`}>
                           <span>Ver {dishCount} especialidades</span>
                           <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                             <span>Ingresar</span>
@@ -532,7 +616,9 @@ export const DigitalMenu: React.FC = () => {
             /* ========================================================================= */
             <div className="space-y-6">
               {/* Back to Categories Navigation Bar & Breadcrumb */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-slate-900/80 border border-slate-800">
+              <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl border ${
+                isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900/80 border-slate-800'
+              }`}>
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
@@ -543,14 +629,14 @@ export const DigitalMenu: React.FC = () => {
                     <span>← Volver a Todas las Categorías</span>
                   </button>
 
-                  <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-400">
+                  <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
                     <span>Carta</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                    <span className="text-teal-400 font-black">{currentCategory?.name || 'Búsqueda'}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                    <span className="text-teal-600 dark:text-teal-400 font-black">{currentCategory?.name || 'Búsqueda'}</span>
                   </div>
                 </div>
 
-                <span className="text-xs font-mono text-slate-400 font-bold">
+                <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-bold">
                   {filteredProducts.length} productos en esta sección
                 </span>
               </div>
@@ -764,7 +850,7 @@ export const DigitalMenu: React.FC = () => {
                               {/* Price Badge on photo bottom */}
                               <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                                 <span className="text-xl font-black text-amber-300 font-mono drop-shadow-md">
-                                  ${prod.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  {formatCLP(prod.price, currency)}
                                 </span>
                               </div>
                             </div>
@@ -822,11 +908,18 @@ export const DigitalMenu: React.FC = () => {
                                 ) : (
                                   <button
                                     type="button"
-                                    onClick={() => handleAddToCart(prod, 1)}
+                                    onClick={() => {
+                                      if (prod.options && prod.options.length > 0) {
+                                        sound.playTap();
+                                        setSelectedProductForDetail(prod);
+                                      } else {
+                                        handleAddToCart(prod, 1);
+                                      }
+                                    }}
                                     className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 active:scale-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-teal-600/20 transition-all"
                                   >
                                     <Plus className="w-3.5 h-3.5" />
-                                    <span>Pedir</span>
+                                    <span>{prod.options && prod.options.length > 0 ? 'Elegir' : 'Pedir'}</span>
                                   </button>
                                 )}
                               </div>
@@ -858,7 +951,7 @@ export const DigitalMenu: React.FC = () => {
           onOpenDetailModal={setSelectedProductForDetail}
           onOpenCartDrawer={() => setIsCartOpen(true)}
           onOpenCallWaiter={() => setIsCallWaiterOpen(true)}
-          currencySymbol="$"
+          currencySymbol={currency}
         />
       )}
 
@@ -878,7 +971,7 @@ export const DigitalMenu: React.FC = () => {
             </div>
             <span>Mi Comanda en Mesa</span>
             <span className="bg-black/25 px-2.5 py-1 rounded-xl font-mono">
-              ${totalCartAmount.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCLP(totalCartAmount, currency)}
             </span>
           </button>
         </motion.div>
@@ -889,9 +982,9 @@ export const DigitalMenu: React.FC = () => {
         <DishDetailModal
           product={selectedProductForDetail}
           onClose={() => setSelectedProductForDetail(null)}
-          onAddToCart={(prod, qty, opts, notes) => handleAddToCart(prod, qty, opts, notes)}
+          onAddToCart={(prod, qty, opts, notes, extraPrice) => handleAddToCart(prod, qty, opts, notes, extraPrice)}
           isLight={isLight}
-          currencySymbol="$"
+          currencySymbol={currency}
         />
       )}
 
@@ -905,7 +998,7 @@ export const DigitalMenu: React.FC = () => {
         onClearCart={handleClearCart}
         selectedTable={selectedTableForQR}
         isLight={isLight}
-        currencySymbol="$"
+        currencySymbol={currency}
       />
 
       {/* Call Waiter Modal */}

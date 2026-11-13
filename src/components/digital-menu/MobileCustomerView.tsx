@@ -11,6 +11,7 @@ import { Product, Category, Table, RestaurantBrand, Language } from '../../types
 import { getCategoryTheme } from '../../utils/theme';
 import { getCategoryMeta } from '../../utils/categoryMeta';
 import { sound } from '../../utils/sound';
+import { formatCLP } from '../../utils/currency';
 import { AVAILABLE_LANGUAGES } from '../../utils/language';
 import { CartItem } from './MobileOrderDrawer';
 
@@ -24,7 +25,7 @@ interface MobileCustomerViewProps {
   language: Language;
   onSelectLanguage: (lang: Language) => void;
   cart: CartItem[];
-  onAddToCart: (product: Product, quantity?: number, selectedOptions?: string[], notes?: string) => void;
+  onAddToCart: (product: Product, quantity?: number, selectedOptions?: string[], notes?: string, extraPrice?: number) => void;
   onUpdateCartQuantity: (index: number, newQty: number) => void;
   onOpenDetailModal: (product: Product) => void;
   onOpenCartDrawer: () => void;
@@ -55,7 +56,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showWifiInfo, setShowWifiInfo] = useState<boolean>(false);
   const [showTableSelector, setShowTableSelector] = useState<boolean>(false);
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'directory' | 'specials' | 'favorites'>('directory');
 
   // Category Icon Resolver
@@ -104,7 +105,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
 
       // 2. Specials view override
       if (activeTab === 'specials') {
-        if (p.price < 12 && p.categoryId !== 100 && p.categoryId !== 1 && p.categoryId !== 2) return false;
+        if (p.price < 15500 && p.categoryId !== 100 && p.categoryId !== 1 && p.categoryId !== 2) return false;
       }
 
       // 3. Search Query filter (global or category-specific)
@@ -128,17 +129,20 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
       }
       if (selectedDietary === 'spicy') {
         return p.description && (
+          p.description.toLowerCase().includes('ají') ||
+          p.description.toLowerCase().includes('aji') ||
+          p.description.toLowerCase().includes('rocoto') ||
           p.description.toLowerCase().includes('brava') ||
           p.description.toLowerCase().includes('picante') ||
-          p.description.toLowerCase().includes('chile') ||
+          p.description.toLowerCase().includes('macho') ||
           p.description.toLowerCase().includes('pimienta')
         );
       }
       if (selectedDietary === 'drinks') {
-        return [6, 7, 8, 10, 102, 103, 104, 105, 106, 107, 108].includes(p.categoryId);
+        return [100, 6, 102, 7, 8, 103].includes(p.categoryId);
       }
       if (selectedDietary === 'chef') {
-        return p.price > 10 || p.isKitchen;
+        return p.price >= 15500 || p.isKitchen;
       }
 
       return true;
@@ -147,20 +151,20 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
 
   // Featured chef specials carousel
   const chefSpecials = useMemo(() => {
-    return products.filter(p => p.image && (p.price > 12 || p.categoryId === 100 || p.categoryId === 1 || p.categoryId === 2)).slice(0, 5);
+    return products.filter(p => p.image && (p.price >= 15500 || p.categoryId === 100 || p.categoryId === 1 || p.categoryId === 2)).slice(0, 5);
   }, [products]);
 
   // Helper to check if a product is in cart and its quantity
-  const getProductCartCount = (productId: number) => {
+  const getProductCartCount = (productId: string) => {
     const item = cart.find(c => c.product.id === productId);
     return item ? item.quantity : 0;
   };
 
-  const getProductCartIndex = (productId: number) => {
+  const getProductCartIndex = (productId: string) => {
     return cart.findIndex(c => c.product.id === productId);
   };
 
-  const toggleFavorite = (productId: number, e: React.MouseEvent) => {
+  const toggleFavorite = (productId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     sound.playTap();
     setFavorites(prev =>
@@ -485,7 +489,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
 
                           <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-800/80">
                             <span className="text-xs font-black font-mono text-amber-400">
-                              {currencySymbol} {product.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              {formatCLP(product.price, currencySymbol)}
                             </span>
 
                             {inCartQty > 0 ? (
@@ -516,12 +520,17 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  onAddToCart(product, 1);
+                                  if (product.options && product.options.length > 0) {
+                                    sound.playTap();
+                                    onOpenDetailModal(product);
+                                  } else {
+                                    onAddToCart(product, 1);
+                                  }
                                 }}
                                 className="px-2.5 py-1 rounded-xl bg-teal-600 text-white font-bold text-[10px] flex items-center gap-1 shadow-md active:scale-95"
                               >
                                 <Plus className="w-3 h-3" />
-                                <span>Pedir</span>
+                                <span>{product.options && product.options.length > 0 ? 'Elegir' : 'Pedir'}</span>
                               </button>
                             )}
                           </div>
@@ -583,13 +592,18 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                           <h4 className="font-bold text-[10px] text-white line-clamp-1">{spec.name}</h4>
                           <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-800/80">
                             <span className="text-[11px] font-black font-mono text-amber-400">
-                              {currencySymbol} {spec.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              {formatCLP(spec.price, currencySymbol)}
                             </span>
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                onAddToCart(spec, 1);
+                                if (spec.options && spec.options.length > 0) {
+                                  sound.playTap();
+                                  onOpenDetailModal(spec);
+                                } else {
+                                  onAddToCart(spec, 1);
+                                }
                               }}
                               className="w-5 h-5 rounded-md bg-teal-600 hover:bg-teal-500 text-white flex items-center justify-center shadow-md"
                             >
@@ -683,7 +697,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                         <div className="flex items-center justify-between pt-1 border-t border-slate-800/80 text-teal-400 text-[9px] font-bold">
                           {lowestPrice > 0 ? (
                             <span className="text-slate-400 font-mono text-[8px]">
-                              Desde <b className="text-amber-400 font-bold">{currencySymbol}{lowestPrice.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</b>
+                              Desde <b className="text-amber-400 font-bold">{formatCLP(lowestPrice, currencySymbol)}</b>
                             </span>
                           ) : (
                             <span>Explorar</span>
@@ -869,7 +883,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                             {/* Bottom Row: Price & Add / Quantity Stepper */}
                             <div className="flex items-center justify-between mt-1.5 pt-1 border-t border-slate-800/60">
                               <span className="text-xs font-black font-mono text-amber-400">
-                                {currencySymbol} {product.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {formatCLP(product.price, currencySymbol)}
                               </span>
 
                               {inCartQty > 0 ? (
@@ -900,12 +914,17 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    onAddToCart(product, 1);
+                                    if (product.options && product.options.length > 0) {
+                                      sound.playTap();
+                                      onOpenDetailModal(product);
+                                    } else {
+                                      onAddToCart(product, 1);
+                                    }
                                   }}
                                   className="px-2.5 py-1 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-[10px] flex items-center gap-1 shadow-md shadow-teal-600/30 active:scale-95 transition-all"
                                 >
                                   <Plus className="w-3 h-3" />
-                                  <span>Pedir</span>
+                                  <span>{product.options && product.options.length > 0 ? 'Elegir' : 'Pedir'}</span>
                                 </button>
                               )}
                             </div>
@@ -938,7 +957,7 @@ export const MobileCustomerView: React.FC<MobileCustomerViewProps> = ({
                 <span>Enviar Comanda</span>
               </div>
               <span className="font-mono bg-black/25 px-2 py-0.5 rounded-lg text-amber-300">
-                {currencySymbol} {totalCartAmount.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatCLP(totalCartAmount, currencySymbol)}
               </span>
             </motion.button>
           )}

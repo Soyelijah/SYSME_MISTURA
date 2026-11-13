@@ -9,6 +9,8 @@ import {
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { sound } from '../utils/sound';
 import { hasUserPermission } from '../utils/permissions';
+import { formatCLP, formatSignedCLP, roundCLP, normalizeCurrencySymbol } from '../utils/currency';
+import { calculateShiftCashSummary } from '../utils/cashShift';
 
 export const CashReports: React.FC = () => {
   const {
@@ -26,44 +28,50 @@ export const CashReports: React.FC = () => {
 
   const isLight = themeMode === 'vibrant-light';
   const [activeTab, setActiveTab] = useState<'today' | 'movements' | 'history'>('today');
+  const currSymbol = normalizeCurrencySymbol(currency);
 
   const canOpenClose = hasUserPermission(waiter, 'canOpenCloseCash');
   const canMoveCash = hasUserPermission(waiter, 'canCashMovements');
 
-  // Closed and open sales calculations
-  const closedSales = sales.filter(s => s.status === 'closed');
-  const totalCash = closedSales.filter(s => s.paymentMethod === 'cash').reduce((acc, s) => acc + s.total, 0);
-  const totalCard = closedSales.filter(s => s.paymentMethod === 'card').reduce((acc, s) => acc + s.total, 0);
-  const totalCrypto = closedSales.filter(s => s.paymentMethod === 'crypto').reduce((acc, s) => acc + s.total, 0);
-  const totalOther = closedSales.filter(s => s.paymentMethod === 'other').reduce((acc, s) => acc + s.total, 0);
-  const totalSalesDay = closedSales.reduce((acc, s) => acc + s.total, 0);
+  // Ventas y totales EXCLUSIVOS del turno activo
+  const {
+    closedSales,
+    cashSales: totalCash,
+    cardSales: totalCard,
+    cryptoSales: totalCrypto,
+    otherSales: totalOther,
+    totalSales: totalSalesDay,
+    totalCashIn,
+    totalCashOut,
+    initialCash,
+    expectedCashInDrawer,
+  } = calculateShiftCashSummary({
+    sales,
+    currentShift,
+    shiftHistory,
+    fallbackInitialCash: currentShift ? currentShift.initialCash : 0,
+  });
 
-  // Shift Movements
   const shiftMovements = currentShift?.movements || [];
-  const totalCashIn = shiftMovements.filter(m => m.type === 'in').reduce((acc, m) => acc + m.amount, 0);
-  const totalCashOut = shiftMovements.filter(m => m.type === 'out').reduce((acc, m) => acc + m.amount, 0);
 
-  const initialCash = currentShift ? currentShift.initialCash : terminal.initialCash;
-  const expectedCashInDrawer = initialCash + totalCash + totalCashIn - totalCashOut;
-
-  // Hourly chart data
+  // Hourly chart data (CLP)
   const hourlyData = [
-    { hour: '12:00', total: 45.50 },
-    { hour: '13:00', total: 120.00 },
-    { hour: '14:00', total: totalSalesDay > 0 ? Math.round(totalSalesDay * 0.45) : 185.20 },
-    { hour: '15:00', total: totalSalesDay > 0 ? Math.round(totalSalesDay * 0.35) : 140.80 },
-    { hour: '16:00', total: totalSalesDay > 0 ? Math.round(totalSalesDay * 0.20) : 65.00 },
-    { hour: '20:00', total: 80.00 },
-    { hour: '21:00', total: 210.00 },
-    { hour: '22:00', total: 190.50 },
+    { hour: '12:00', total: 45500 },
+    { hour: '13:00', total: 120000 },
+    { hour: '14:00', total: totalSalesDay > 0 ? roundCLP(totalSalesDay * 0.45) : 185200 },
+    { hour: '15:00', total: totalSalesDay > 0 ? roundCLP(totalSalesDay * 0.35) : 140800 },
+    { hour: '16:00', total: totalSalesDay > 0 ? roundCLP(totalSalesDay * 0.20) : 65000 },
+    { hour: '20:00', total: 80000 },
+    { hour: '21:00', total: 210000 },
+    { hour: '22:00', total: 190500 },
   ];
 
-  // Pie chart data
+  // Pie chart data (CLP)
   const paymentPieData = [
-    { name: 'Efectivo', value: totalCash || 150, color: '#10b981' },
-    { name: 'Tarjeta', value: totalCard || 220, color: '#3b82f6' },
-    { name: 'Bitcoin', value: totalCrypto || 45, color: '#f59e0b' },
-    { name: 'Otros', value: totalOther || 30, color: '#8b5cf6' },
+    { name: 'Efectivo', value: totalCash || 150000, color: '#10b981' },
+    { name: 'Tarjeta', value: totalCard || 220000, color: '#3b82f6' },
+    { name: 'Cripto / QR', value: totalCrypto || 45000, color: '#f59e0b' },
+    { name: 'Otros', value: totalOther || 30000, color: '#8b5cf6' },
   ];
 
   return (
@@ -194,7 +202,7 @@ export const CashReports: React.FC = () => {
                 <TrendingUp className="w-4 h-4 text-purple-500" />
               </div>
               <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-purple-950 dark:text-white">
-                {totalSalesDay.toFixed(2)} {currency}
+                {formatCLP(totalSalesDay, currSymbol)}
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-1">
                 {closedSales.length} tickets finalizados hoy
@@ -212,10 +220,10 @@ export const CashReports: React.FC = () => {
                 <DollarSign className="w-4 h-4 text-emerald-500" />
               </div>
               <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
-                {totalCash.toFixed(2)} {currency}
+                {formatCLP(totalCash, currSymbol)}
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-1">
-                En cajón (+ {initialCash.toFixed(2)}{currency} fondo)
+                En cajón (+ {formatCLP(initialCash, currSymbol)} fondo)
               </span>
             </div>
 
@@ -230,7 +238,7 @@ export const CashReports: React.FC = () => {
                 <CreditCard className="w-4 h-4 text-blue-500" />
               </div>
               <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-blue-600 dark:text-blue-400">
-                {totalCard.toFixed(2)} {currency}
+                {formatCLP(totalCard, currSymbol)}
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-1">
                 TPV Datáfono Integrado
@@ -248,7 +256,7 @@ export const CashReports: React.FC = () => {
                 <Coins className="w-4 h-4 text-amber-500" />
               </div>
               <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-amber-600 dark:text-amber-400">
-                {expectedCashInDrawer.toFixed(2)} {currency}
+                {formatCLP(expectedCashInDrawer, currSymbol)}
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-1">
                 Fondo + Ventas + Movimientos
@@ -262,13 +270,18 @@ export const CashReports: React.FC = () => {
             <div className={`lg:col-span-2 p-5 rounded-3xl border shadow-sm ${
               isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
-              <h3 className="text-sm font-black mb-3">Facturación por Franja Horaria ({currency})</h3>
+              <h3 className="text-sm font-black mb-3">Facturación por Franja Horaria (CLP {currSymbol})</h3>
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={hourlyData}>
                     <XAxis dataKey="hour" stroke="#94a3b8" fontSize={11} />
-                    <YAxis stroke="#94a3b8" fontSize={11} />
+                    <YAxis
+                      stroke="#94a3b8"
+                      fontSize={11}
+                      tickFormatter={(val: number) => formatCLP(val, currSymbol)}
+                    />
                     <Tooltip
+                      formatter={(val: any) => [formatCLP(Number(val) || 0, currSymbol), 'Facturación']}
                       contentStyle={{
                         backgroundColor: '#0f172a',
                         border: '1px solid #334155',
@@ -306,6 +319,7 @@ export const CashReports: React.FC = () => {
                       ))}
                     </Pie>
                     <Tooltip
+                      formatter={(val: any) => formatCLP(Number(val) || 0, currSymbol)}
                       contentStyle={{
                         backgroundColor: '#0f172a',
                         border: '1px solid #334155',
@@ -323,7 +337,7 @@ export const CashReports: React.FC = () => {
                   <div key={item.name} className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                     <span className="text-slate-600 dark:text-slate-400">{item.name}:</span>
-                    <strong className="font-mono">{item.value.toFixed(2)}{currency}</strong>
+                    <strong className="font-mono">{formatCLP(item.value, currSymbol)}</strong>
                   </div>
                 ))}
               </div>
@@ -394,7 +408,7 @@ export const CashReports: React.FC = () => {
                       <span className={`text-sm font-black ${
                         mov.type === 'in' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                       }`}>
-                        {mov.type === 'in' ? `+${mov.amount.toFixed(2)}` : `-${mov.amount.toFixed(2)}`} {currency}
+                        {formatSignedCLP(mov.type === 'in' ? mov.amount : -mov.amount, currSymbol)}
                       </span>
                     </div>
                   </div>
@@ -435,21 +449,21 @@ export const CashReports: React.FC = () => {
                         <span className="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded font-bold">{r.date} {r.time}</span>
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        Cajera: <strong>{r.closedBy}</strong> • Tickets: {r.salesCount} • Fondo inicial: {r.initialCash.toFixed(2)}{currency}
+                        Cajera: <strong>{r.closedBy}</strong> • Tickets: {r.salesCount} • Fondo inicial: {formatCLP(r.initialCash, currSymbol)}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4 text-right">
                       <div>
                         <span className="text-xs text-slate-400 block">Total Facturado</span>
-                        <span className="text-base font-black font-mono text-slate-900 dark:text-white">{r.totalSales.toFixed(2)} {currency}</span>
+                        <span className="text-base font-black font-mono text-slate-900 dark:text-white">{formatCLP(r.totalSales, currSymbol)}</span>
                       </div>
                       <div>
                         <span className="text-xs text-slate-400 block">Cuadre / Descuadre</span>
                         <span className={`text-xs font-black font-mono px-2 py-0.5 rounded ${
                           r.difference === 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300'
                         }`}>
-                          {r.difference === 0 ? 'Exacto (0.00€)' : `${r.difference.toFixed(2)}€`}
+                          {r.difference === 0 ? `Exacto (${formatCLP(0, currSymbol)})` : formatSignedCLP(r.difference, currSymbol)}
                         </span>
                       </div>
                       <button

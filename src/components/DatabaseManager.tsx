@@ -211,7 +211,7 @@ export const DatabaseManager: React.FC = () => {
     sound.playSuccess();
     let sql = `-- ========================================================\n`;
     sql += `-- DY POS GASTROBAR DATABASE DUMP\n`;
-    sql += `-- Exportado el: ${new Date().toLocaleString('es-ES')}\n`;
+    sql += `-- Exportado el: ${new Date().toLocaleString('es-CL')}\n`;
     sql += `-- Sistema: Dy Pos Restaurant Management Suite\n`;
     sql += `-- ========================================================\n\n`;
 
@@ -236,8 +236,8 @@ export const DatabaseManager: React.FC = () => {
     sql += `  id VARCHAR(50) PRIMARY KEY,\n`;
     sql += `  name VARCHAR(255) NOT NULL,\n`;
     sql += `  category_id INT,\n`;
-    sql += `  price DECIMAL(10,2),\n`;
-    sql += `  buy_price DECIMAL(10,2),\n`;
+    sql += `  price DECIMAL(12,0),\n`;
+    sql += `  buy_price DECIMAL(12,0),\n`;
     sql += `  iva DECIMAL(5,2),\n`;
     sql += `  stock INT,\n`;
     sql += `  min_stock INT,\n`;
@@ -259,9 +259,9 @@ export const DatabaseManager: React.FC = () => {
     sql += `  time VARCHAR(50),\n`;
     sql += `  table_number VARCHAR(50),\n`;
     sql += `  waiter_name VARCHAR(100),\n`;
-    sql += `  subtotal DECIMAL(10,2),\n`;
-    sql += `  tax_total DECIMAL(10,2),\n`;
-    sql += `  total DECIMAL(10,2),\n`;
+    sql += `  subtotal DECIMAL(12,0),\n`;
+    sql += `  tax_total DECIMAL(12,0),\n`;
+    sql += `  total DECIMAL(12,0),\n`;
     sql += `  status VARCHAR(50)\n`;
     sql += `);\n\n`;
 
@@ -292,7 +292,7 @@ export const DatabaseManager: React.FC = () => {
 
     dataList.forEach(item => {
       const row = headers.map(h => {
-        const val = item[h];
+        const val = (item as any)[h];
         if (typeof val === 'object') return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
         if (typeof val === 'string') return `"${val.replace(/"/g, '""')}"`;
         return val;
@@ -359,9 +359,9 @@ export const DatabaseManager: React.FC = () => {
         id: `PROD-${Date.now().toString().slice(-4)}`,
         name: 'Nuevo Plato Dy Pos',
         categoryId: categories[0]?.id || 1,
-        price: 15.00,
-        buyPrice: 4.50,
-        iva: 10,
+        price: 15000,
+        buyPrice: 4500,
+        iva: 19,
         stock: 50,
         minStock: 10,
         image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80',
@@ -398,7 +398,7 @@ export const DatabaseManager: React.FC = () => {
       if (isNewRecord) {
         currentData.unshift(parsed);
       } else {
-        const index = currentData.findIndex(item => item[pk] === editingRecord[pk]);
+        const index = currentData.findIndex(item => (item as any)[pk] === (editingRecord as any)[pk]);
         if (index !== -1) {
           currentData[index] = parsed;
         } else {
@@ -406,7 +406,7 @@ export const DatabaseManager: React.FC = () => {
         }
       }
 
-      activeTableObj.setData(currentData);
+      activeTableObj.setData(currentData as any);
       sound.playSuccess();
       setIsEditModalOpen(false);
       showToast('Registro guardado correctamente en la base de datos.');
@@ -421,7 +421,7 @@ export const DatabaseManager: React.FC = () => {
     sound.playTap();
     const pk = activeTableObj.primaryKey;
     const updated = activeTableObj.data.filter((item: any) => item[pk] !== recordId);
-    activeTableObj.setData(updated);
+    activeTableObj.setData(updated as any);
     showToast(`Registro ${recordId} eliminado.`);
   };
 

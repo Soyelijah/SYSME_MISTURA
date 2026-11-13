@@ -2,7 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import {
   Waiter, Warehouse, POSTerminal, Salon, Table, Category, Product, Rate,
   Sale, SaleLine, Language, CashRegisterReport, TranslationStrings, ActiveView, ThemeMode,
-  CashMovement, CashShift, DeviceStationMode, UserPermissions
+  CashMovement, CashShift, DeviceStationMode, UserPermissions, DeviceType,
+  SystemModulesConfig, TicketPrintSettings, TicketTemplateConfig, PrintArea,
+  ModifierGroup, CustomRole, CustomerClient, OrderChannel, DeliveryWorkflowStatus
 } from '../types';
 import {
   INITIAL_WAITERS, INITIAL_WAREHOUSES, INITIAL_TERMINALS, INITIAL_SALONS,
@@ -10,7 +12,106 @@ import {
   INITIAL_SALES, TRANSLATIONS, DEFAULT_ADMIN_PERMISSIONS, DEFAULT_CASHIER_PERMISSIONS,
   DEFAULT_WAITER_PERMISSIONS, DEFAULT_KITCHEN_PERMISSIONS
 } from '../data/mockData';
+import {
+  DEFAULT_SYSTEM_MODULES, DEFAULT_TICKET_SETTINGS, DEFAULT_PRINT_AREAS,
+  DEFAULT_MODIFIER_GROUPS, DEFAULT_CUSTOM_ROLES, INITIAL_CLIENTS,
+  mapCustomRoleToUserPermissions
+} from '../data/defaultConfigs';
 import { isViewAllowedForUser, getDefaultViewForUser } from '../utils/permissions';
+import {
+  normalizeCurrencySymbol,
+  roundCLP,
+  calculateNetAndIva,
+  CHILE_IVA_PERCENT,
+  formatDateCL,
+  formatTimeCL,
+} from '../utils/currency';
+import { calculateShiftCashSummary } from '../utils/cashShift';
+
+const CATALOG_SEED_VERSION = '2026-11-mistura-clp-v2';
+let hasCheckedSeedMigration = false;
+
+/**
+ * Sincroniza catalogos semilla y migra cachés legadas en EUR a Pesos Chilenos (CLP) enteros
+ * cuando cambia la version de semilla, preservando operaciones en curso del usuario.
+ */
+const ensureCLPSeedMigration = () => {
+  if (hasCheckedSeedMigration || typeof window === 'undefined') return;
+  hasCheckedSeedMigration = true;
+  try {
+    const currentVer = localStorage.getItem('sysme_catalog_seed_version');
+    if (currentVer !== CATALOG_SEED_VERSION) {
+      localStorage.setItem('sysme_categories', JSON.stringify(INITIAL_CATEGORIES));
+      localStorage.setItem('sysme_products', JSON.stringify(INITIAL_PRODUCTS));
+      localStorage.setItem('sysme_print_areas', JSON.stringify(DEFAULT_PRINT_AREAS));
+      localStorage.setItem('sysme_tables', JSON.stringify(INITIAL_TABLES));
+      localStorage.setItem('sysme_sales', JSON.stringify(INITIAL_SALES));
+
+      const savedTerm = localStorage.getItem('sysme_terminal');
+      if (savedTerm) {
+        try {
+          const parsedTerm = JSON.parse(savedTerm);
+          if (parsedTerm && parsedTerm.initialCash === 250) {
+            parsedTerm.initialCash = 50000;
+            localStorage.setItem('sysme_terminal', JSON.stringify(parsedTerm));
+          }
+        } catch {}
+      }
+
+      const savedShift = localStorage.getItem('sysme_current_shift');
+      if (savedShift) {
+        try {
+          const parsedShift = JSON.parse(savedShift);
+          if (parsedShift && parsedShift.initialCash === 250) {
+            parsedShift.initialCash = 50000;
+            if (Array.isArray(parsedShift.movements)) {
+              parsedShift.movements = parsedShift.movements.map((m: CashMovement) =>
+                m.id === 'MOV-01' && m.amount === 50 ? { ...m, amount: 20000 } : m
+              );
+            }
+            localStorage.setItem('sysme_current_shift', JSON.stringify(parsedShift));
+          }
+        } catch {}
+      }
+
+      localStorage.setItem('sysme_catalog_seed_version', CATALOG_SEED_VERSION);
+    }
+  } catch {}
+};
+
+/**
+ * Detects current device classification (mobile / tablet / desktop)
+ * based on viewport dimensions, touch capabilities, user agent and URL station parameter.
+ */
+export const detectCurrentDeviceType = (): DeviceType => {
+  if (typeof window === 'undefined') return 'desktop';
+
+  // 1. Explicit station override in URL parameter
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const station = params.get('station') || params.get('mode');
+    if (station === 'waiter-mobile' || station === 'waiter' || station === 'garzon') {
+      return 'mobile';
+    }
+  } catch {}
+
+  // 2. User agent detection
+  const ua = navigator.userAgent || '';
+  const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  const isTabletUA = /iPad|Android(?!.*Mobile)|Tablet/i.test(ua);
+
+  // 3. Viewport width & touch capabilities
+  const width = window.innerWidth;
+  const hasTouch = (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0) || 'ontouchstart' in window;
+
+  if (isMobileUA || (hasTouch && width <= 768) || width <= 640) {
+    return 'mobile';
+  }
+  if (isTabletUA || (width > 640 && width <= 1024 && hasTouch)) {
+    return 'tablet';
+  }
+  return 'desktop';
+};
 
 export interface RestaurantSettings {
   name: string;
@@ -48,7 +149,10 @@ interface POSContextType {
   quickLogin: (user: Waiter) => void;
   logout: () => void;
 
-  // Device Station Simulation
+  // Device & Station Intelligence
+  deviceType: DeviceType;
+  isMobileDevice: boolean;
+  isMobileWaiter: boolean;
   stationMode: DeviceStationMode;
   setStationMode: (mode: DeviceStationMode) => void;
 
@@ -81,10 +185,31 @@ interface POSContextType {
 
   // Orders / Sales
   sales: Sale[];
+  setSales: React.Dispatch<React.SetStateAction<Sale[]>>;
   activeSale: Sale | null;
   setActiveSale: (sale: Sale | null) => void;
   createSale: (tableId?: number, dinersCount?: number) => Sale;
-  addItemToActiveSale: (product: Product, quantity?: number, optionName?: string, notes?: string, customBlock?: number) => void;
+  createChannelSale: (params: {
+    orderType: OrderChannel;
+    customerId?: string;
+    customerName?: string;
+    deliveryAddress?: string;
+    deliveryPhone?: string;
+    driverId?: number;
+    driverName?: string;
+    deliveryFee?: number;
+    notes?: string;
+    items?: { product: Product; quantity: number }[];
+    openInPos?: boolean;
+  }) => Sale;
+  updateDeliveryStatus: (saleId: number, status: DeliveryWorkflowStatus) => void;
+  assignDriverToSale: (saleId: number, driverId?: number, driverName?: string) => void;
+  assignClientToActiveSale: (client: CustomerClient | null) => void;
+  addItemToActiveSale: (product: Product, quantity?: number, optionName?: string, notes?: string, customBlock?: number, extraPrice?: number) => void;
+  submitCustomerOrder: (
+    tableNumber: string,
+    items: { product: Product; quantity: number; selectedOptions: string[]; notes: string; unitPrice: number }[]
+  ) => Sale;
   updateSaleLine: (lineId: string, updates: Partial<SaleLine>) => void;
   removeSaleLine: (lineId: string) => void;
   sendActiveSaleToKitchen: () => void;
@@ -100,6 +225,7 @@ interface POSContextType {
   // Cash Shifts & Arqueo
   currentShift: CashShift | null;
   shiftHistory: CashShift[];
+  setShiftHistory: React.Dispatch<React.SetStateAction<CashShift[]>>;
   openCashShift: (initialCash: number, notes?: string) => CashShift;
   addCashMovement: (movement: Omit<CashMovement, 'id' | 'date' | 'time' | 'userName'>) => CashMovement;
   closeCashShift: (countedCash: number, notes?: string) => { report: CashRegisterReport; shift: CashShift };
@@ -119,6 +245,29 @@ interface POSContextType {
   updateRestaurantBrand: (brand: Partial<RestaurantSettings>) => void;
   currency: string;
 
+  // System Configuration & Advanced Modules
+  systemModules: SystemModulesConfig;
+  updateSystemModules: (updates: Partial<SystemModulesConfig>) => void;
+  ticketSettings: TicketPrintSettings;
+  updateTicketSettings: (type: 'precuenta' | 'comanda', updates: Partial<TicketTemplateConfig>) => void;
+  resetTicketSettings: (type: 'precuenta' | 'comanda') => void;
+  printAreas: PrintArea[];
+  addPrintArea: (area: Omit<PrintArea, 'id'>) => PrintArea;
+  updatePrintArea: (id: string, updates: Partial<PrintArea>) => void;
+  deletePrintArea: (id: string) => void;
+  modifierGroups: ModifierGroup[];
+  addModifierGroup: (group: Omit<ModifierGroup, 'id'>) => ModifierGroup;
+  updateModifierGroup: (id: string, updates: Partial<ModifierGroup>) => void;
+  deleteModifierGroup: (id: string) => void;
+  customRoles: CustomRole[];
+  addCustomRole: (role: Omit<CustomRole, 'id'>) => CustomRole;
+  updateCustomRole: (id: string, updates: Partial<CustomRole>) => void;
+  deleteCustomRole: (id: string) => void;
+  clients: CustomerClient[];
+  addClient: (client: Omit<CustomerClient, 'id' | 'createdAt' | 'ordersCount' | 'totalSpent'>) => CustomerClient;
+  updateClient: (id: string, updates: Partial<CustomerClient>) => void;
+  deleteClient: (id: string) => void;
+
   // Modals & Printing
   printableTicket: Sale | null;
   setPrintableTicket: (sale: Sale | null) => void;
@@ -132,6 +281,8 @@ interface POSContextType {
 const POSContext = createContext<POSContextType | undefined>(undefined);
 
 export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  ensureCLPSeedMigration();
+
   // 1. Language
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('sysme_lang');
@@ -184,8 +335,19 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
-  // Station Mode
   const [stationMode, setStationModeState] = useState<DeviceStationMode>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const station = params.get('station') || params.get('mode');
+        if (station === 'waiter-mobile' || station === 'waiter' || station === 'garzon') {
+          return 'waiter-mobile';
+        }
+        if (station === 'kitchen-kds' || station === 'kitchen' || station === 'cocina') {
+          return 'kitchen-kds';
+        }
+      } catch {}
+    }
     const saved = localStorage.getItem('sysme_station_mode');
     return (saved as DeviceStationMode) || 'master-pc';
   });
@@ -194,6 +356,26 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setStationModeState(mode);
     localStorage.setItem('sysme_station_mode', mode);
   };
+
+  // Device Type Detection (mobile, tablet, desktop)
+  const [deviceType, setDeviceType] = useState<DeviceType>(() => detectCurrentDeviceType());
+  const isMobileDevice = deviceType === 'mobile';
+  const isMobileWaiter = waiter?.role === 'waiter' && (isMobileDevice || stationMode === 'waiter-mobile');
+
+  // Resize listener to dynamically detect device changes / orientation
+  useEffect(() => {
+    const handleDeviceResize = () => {
+      const detected = detectCurrentDeviceType();
+      setDeviceType(detected);
+    };
+
+    window.addEventListener('resize', handleDeviceResize);
+    window.addEventListener('orientationchange', handleDeviceResize);
+    return () => {
+      window.removeEventListener('resize', handleDeviceResize);
+      window.removeEventListener('orientationchange', handleDeviceResize);
+    };
+  }, []);
 
   // Theme & Branding
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
@@ -209,16 +391,20 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [restaurantBrand, setRestaurantBrand] = useState<RestaurantSettings>(() => {
     const saved = localStorage.getItem('sysme_restaurant_settings');
     if (saved) {
-      try { return JSON.parse(saved); } catch {}
+      try {
+        const parsed = JSON.parse(saved);
+        parsed.currency = normalizeCurrencySymbol(parsed.currency);
+        return parsed;
+      } catch {}
     }
     return {
       name: 'Dy Pos Gastrobar',
       tagline: 'Sistema TPV Gastronómico & Control Total',
-      cif: 'B-88741259',
-      address: 'Avenida Principal 102, Planta Central',
-      phone: '+34 912 345 678',
-      city: 'Madrid (España)',
-      currency: '€',
+      cif: '76.841.259-K',
+      address: 'Avenida Providencia 1208, Santiago',
+      phone: '+56 9 8765 4321',
+      city: 'Santiago (Chile)',
+      currency: '$',
       tipPercentage: 10,
       ticketFooter: '¡Gracias por su visita! Dy Pos TPV Suite.',
     };
@@ -227,12 +413,256 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateRestaurantBrand = (updates: Partial<RestaurantSettings>) => {
     setRestaurantBrand(prev => {
       const updated = { ...prev, ...updates };
+      updated.currency = normalizeCurrencySymbol(updated.currency);
       localStorage.setItem('sysme_restaurant_settings', JSON.stringify(updated));
       return updated;
     });
   };
 
-  const currency = restaurantBrand.currency || '€';
+  const currency = normalizeCurrencySymbol(restaurantBrand.currency);
+
+  // Station sync from URL
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const station = params.get('station') || params.get('mode');
+      if (station === 'waiter-mobile' || station === 'waiter' || station === 'garzon') {
+        setStationModeState('waiter-mobile');
+        localStorage.setItem('sysme_station_mode', 'waiter-mobile');
+        setIsLoggedIn(true);
+        sessionStorage.setItem('sysme_session_active', 'true');
+        const waiterUser = waiters.find(w => w.role === 'waiter') || waiters[0];
+        if (waiterUser) {
+          setWaiter(waiterUser);
+          localStorage.setItem('sysme_waiter', JSON.stringify(waiterUser));
+        }
+        setActiveViewState('floor');
+      } else if (station === 'kitchen-kds' || station === 'kitchen' || station === 'cocina') {
+        setStationModeState('kitchen-kds');
+        localStorage.setItem('sysme_station_mode', 'kitchen-kds');
+        setIsLoggedIn(true);
+        sessionStorage.setItem('sysme_session_active', 'true');
+        const kitchenUser = waiters.find(w => w.role === 'kitchen') || waiters[0];
+        if (kitchenUser) {
+          setWaiter(kitchenUser);
+          localStorage.setItem('sysme_waiter', JSON.stringify(kitchenUser));
+        }
+        setActiveViewState('kitchen');
+      } else if (station === 'menu') {
+        setActiveViewState('menu');
+      }
+    } catch {}
+  }, [waiters]);
+
+  // System Modules, Tickets, Print Areas, Modifiers, Custom Roles, Clients
+  const [systemModules, setSystemModules] = useState<SystemModulesConfig>(() => {
+    const saved = localStorage.getItem('sysme_system_modules');
+    if (saved) {
+      try { return { ...DEFAULT_SYSTEM_MODULES, ...JSON.parse(saved) }; } catch {}
+    }
+    return DEFAULT_SYSTEM_MODULES;
+  });
+
+  const updateSystemModules = (updates: Partial<SystemModulesConfig>) => {
+    setSystemModules(prev => {
+      const next = { ...prev, ...updates };
+      localStorage.setItem('sysme_system_modules', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const [ticketSettings, setTicketSettings] = useState<TicketPrintSettings>(() => {
+    const saved = localStorage.getItem('sysme_ticket_settings');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          precuenta: { ...DEFAULT_TICKET_SETTINGS.precuenta, ...(parsed.precuenta || {}) },
+          comanda: { ...DEFAULT_TICKET_SETTINGS.comanda, ...(parsed.comanda || {}) },
+        };
+      } catch {}
+    }
+    return DEFAULT_TICKET_SETTINGS;
+  });
+
+  const updateTicketSettings = (type: 'precuenta' | 'comanda', updates: Partial<TicketTemplateConfig>) => {
+    setTicketSettings(prev => {
+      const next: TicketPrintSettings = {
+        ...prev,
+        [type]: { ...prev[type], ...updates },
+      };
+      localStorage.setItem('sysme_ticket_settings', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const resetTicketSettings = (type: 'precuenta' | 'comanda') => {
+    setTicketSettings(prev => {
+      const next: TicketPrintSettings = {
+        ...prev,
+        [type]: { ...DEFAULT_TICKET_SETTINGS[type] },
+      };
+      localStorage.setItem('sysme_ticket_settings', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const [printAreas, setPrintAreas] = useState<PrintArea[]>(() => {
+    const saved = localStorage.getItem('sysme_print_areas');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return DEFAULT_PRINT_AREAS;
+  });
+
+  const addPrintArea = (areaData: Omit<PrintArea, 'id'>): PrintArea => {
+    const newArea: PrintArea = {
+      id: `area-${Date.now().toString(36)}`,
+      ...areaData,
+    };
+    setPrintAreas(prev => {
+      const next = [...prev, newArea];
+      localStorage.setItem('sysme_print_areas', JSON.stringify(next));
+      return next;
+    });
+    return newArea;
+  };
+
+  const updatePrintArea = (id: string, updates: Partial<PrintArea>) => {
+    setPrintAreas(prev => {
+      const next = prev.map(a => a.id === id ? { ...a, ...updates } : a);
+      localStorage.setItem('sysme_print_areas', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const deletePrintArea = (id: string) => {
+    setPrintAreas(prev => {
+      const next = prev.filter(a => a.id !== id);
+      localStorage.setItem('sysme_print_areas', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const [modifierGroups, setModifierGroups] = useState<ModifierGroup[]>(() => {
+    const saved = localStorage.getItem('sysme_modifier_groups');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return DEFAULT_MODIFIER_GROUPS;
+  });
+
+  const addModifierGroup = (groupData: Omit<ModifierGroup, 'id'>): ModifierGroup => {
+    const newGroup: ModifierGroup = {
+      id: `mod-${Date.now().toString(36)}`,
+      ...groupData,
+    };
+    setModifierGroups(prev => {
+      const next = [...prev, newGroup];
+      localStorage.setItem('sysme_modifier_groups', JSON.stringify(next));
+      return next;
+    });
+    return newGroup;
+  };
+
+  const updateModifierGroup = (id: string, updates: Partial<ModifierGroup>) => {
+    setModifierGroups(prev => {
+      const next = prev.map(g => g.id === id ? { ...g, ...updates } : g);
+      localStorage.setItem('sysme_modifier_groups', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const deleteModifierGroup = (id: string) => {
+    setModifierGroups(prev => {
+      const next = prev.filter(g => g.id !== id);
+      localStorage.setItem('sysme_modifier_groups', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const [customRoles, setCustomRoles] = useState<CustomRole[]>(() => {
+    const saved = localStorage.getItem('sysme_custom_roles');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return DEFAULT_CUSTOM_ROLES;
+  });
+
+  const addCustomRole = (roleData: Omit<CustomRole, 'id'>): CustomRole => {
+    const newRole: CustomRole = {
+      id: `role-${Date.now().toString(36)}`,
+      ...roleData,
+    };
+    setCustomRoles(prev => {
+      const next = [...prev, newRole];
+      localStorage.setItem('sysme_custom_roles', JSON.stringify(next));
+      return next;
+    });
+    return newRole;
+  };
+
+  const updateCustomRole = (id: string, updates: Partial<CustomRole>) => {
+    setCustomRoles(prev => {
+      const next = prev.map(r => r.id === id ? { ...r, ...updates } : r);
+      localStorage.setItem('sysme_custom_roles', JSON.stringify(next));
+      const updatedRole = next.find(r => r.id === id);
+      if (updatedRole) {
+        const mappedPerms = mapCustomRoleToUserPermissions(updatedRole);
+        setWaiters(wPrev => wPrev.map(w => w.customRoleId === id ? { ...w, role: updatedRole.baseRole, permissions: mappedPerms } : w));
+      }
+      return next;
+    });
+  };
+
+  const deleteCustomRole = (id: string) => {
+    setCustomRoles(prev => {
+      const next = prev.filter(r => r.id !== id);
+      localStorage.setItem('sysme_custom_roles', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const [clients, setClients] = useState<CustomerClient[]>(() => {
+    const saved = localStorage.getItem('sysme_clients');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return INITIAL_CLIENTS;
+  });
+
+  const addClient = (clientData: Omit<CustomerClient, 'id' | 'createdAt' | 'ordersCount' | 'totalSpent'>): CustomerClient => {
+    const newClient: CustomerClient = {
+      id: `cli-${Date.now().toString(36)}`,
+      ordersCount: 0,
+      totalSpent: 0,
+      createdAt: new Date().toISOString(),
+      ...clientData,
+    };
+    setClients(prev => {
+      const next = [newClient, ...prev];
+      localStorage.setItem('sysme_clients', JSON.stringify(next));
+      return next;
+    });
+    return newClient;
+  };
+
+  const updateClient = (id: string, updates: Partial<CustomerClient>) => {
+    setClients(prev => {
+      const next = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+      localStorage.setItem('sysme_clients', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const deleteClient = (id: string) => {
+    setClients(prev => {
+      const next = prev.filter(c => c.id !== id);
+      localStorage.setItem('sysme_clients', JSON.stringify(next));
+      return next;
+    });
+  };
 
   // 3. Views
   const [activeView, setActiveViewState] = useState<ActiveView>(() => {
@@ -244,6 +674,22 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const setActiveView = (view: ActiveView) => {
+    const currentDevice = detectCurrentDeviceType();
+    const isMobile = currentDevice === 'mobile';
+
+    // Validate if the requested view is permitted for this user & device & enabled modules
+    if (!isViewAllowedForUser(view, waiter, stationMode, isMobile, systemModules)) {
+      console.warn(
+        `[Security Alert] Access Denied: View '${view}' is restricted for user '${waiter.name}' (role: ${waiter.role}) on device '${currentDevice}'.`
+      );
+      const fallback = getDefaultViewForUser(waiter);
+      setActiveViewState(fallback);
+      try {
+        localStorage.setItem('sysme_active_view', fallback);
+      } catch {}
+      return;
+    }
+
     setActiveViewState(view);
     try {
       localStorage.setItem('sysme_active_view', view);
@@ -256,25 +702,34 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [tables, setTables] = useState<Table[]>(() => {
     const saved = localStorage.getItem('sysme_tables');
     if (saved) {
-      try { return JSON.parse(saved); } catch {}
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map((t: Table) =>
+            (t.currentSaleId === 1004 && t.total === 27.5) || (t.currentSaleId === 1005 && t.total === 6.8)
+              ? { ...t, status: 'free' as const, currentSaleId: null, ticketNumber: undefined, diners: undefined, openedAt: undefined, total: 0 }
+              : t
+          );
+        }
+      } catch {}
     }
     return INITIAL_TABLES;
   });
 
   // 5. Products & Categories & Rates
   const [categories, setCategories] = useState<Category[]>(() => {
-    const saved = localStorage.getItem('sysme_categories');
-    if (saved) {
-      try { return JSON.parse(saved); } catch {}
-    }
+    try {
+      const saved = localStorage.getItem('sysme_categories');
+      if (saved) return JSON.parse(saved);
+    } catch {}
     return INITIAL_CATEGORIES;
   });
 
   const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('sysme_products');
-    if (saved) {
-      try { return JSON.parse(saved); } catch {}
-    }
+    try {
+      const saved = localStorage.getItem('sysme_products');
+      if (saved) return JSON.parse(saved);
+    } catch {}
     return INITIAL_PRODUCTS;
   });
 
@@ -309,26 +764,27 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    // Default open shift for convenience
+    // Default open shift for convenience (CLP)
     const now = new Date();
     return {
       id: `SHIFT-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-001`,
       terminalId: 1,
       terminalName: 'TPV 1 - Barra Principal',
       openedBy: 'ALLISSON (Cajera)',
-      openedAtDate: now.toLocaleDateString('es-ES'),
+      openedAtDate: formatDateCL(now),
       openedAtTime: '08:30:00',
-      initialCash: 250.00,
+      openedAtIso: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString(),
+      initialCash: 50000,
       status: 'open',
       movements: [
         {
           id: 'MOV-01',
           type: 'in',
-          amount: 50.00,
-          concept: 'Monedas de cambio adicionales para caja',
+          amount: 20000,
+          concept: 'Sencillo y monedas de cambio para caja',
           category: 'change',
           userName: 'PIERRE (Admin/Gerente)',
-          date: now.toLocaleDateString('es-ES'),
+          date: formatDateCL(now),
           time: '09:15:00',
         }
       ],
@@ -546,47 +1002,92 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {}
   }, [waiter]);
 
+  // Centralized security & navigation restriction handler upon login or role/device switch
+  const enforceUserSecurityAndRestrictions = useCallback((userToLogin: Waiter) => {
+    const detectedDevice = detectCurrentDeviceType();
+    const isMobile = detectedDevice === 'mobile';
+
+    if (userToLogin.role === 'waiter') {
+      if (isMobile || stationMode === 'waiter-mobile') {
+        setStationModeState('waiter-mobile');
+        localStorage.setItem('sysme_station_mode', 'waiter-mobile');
+      }
+
+      setActiveViewState(currentView => {
+        if (!isViewAllowedForUser(currentView, userToLogin, isMobile ? 'waiter-mobile' : stationMode, isMobile, systemModules)) {
+          const safeView = getDefaultViewForUser(userToLogin);
+          localStorage.setItem('sysme_active_view', safeView);
+          return safeView;
+        }
+        return currentView;
+      });
+    } else if (userToLogin.role === 'kitchen') {
+      if (stationMode !== 'kitchen-kds') {
+        setStationModeState('kitchen-kds');
+        localStorage.setItem('sysme_station_mode', 'kitchen-kds');
+      }
+      setActiveViewState('kitchen');
+      localStorage.setItem('sysme_active_view', 'kitchen');
+    } else {
+      setActiveViewState(currentView => {
+        if (!isViewAllowedForUser(currentView, userToLogin, stationMode, isMobile, systemModules)) {
+          const safeView = getDefaultViewForUser(userToLogin);
+          localStorage.setItem('sysme_active_view', safeView);
+          return safeView;
+        }
+        return currentView;
+      });
+    }
+  }, [stationMode, systemModules]);
+
+  const stampUserLogin = (user: Waiter): Waiter => {
+    const now = new Date();
+    const stamp = `${now.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' })} ${formatTimeCL(now)}`;
+    const updated = { ...user, lastLoginAt: stamp };
+    setWaiters(prev => prev.map(w => w.id === user.id ? updated : w));
+    return updated;
+  };
+
   // Login / Logout
   const login = (pin: string): boolean => {
-    const matched = waiters.find(w => w.pin === pin);
+    const matched = waiters.find(w => w.pin === pin && w.active !== false);
     if (matched) {
-      setWaiter(matched);
+      const stamped = stampUserLogin(matched);
+      setWaiter(stamped);
       setIsLoggedIn(true);
       sessionStorage.setItem('sysme_session_active', 'true');
       setIsLoginModalOpen(false);
-      setActiveSale(prev => prev ? { ...prev, currentWaiterId: matched.id, currentWaiterName: matched.name } : null);
-      if (!isViewAllowedForUser(activeView, matched)) {
-        setActiveView(getDefaultViewForUser(matched));
-      }
+      setActiveSale(prev => prev ? { ...prev, currentWaiterId: stamped.id, currentWaiterName: stamped.name } : null);
+      enforceUserSecurityAndRestrictions(stamped);
       return true;
     }
     return false;
   };
 
   const loginUser = (selectedUser: Waiter, pin: string): boolean => {
+    if (selectedUser.active === false) return false;
     if (selectedUser.pin === pin) {
-      setWaiter(selectedUser);
+      const stamped = stampUserLogin(selectedUser);
+      setWaiter(stamped);
       setIsLoggedIn(true);
       sessionStorage.setItem('sysme_session_active', 'true');
       setIsLoginModalOpen(false);
-      setActiveSale(prev => prev ? { ...prev, currentWaiterId: selectedUser.id, currentWaiterName: selectedUser.name } : null);
-      if (!isViewAllowedForUser(activeView, selectedUser)) {
-        setActiveView(getDefaultViewForUser(selectedUser));
-      }
+      setActiveSale(prev => prev ? { ...prev, currentWaiterId: stamped.id, currentWaiterName: stamped.name } : null);
+      enforceUserSecurityAndRestrictions(stamped);
       return true;
     }
     return false;
   };
 
   const quickLogin = (selectedUser: Waiter) => {
-    setWaiter(selectedUser);
+    if (selectedUser.active === false) return;
+    const stamped = stampUserLogin(selectedUser);
+    setWaiter(stamped);
     setIsLoggedIn(true);
     sessionStorage.setItem('sysme_session_active', 'true');
     setIsLoginModalOpen(false);
-    setActiveSale(prev => prev ? { ...prev, currentWaiterId: selectedUser.id, currentWaiterName: selectedUser.name } : null);
-    if (!isViewAllowedForUser(activeView, selectedUser)) {
-      setActiveView(getDefaultViewForUser(selectedUser));
-    }
+    setActiveSale(prev => prev ? { ...prev, currentWaiterId: stamped.id, currentWaiterName: stamped.name } : null);
+    enforceUserSecurityAndRestrictions(stamped);
   };
 
   const logout = () => {
@@ -594,6 +1095,25 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sessionStorage.removeItem('sysme_session_active');
     setIsLoginModalOpen(false);
   };
+
+  // Active session security verification: ensure mobile waiters can never access admin screens
+  useEffect(() => {
+    if (isLoggedIn && waiter) {
+      const isMobile = deviceType === 'mobile';
+      if (waiter.role === 'waiter' && isMobile && stationMode !== 'waiter-mobile') {
+        setStationModeState('waiter-mobile');
+        localStorage.setItem('sysme_station_mode', 'waiter-mobile');
+      }
+
+      if (!isViewAllowedForUser(activeView, waiter, stationMode, isMobile, systemModules)) {
+        const safeView = getDefaultViewForUser(waiter);
+        setActiveViewState(safeView);
+        try {
+          localStorage.setItem('sysme_active_view', safeView);
+        } catch {}
+      }
+    }
+  }, [isLoggedIn, waiter, deviceType, stationMode, activeView, systemModules]);
 
   // User Management
   const addWaiter = (newUserData: Omit<Waiter, 'id'>): Waiter => {
@@ -672,16 +1192,17 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       terminalId: terminal.id,
       terminalName: terminal.name,
       openedBy: waiter.name,
-      openedAtDate: now.toLocaleDateString('es-ES'),
-      openedAtTime: now.toLocaleTimeString('es-ES'),
-      initialCash,
+      openedAtDate: formatDateCL(now),
+      openedAtTime: formatTimeCL(now, true),
+      openedAtIso: now.toISOString(),
+      initialCash: roundCLP(initialCash),
       status: 'open',
       movements: [],
       notes,
     };
 
     setCurrentShift(newShift);
-    setTerminal(prev => ({ ...prev, isOpen: true, initialCash }));
+    setTerminal(prev => ({ ...prev, isOpen: true, initialCash: roundCLP(initialCash) }));
     return newShift;
   };
 
@@ -690,9 +1211,10 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newMov: CashMovement = {
       id: `MOV-${Date.now().toString(36).toUpperCase()}`,
       userName: waiter.name,
-      date: now.toLocaleDateString('es-ES'),
-      time: now.toLocaleTimeString('es-ES'),
+      date: formatDateCL(now),
+      time: formatTimeCL(now, true),
       ...movData,
+      amount: roundCLP(movData.amount),
     };
 
     setCurrentShift(prev => {
@@ -708,49 +1230,43 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const closeCashShift = (countedCash: number, notes?: string) => {
     const now = new Date();
-    const closedSales = sales.filter(s => s.status === 'closed');
-    let cashSales = 0;
-    let cardSales = 0;
-    let cryptoSales = 0;
-    let otherSales = 0;
-    let totalSales = 0;
-    let totalTax = 0;
-
-    closedSales.forEach(s => {
-      totalSales += s.total;
-      totalTax += s.taxTotal;
-      if (s.paymentMethod === 'cash') cashSales += s.total;
-      else if (s.paymentMethod === 'card') cardSales += s.total;
-      else if (s.paymentMethod === 'crypto') cryptoSales += s.total;
-      else otherSales += s.total;
+    const {
+      closedSales,
+      cashSales,
+      cardSales,
+      cryptoSales,
+      otherSales,
+      totalSales,
+      totalTax,
+      initialCash: initial,
+      expectedCashInDrawer: expectedCash,
+    } = calculateShiftCashSummary({
+      sales,
+      currentShift,
+      shiftHistory,
+      fallbackInitialCash: terminal.initialCash,
     });
 
-    const shiftMovements = currentShift?.movements || [];
-    const totalCashIn = shiftMovements.filter(m => m.type === 'in').reduce((acc, m) => acc + m.amount, 0);
-    const totalCashOut = shiftMovements.filter(m => m.type === 'out').reduce((acc, m) => acc + m.amount, 0);
-
-    const initial = currentShift ? currentShift.initialCash : terminal.initialCash;
-    const expectedCash = initial + cashSales + totalCashIn - totalCashOut;
-    const difference = Math.round((countedCash - expectedCash) * 100) / 100;
+    const difference = roundCLP(roundCLP(countedCash) - expectedCash);
 
     const reportId = `Z-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(reports.length + 1).padStart(3, '0')}`;
     
     const newReport: CashRegisterReport = {
       id: reportId,
-      date: now.toLocaleDateString('es-ES'),
-      time: now.toLocaleTimeString('es-ES'),
+      date: formatDateCL(now),
+      time: formatTimeCL(now, true),
       terminalId: terminal.id,
       terminalName: terminal.name,
       openedBy: currentShift?.openedBy || waiter.name,
       closedBy: waiter.name,
-      initialCash: initial,
-      cashSales: Math.round(cashSales * 100) / 100,
-      cardSales: Math.round(cardSales * 100) / 100,
-      cryptoSales: Math.round(cryptoSales * 100) / 100,
-      otherSales: Math.round(otherSales * 100) / 100,
-      totalSales: Math.round(totalSales * 100) / 100,
-      totalTax: Math.round(totalTax * 100) / 100,
-      cashCounted: countedCash,
+      initialCash: roundCLP(initial),
+      cashSales: roundCLP(cashSales),
+      cardSales: roundCLP(cardSales),
+      cryptoSales: roundCLP(cryptoSales),
+      otherSales: roundCLP(otherSales),
+      totalSales: roundCLP(totalSales),
+      totalTax: roundCLP(totalTax),
+      cashCounted: roundCLP(countedCash),
       difference,
       salesCount: closedSales.length,
       notes: notes || 'Cierre de turno oficial Z',
@@ -764,17 +1280,17 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         terminalId: terminal.id,
         terminalName: terminal.name,
         openedBy: waiter.name,
-        openedAtDate: now.toLocaleDateString('es-ES'),
+        openedAtDate: formatDateCL(now),
         openedAtTime: '08:00:00',
-        initialCash: initial,
+        initialCash: roundCLP(initial),
         status: 'closed',
         movements: [],
       }),
       status: 'closed',
       closedBy: waiter.name,
-      closedAtDate: now.toLocaleDateString('es-ES'),
-      closedAtTime: now.toLocaleTimeString('es-ES'),
-      cashCounted: countedCash,
+      closedAtDate: formatDateCL(now),
+      closedAtTime: formatTimeCL(now, true),
+      cashCounted: roundCLP(countedCash),
       difference,
       reportId,
       notes,
@@ -791,27 +1307,23 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return closeCashShift(countedCash, notes).report;
   };
 
-  // Recalculate totals helper
+  // Recalculate totals helper using Chilean CLP integer rounding and IVA breakdown
   const calculateSaleTotals = (items: SaleLine[]): { subtotal: number; taxTotal: number; total: number } => {
     let subtotal = 0;
     let taxTotal = 0;
     let total = 0;
 
     items.forEach(item => {
-      const lineTotal = item.total;
-      const taxRate = item.iva / 100;
-      const lineSubtotal = lineTotal / (1 + taxRate);
-      const lineTax = lineTotal - lineSubtotal;
-
-      subtotal += lineSubtotal;
-      taxTotal += lineTax;
-      total += lineTotal;
+      const { net, iva, gross } = calculateNetAndIva(item.total, item.iva ?? CHILE_IVA_PERCENT);
+      subtotal += net;
+      taxTotal += iva;
+      total += gross;
     });
 
     return {
-      subtotal: Math.round(subtotal * 100) / 100,
-      taxTotal: Math.round(taxTotal * 100) / 100,
-      total: Math.round(total * 100) / 100,
+      subtotal: roundCLP(subtotal),
+      taxTotal: roundCLP(taxTotal),
+      total: roundCLP(total),
     };
   };
 
@@ -819,8 +1331,8 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const createSale = (tableId?: number, dinersCount: number = 2): Sale => {
     const matchedTable = tables.find(t => t.id === tableId);
     const now = new Date();
-    const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = formatDateCL(now);
+    const timeStr = formatTimeCL(now);
     const newId = Date.now();
     const newNumber = `T-${now.getFullYear()}-${String(sales.length + 1).padStart(4, '0')}`;
 
@@ -891,18 +1403,151 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     createSale(table.id, table.seats || 2);
   };
 
+  // Create channel sale (Delivery, Mostrador, Mostrador Express)
+  const createChannelSale = (params: {
+    orderType: OrderChannel;
+    customerId?: string;
+    customerName?: string;
+    deliveryAddress?: string;
+    deliveryPhone?: string;
+    driverId?: number;
+    driverName?: string;
+    deliveryFee?: number;
+    notes?: string;
+    items?: { product: Product; quantity: number }[];
+    openInPos?: boolean;
+  }): Sale => {
+    const now = new Date();
+    const dateStr = formatDateCL(now);
+    const timeStr = formatTimeCL(now);
+    const newId = Date.now();
+    const prefix = params.orderType === 'delivery' ? 'DLV' : params.orderType === 'express' ? 'EXP' : 'MOS';
+    const newNumber = `${prefix}-${String(sales.length + 1).padStart(4, '0')}`;
+    const currentRate = rates.find(r => r.id === selectedRateId) || rates[0];
+
+    const initialItems: SaleLine[] = (params.items || []).map((entry, idx) => {
+      const unitPrice = roundCLP(entry.product.price * currentRate.multiplier);
+      return {
+        id: `L-${newId}-${idx}`,
+        lineId: idx + 1,
+        productId: entry.product.id,
+        productName: entry.product.name,
+        quantity: entry.quantity,
+        unitPrice,
+        originalPrice: entry.product.price,
+        iva: entry.product.iva ?? CHILE_IVA_PERCENT,
+        discount: 0,
+        total: roundCLP(unitPrice * entry.quantity),
+        kitchenBlock: entry.product.kitchenBlock || 1,
+        kitchenStatus: entry.product.isKitchen ? 'cooking' : 'ready',
+        waiterId: waiter.id,
+        waiterName: waiter.name,
+        addedAtTime: timeStr,
+      };
+    });
+
+    const totals = calculateSaleTotals(initialItems);
+    const fee = roundCLP(params.deliveryFee || 0);
+    const totalWithFee = roundCLP(totals.total + fee);
+
+    const label =
+      params.orderType === 'delivery'
+        ? `Delivery • ${params.customerName || 'Sin cliente'}`
+        : params.orderType === 'express'
+        ? `Express • ${params.customerName || 'Retiro rápido'}`
+        : `Mostrador • ${params.customerName || 'Mostrador'}`;
+
+    const newSaleObj: Sale = {
+      id: newId,
+      number: newNumber,
+      date: dateStr,
+      time: timeStr,
+      tableNumber: prefix,
+      tableName: label,
+      salonId: 0,
+      salonName: params.orderType === 'delivery' ? 'Delivery' : 'Mostrador',
+      diners: 1,
+      waiterId: waiter.id,
+      waiterName: waiter.name,
+      rateId: currentRate.id,
+      rateName: currentRate.name,
+      status: 'open',
+      orderType: params.orderType,
+      deliveryStatus: 'preparing',
+      customerId: params.customerId,
+      customerName: params.customerName,
+      deliveryAddress: params.deliveryAddress,
+      deliveryPhone: params.deliveryPhone,
+      driverId: params.driverId,
+      driverName: params.driverName,
+      deliveryFee: fee,
+      notes: params.notes,
+      items: initialItems,
+      subtotal: totals.subtotal,
+      taxTotal: totals.taxTotal,
+      total: totalWithFee,
+      createdAt: now.toISOString(),
+    };
+
+    if (params.items && params.items.length > 0) {
+      setProducts(prev => prev.map(p => {
+        const used = params.items?.find(it => it.product.id === p.id);
+        return used ? { ...p, stock: Math.max(0, p.stock - used.quantity) } : p;
+      }));
+    }
+
+    setSales(prev => [newSaleObj, ...prev]);
+
+    if (params.openInPos) {
+      setActiveSale(newSaleObj);
+      setActiveView('pos');
+    }
+
+    return newSaleObj;
+  };
+
+  const updateDeliveryStatus = (saleId: number, status: DeliveryWorkflowStatus) => {
+    setSales(prev => prev.map(s => {
+      if (s.id !== saleId) return s;
+      const updatedItems = status === 'ready' || status === 'delivered'
+        ? s.items.map(it => ({ ...it, kitchenStatus: 'served' as const }))
+        : s.items;
+      return { ...s, deliveryStatus: status, items: updatedItems };
+    }));
+  };
+
+  const assignDriverToSale = (saleId: number, driverId?: number, driverName?: string) => {
+    setSales(prev => prev.map(s => s.id === saleId ? { ...s, driverId, driverName } : s));
+  };
+
+  const assignClientToActiveSale = (client: CustomerClient | null) => {
+    setActiveSale(prev => {
+      if (!prev) return null;
+      const updated: Sale = {
+        ...prev,
+        customerId: client?.id,
+        customerName: client?.name,
+        deliveryPhone: client?.phone || prev.deliveryPhone,
+        deliveryAddress: client?.address || prev.deliveryAddress,
+      };
+      setSales(all => all.map(s => s.id === updated.id ? updated : s));
+      return updated;
+    });
+  };
+
   // Add Item
-  const addItemToActiveSale = (product: Product, quantity: number = 1, optionName?: string, notes?: string, customBlock?: number) => {
-    if (!activeSale) {
-      const newSale = createSale();
-      setActiveSale(newSale);
+  const addItemToActiveSale = (product: Product, quantity: number = 1, optionName?: string, notes?: string, customBlock?: number, extraPrice: number = 0) => {
+    let ensuredSale: Sale | null = activeSale;
+    if (!ensuredSale) {
+      ensuredSale = createSale();
     }
 
     const now = new Date();
-    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    const currentRate = rates.find(r => r.id === (activeSale?.rateId || selectedRateId)) || rates[0];
-    const unitPrice = Math.round((product.price * currentRate.multiplier) * 100) / 100;
-    const lineTotal = Math.round((unitPrice * quantity) * 100) / 100;
+    const timeStr = formatTimeCL(now);
+    const currentRate = rates.find(r => r.id === (ensuredSale?.rateId || selectedRateId)) || rates[0];
+    const baseUnitPrice = roundCLP(product.price * currentRate.multiplier);
+    const unitPrice = roundCLP(baseUnitPrice + extraPrice);
+    const lineTotal = roundCLP(unitPrice * quantity);
 
     // Decrement stock
     setProducts(prev => prev.map(p => {
@@ -913,24 +1558,26 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
 
     setActiveSale(prev => {
-      if (!prev) return null;
+      const baseSale = prev || ensuredSale;
+      if (!baseSale) return null;
 
-      const existingIndex = prev.items.findIndex(i =>
+      const existingIndex = baseSale.items.findIndex(i =>
         i.productId === product.id &&
         !i.kitchenNotes &&
         !notes &&
         !i.selectedOption &&
         !optionName &&
+        !extraPrice &&
         i.kitchenStatus === 'pending' &&
         (i.waiterId === waiter.id || !i.waiterId)
       );
 
       let newItems: SaleLine[];
       if (existingIndex > -1) {
-        newItems = [...prev.items];
+        newItems = [...baseSale.items];
         const exist = newItems[existingIndex];
         const newQty = exist.quantity + quantity;
-        const newTotal = Math.round((exist.unitPrice * newQty * (1 - exist.discount / 100)) * 100) / 100;
+        const newTotal = roundCLP(exist.unitPrice * newQty * (1 - exist.discount / 100));
         newItems[existingIndex] = {
           ...exist,
           quantity: newQty,
@@ -942,13 +1589,14 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       } else {
         const newLine: SaleLine = {
           id: `L-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-          lineId: prev.items.length + 1,
+          lineId: baseSale.items.length + 1,
           productId: product.id,
           productName: product.name,
           quantity,
           unitPrice,
           originalPrice: product.price,
-          iva: product.iva,
+          modifiersExtraPrice: extraPrice,
+          iva: product.iva ?? CHILE_IVA_PERCENT,
           discount: 0,
           total: lineTotal,
           kitchenBlock: customBlock || product.kitchenBlock || 1,
@@ -959,16 +1607,19 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           waiterName: waiter.name,
           addedAtTime: timeStr,
         };
-        newItems = [...prev.items, newLine];
+        newItems = [...baseSale.items, newLine];
       }
 
       const totals = calculateSaleTotals(newItems);
+      const fee = baseSale.deliveryFee || 0;
       const updatedSale: Sale = {
-        ...prev,
+        ...baseSale,
         currentWaiterId: waiter.id,
         currentWaiterName: waiter.name,
         items: newItems,
-        ...totals,
+        subtotal: totals.subtotal,
+        taxTotal: totals.taxTotal,
+        total: roundCLP(totals.total + fee),
       };
 
       setSales(allSales => allSales.map(s => s.id === updatedSale.id ? updatedSale : s));
@@ -984,6 +1635,110 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  // Submit Customer QR Order directly to kitchen for a table without disrupting staff activeSale
+  const submitCustomerOrder = (
+    tableNumber: string,
+    items: { product: Product; quantity: number; selectedOptions: string[]; notes: string; unitPrice: number }[]
+  ): Sale => {
+    const now = new Date();
+    const nowIso = now.toISOString();
+    const dateStr = formatDateCL(now);
+    const timeStr = formatTimeCL(now);
+    const targetTable = tables.find(t => t.number === tableNumber) || tables[0];
+    const existingSale = sales.find(s => s.tableNumber === tableNumber && s.status === 'open');
+
+    const newLines: SaleLine[] = items.map((it, idx) => {
+      const unitPrice = roundCLP(it.unitPrice);
+      const extraPrice = Math.max(0, roundCLP(unitPrice - it.product.price));
+      return {
+        id: `L-QR-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 5)}`,
+        lineId: (existingSale?.items.length || 0) + idx + 1,
+        productId: it.product.id,
+        productName: it.product.name,
+        quantity: it.quantity,
+        unitPrice,
+        originalPrice: it.product.price,
+        modifiersExtraPrice: extraPrice,
+        iva: it.product.iva ?? CHILE_IVA_PERCENT,
+        discount: 0,
+        total: roundCLP(unitPrice * it.quantity),
+        kitchenBlock: it.product.kitchenBlock || 1,
+        kitchenStatus: it.product.isKitchen ? 'cooking' : 'ready',
+        selectedOption: it.selectedOptions.length > 0 ? it.selectedOptions.join(', ') : undefined,
+        kitchenNotes: it.notes || 'Pedido Carta QR',
+        sentToKitchenAt: nowIso,
+        waiterName: 'Carta QR',
+        addedAtTime: timeStr,
+      };
+    });
+
+    // Decrement stock
+    setProducts(prev => prev.map(p => {
+      const orderedQty = items.filter(it => it.product.id === p.id).reduce((s, it) => s + it.quantity, 0);
+      return orderedQty > 0 ? { ...p, stock: Math.max(0, p.stock - orderedQty) } : p;
+    }));
+
+    let resultSale: Sale;
+    if (existingSale) {
+      const mergedItems = [...existingSale.items, ...newLines];
+      const totals = calculateSaleTotals(mergedItems);
+      resultSale = {
+        ...existingSale,
+        items: mergedItems,
+        subtotal: totals.subtotal,
+        taxTotal: totals.taxTotal,
+        total: totals.total,
+      };
+      setSales(prev => prev.map(s => s.id === resultSale.id ? resultSale : s));
+      if (activeSale && activeSale.id === resultSale.id) {
+        setActiveSale(resultSale);
+      }
+    } else {
+      const totals = calculateSaleTotals(newLines);
+      const nextId = Math.max(1000, ...sales.map(s => s.id), 35000) + 1;
+      resultSale = {
+        id: nextId,
+        number: nextId.toString(),
+        ticketNumber: (nextId - 12000).toString(),
+        date: dateStr,
+        time: timeStr,
+        tableNumber: targetTable ? targetTable.number : tableNumber,
+        tableName: targetTable ? targetTable.name : `Mesa ${tableNumber}`,
+        salonId: targetTable ? targetTable.salonId : 1,
+        salonName: salons.find(s => s.id === (targetTable?.salonId || 1))?.name || 'Salón Principal',
+        diners: 2,
+        waiterId: waiter.id,
+        waiterName: 'Carta QR',
+        rateId: 'standard',
+        rateName: 'Tarifa Estándar',
+        status: 'open',
+        orderType: 'salon',
+        items: newLines,
+        subtotal: totals.subtotal,
+        taxTotal: totals.taxTotal,
+        total: totals.total,
+        createdAt: nowIso,
+      };
+      setSales(prev => [resultSale, ...prev]);
+    }
+
+    setTables(prev => prev.map(t =>
+      t.number === (targetTable?.number || tableNumber)
+        ? {
+            ...t,
+            status: 'kitchen',
+            currentSaleId: resultSale.id,
+            ticketNumber: resultSale.ticketNumber,
+            openedAt: t.openedAt || timeStr,
+            diners: t.diners || 2,
+            total: resultSale.total,
+          }
+        : t
+    ));
+
+    return resultSale;
+  };
+
   // Update Line
   const updateSaleLine = (lineId: string, updates: Partial<SaleLine>) => {
     setActiveSale(prev => {
@@ -991,20 +1746,27 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const newItems = prev.items.map(item => {
         if (item.id === lineId) {
           const updated = { ...item, ...updates };
+          if (updates.modifiersExtraPrice !== undefined) {
+            const basePrice = item.unitPrice - (item.modifiersExtraPrice || 0);
+            updated.unitPrice = roundCLP(basePrice + updates.modifiersExtraPrice);
+          }
           const disc = updated.discount || 0;
-          updated.total = Math.round((updated.unitPrice * updated.quantity * (1 - disc / 100)) * 100) / 100;
+          updated.total = roundCLP(updated.unitPrice * updated.quantity * (1 - disc / 100));
           return updated;
         }
         return item;
       });
 
       const totals = calculateSaleTotals(newItems);
+      const fee = prev.deliveryFee || 0;
       const updatedSale: Sale = {
         ...prev,
         currentWaiterId: waiter.id,
         currentWaiterName: waiter.name,
         items: newItems,
-        ...totals,
+        subtotal: totals.subtotal,
+        taxTotal: totals.taxTotal,
+        total: roundCLP(totals.total + fee),
       };
 
       setSales(allSales => allSales.map(s => s.id === updatedSale.id ? updatedSale : s));
@@ -1035,12 +1797,15 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const newItems = prev.items.filter(item => item.id !== lineId);
       const totals = calculateSaleTotals(newItems);
+      const fee = prev.deliveryFee || 0;
       const updatedSale: Sale = {
         ...prev,
         currentWaiterId: waiter.id,
         currentWaiterName: waiter.name,
         items: newItems,
-        ...totals,
+        subtotal: totals.subtotal,
+        taxTotal: totals.taxTotal,
+        total: roundCLP(totals.total + (newItems.length > 0 ? fee : 0)),
       };
 
       setSales(allSales => allSales.map(s => s.id === updatedSale.id ? updatedSale : s));
@@ -1059,7 +1824,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const sendActiveSaleToKitchen = () => {
     if (!activeSale) return;
     const nowIso = new Date().toISOString();
-    const timeStr = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const timeStr = formatTimeCL();
     
     setActiveSale(prev => {
       if (!prev) return null;
@@ -1191,6 +1956,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...activeSale,
       status: 'closed',
       closedAt: now.toISOString(),
+      shiftId: currentShift?.id,
       paymentMethod,
       paymentDetails: details,
     };
@@ -1319,6 +2085,9 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         loginUser,
         quickLogin,
         logout,
+        deviceType,
+        isMobileDevice,
+        isMobileWaiter,
         stationMode,
         setStationMode,
         activeView,
@@ -1343,10 +2112,16 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         selectedRateId,
         setSelectedRateId,
         sales,
+        setSales,
         activeSale,
         setActiveSale,
         createSale,
+        createChannelSale,
+        updateDeliveryStatus,
+        assignDriverToSale,
+        assignClientToActiveSale,
         addItemToActiveSale,
+        submitCustomerOrder,
         updateSaleLine,
         removeSaleLine,
         sendActiveSaleToKitchen,
@@ -1358,6 +2133,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         markAllKitchenItemsServed,
         currentShift,
         shiftHistory,
+        setShiftHistory,
         openCashShift,
         addCashMovement,
         closeCashShift,
@@ -1372,6 +2148,27 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         restaurantBrand,
         updateRestaurantBrand,
         currency,
+        systemModules,
+        updateSystemModules,
+        ticketSettings,
+        updateTicketSettings,
+        resetTicketSettings,
+        printAreas,
+        addPrintArea,
+        updatePrintArea,
+        deletePrintArea,
+        modifierGroups,
+        addModifierGroup,
+        updateModifierGroup,
+        deleteModifierGroup,
+        customRoles,
+        addCustomRole,
+        updateCustomRole,
+        deleteCustomRole,
+        clients,
+        addClient,
+        updateClient,
+        deleteClient,
         printableTicket,
         setPrintableTicket,
         printPreTicket,

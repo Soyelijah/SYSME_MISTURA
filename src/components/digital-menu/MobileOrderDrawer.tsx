@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Trash2, Plus, Minus, Send, CheckCircle2, Receipt, Clock, Sparkles, Utensils } from 'lucide-react';
 import { Product } from '../../types';
 import { sound } from '../../utils/sound';
+import { CHILE_IVA_PERCENT, calculateNetAndIva, formatCLP } from '../../utils/currency';
 import confetti from 'canvas-confetti';
 
 export interface CartItem {
@@ -45,6 +46,7 @@ export const MobileOrderDrawer: React.FC<MobileOrderDrawerProps> = ({
   if (!isOpen) return null;
 
   const totalAmount = cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const { net: netAmount, iva: ivaAmount, gross: grossAmount } = calculateNetAndIva(totalAmount, CHILE_IVA_PERCENT);
 
   const handleSendOrder = () => {
     sound.playSuccess();
@@ -151,7 +153,7 @@ export const MobileOrderDrawer: React.FC<MobileOrderDrawerProps> = ({
                   <div className="flex items-center justify-between text-xs font-bold pt-2 border-t border-slate-200 dark:border-slate-700">
                     <span>Total Estimado:</span>
                     <span className="font-mono text-amber-500 font-black">
-                      {currencySymbol} {totalAmount.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {formatCLP(grossAmount, currencySymbol)}
                     </span>
                   </div>
                 </div>
@@ -216,6 +218,19 @@ export const MobileOrderDrawer: React.FC<MobileOrderDrawerProps> = ({
                         </button>
                       </div>
 
+                      {item.selectedOptions && item.selectedOptions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {item.selectedOptions.map((opt, oIdx) => (
+                            <span
+                              key={oIdx}
+                              className="px-1.5 py-0.5 rounded-md text-[10px] font-black bg-teal-500/20 text-teal-400 border border-teal-500/30"
+                            >
+                              {opt}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
                       {item.notes && (
                         <p className="text-[10px] text-amber-600 dark:text-amber-400 italic truncate mt-0.5">
                           Nota: {item.notes}
@@ -224,7 +239,7 @@ export const MobileOrderDrawer: React.FC<MobileOrderDrawerProps> = ({
 
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs font-mono font-black text-amber-500">
-                          {currencySymbol} {(item.unitPrice * item.quantity).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {formatCLP(item.unitPrice * item.quantity, currencySymbol)}
                         </span>
 
                         <div className={`flex items-center rounded-lg border p-0.5 ${
@@ -261,17 +276,17 @@ export const MobileOrderDrawer: React.FC<MobileOrderDrawerProps> = ({
             }`}>
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-slate-500">
-                  <span>Subtotal:</span>
-                  <span className="font-mono">{currencySymbol} {(totalAmount * 0.9).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span>Neto:</span>
+                  <span className="font-mono">{formatCLP(netAmount, currencySymbol)}</span>
                 </div>
                 <div className="flex justify-between text-slate-500">
-                  <span>IVA Incluido (10%):</span>
-                  <span className="font-mono">{currencySymbol} {(totalAmount * 0.1).toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span>IVA Incluido ({CHILE_IVA_PERCENT}%):</span>
+                  <span className="font-mono">{formatCLP(ivaAmount, currencySymbol)}</span>
                 </div>
                 <div className="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-800">
                   <span>Total a Pagar:</span>
                   <span className="font-mono text-amber-500 text-base">
-                    {currencySymbol} {totalAmount.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatCLP(grossAmount, currencySymbol)}
                   </span>
                 </div>
               </div>

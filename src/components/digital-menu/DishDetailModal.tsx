@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Minus, Check, Flame, Sparkles, Utensils, Wine, AlertCircle, Heart } from 'lucide-react';
 import { Product } from '../../types';
 import { sound } from '../../utils/sound';
+import { formatCLP, roundCLP } from '../../utils/currency';
 
 interface DishDetailModalProps {
   product: Product | null;
   onClose: () => void;
-  onAddToCart: (product: Product, quantity: number, selectedOptions: string[], notes: string) => void;
+  onAddToCart: (product: Product, quantity: number, selectedOptions: string[], notes: string, extraPrice?: number) => void;
   isLight: boolean;
   currencySymbol?: string;
 }
@@ -24,16 +25,20 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
   const [notes, setNotes] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
 
+  useEffect(() => {
+    setQuantity(1);
+    setNotes('');
+    setSelectedOptions(product?.options && product.options.length > 0 ? [product.options[0].id] : []);
+  }, [product?.id]);
+
   if (!product) return null;
 
   const toggleOption = (optionId: string) => {
     sound.playTap();
-    setSelectedOptions(prev =>
-      prev.includes(optionId) ? prev.filter(id => id !== optionId) : [...prev, optionId]
-    );
+    setSelectedOptions([optionId]);
   };
 
-  const calculateTotalPrice = () => {
+  const calculateExtraPrice = () => {
     let extra = 0;
     if (product.options) {
       product.options.forEach(opt => {
@@ -42,31 +47,38 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
         }
       });
     }
-    return (product.price + extra) * quantity;
+    return extra;
   };
+
+  const currentExtra = roundCLP(calculateExtraPrice());
+  const unitPriceWithExtra = roundCLP(product.price + currentExtra);
+  const totalCalculatedPrice = roundCLP(unitPriceWithExtra * quantity);
 
   const handleAdd = () => {
     sound.playSuccess();
-    onAddToCart(product, quantity, selectedOptions, notes);
+    const selectedOptionNames = product.options
+      ? product.options.filter(o => selectedOptions.includes(o.id)).map(o => o.name)
+      : [];
+    onAddToCart(product, quantity, selectedOptionNames, notes, currentExtra);
     onClose();
   };
 
   // Sommelier pairing suggestion based on dish category/name
   const getPairingSuggestion = () => {
     const name = product.name.toLowerCase();
-    if (name.includes('carne') || name.includes('chuletrón') || name.includes('solomillo') || name.includes('vacuno')) {
-      return { drink: 'Tinto Ribera del Duero Pago de Carraovejas', icon: '🍷', note: 'Notas de roble y frutos negros que realzan la maduración de la carne.' };
+    if (name.includes('lomo') || name.includes('filete') || name.includes('pachamanca') || name.includes('anticucho') || name.includes('vacuno')) {
+      return { drink: 'Carmenere Gran Reserva o Pisco Sour Tradicional', icon: '🍷', note: 'Taninos redondos y notas especiadas que realzan la intensidad de la carne al wok o parrilla.' };
     }
-    if (name.includes('ceviche') || name.includes('tiradito') || name.includes('pulpo') || name.includes('pescado') || name.includes('reineta') || name.includes('lubina')) {
-      return { drink: 'Pisco Sour Catedral o Cerveza Artesanal Helada', icon: '🍸', note: 'La acidez cítrica equilibra y potencia la frescura marina.' };
+    if (name.includes('ceviche') || name.includes('tiradito') || name.includes('causa') || name.includes('pulpo') || name.includes('pescado') || name.includes('chupe') || name.includes('parihuela')) {
+      return { drink: 'Pisco Sour Catedral o Sauvignon Blanc Helado', icon: '🍸', note: 'La acidez cítrica y mineralidad equilibran y potencian la frescura marina.' };
     }
-    if (name.includes('arroz') || name.includes('paella') || name.includes('tapas') || name.includes('jamón')) {
-      return { drink: 'Cava Brut Nature o Copa de Tinto Rioja', icon: '🥂', note: 'Burbuja fina que limpia el paladar entre cada bocado.' };
+    if (name.includes('arroz') || name.includes('chaufa') || name.includes('risotto') || name.includes('pasta') || name.includes('spaguetti')) {
+      return { drink: 'Chicha Morada Artesanal o Chilcano de Maracuyá', icon: '🍹', note: 'Frescura frutal y cítrica que limpia el paladar entre cada bocado.' };
     }
-    if (name.includes('tarta') || name.includes('coulant') || name.includes('chocolate') || name.includes('postre')) {
-      return { drink: 'Café Espresso Arábica o Bajativo de Maracuyá', icon: '☕', note: 'Contraste cálido y aromático perfecto para el dulce.' };
+    if (name.includes('suspiro') || name.includes('tiramisú') || name.includes('cheesecake') || name.includes('pie') || name.includes('chocolate') || name.includes('postre')) {
+      return { drink: 'Café Espresso Peruano o Bajativo de Manzanilla', icon: '☕', note: 'Contraste cálido y aromático perfecto para cerrar con un toque dulce.' };
     }
-    return { drink: 'Cóctel Mistura Especial de la Casa', icon: '🍹', note: 'Armonía refrescante con toques frutales y botánicos.' };
+    return { drink: 'Pisco Sour Mistura Especial de la Casa', icon: '🍹', note: 'Armonía refrescante de pisco peruano y limón de pica.' };
   };
 
   const pairing = getPairingSuggestion();
@@ -122,7 +134,7 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
               </div>
               <div className="text-right shrink-0">
                 <span className="text-2xl font-black text-amber-300 font-mono drop-shadow-md">
-                  {currencySymbol} {product.price.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCLP(unitPriceWithExtra, currencySymbol)}
                 </span>
               </div>
             </div>
@@ -219,9 +231,13 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
                         </span>
                         {opt.priceExtra ? (
                           <span className={`text-[10px] font-mono ${isSelected ? 'text-indigo-100' : isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                            +{opt.priceExtra.toFixed(2)} {currencySymbol}
+                            +{formatCLP(opt.priceExtra, currencySymbol)}
                           </span>
-                        ) : null}
+                        ) : (
+                          <span className={`text-[10px] font-mono ${isSelected ? 'text-indigo-100' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                            Incluido
+                          </span>
+                        )}
                       </button>
                     );
                   })}
@@ -284,7 +300,7 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
             >
               <span>Añadir a mi Comanda</span>
               <span className="font-mono bg-black/20 px-2.5 py-1 rounded-xl">
-                {currencySymbol} {calculateTotalPrice().toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatCLP(totalCalculatedPrice, currencySymbol)}
               </span>
             </button>
           </div>
